@@ -8,7 +8,7 @@ $id  = $row[0];
 $user = $row[1]; 
 $idrasuhan = $row[2]; 
 
-$ql1="SELECT  noreg,diagnosa_keperawatan from ERM_ASUHAN_KEPERAWATAN where id_assesmen='$id'";
+$ql1="SELECT  noreg,diagnosa_keperawatan from ERM_ASUHAN_KEPERAWATAN where id='$idrasuhan'";
 $hl1  = sqlsrv_query($conn, $ql1);
 $d11  = sqlsrv_fetch_array($hl1, SQLSRV_FETCH_ASSOC); 
 $rencana = $d11['rencana'];
@@ -31,6 +31,7 @@ $implementasi = html_entity_decode($implementasi);
 	<title>eRM-RI</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 	<script language="JavaScript" type="text/javascript">
 		nextfield = "box1";
 		netscape = "";
@@ -62,16 +63,18 @@ $implementasi = html_entity_decode($implementasi);
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 			<br>
-			<a href='form_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
+			<a href='form_asuhankeperawatan2.php?id=<?php echo $id.'|'.$user.'|'.$idrasuhan;?>' class='btn btn-warning'>Close</a>
 			&nbsp;&nbsp;
-			<a href='' class='btn btn-success'>Refresh</a>
+			<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 			&nbsp;&nbsp;
-			<a href='d_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Detail Implementasi</a>
+			<a href='d_asuhankeperawatan.php?id=<?php echo $id.'|'.$user.'|'.$idrasuhan;?>' class='btn btn-warning'>
+				<i class="bi bi-list-task"></i> Detail Implementasi
+			</a>
 			&nbsp;&nbsp;
 			<br>
 			<br>
@@ -97,7 +100,9 @@ $implementasi = html_entity_decode($implementasi);
 
 			<br>
 			<div class="row">
-				&nbsp;&nbsp;&nbsp;<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan implementasi</button> 
+				<div class="col-sm-3">
+					&nbsp;&nbsp;&nbsp;<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan implementasi</button> 
+				</div>
 			</div>
 
 			<br>
@@ -118,8 +123,8 @@ if (isset($_POST["simpan"])) {
 	$data = htmlspecialchars($data);
 
 	if(!empty($implementasi)){
-		$q  = "insert ERM_IMPLEMENTASI_ASUHAN(noreg, sift, implementasi, userid, tgl)
-		values('$noreg','$sift','$data','$user','$tgl')";         
+		$q  = "insert ERM_IMPLEMENTASI_ASUHAN(noreg, sift, implementasi, userid, tgl,idasuhan)
+		values('$noreg','$sift','$data','$user','$tgl','$idrasuhan')";         
 		$hs = sqlsrv_query($conn,$q);
 
 		if($hs){

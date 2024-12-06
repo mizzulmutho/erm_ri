@@ -73,7 +73,7 @@ if (isset($_POST["implementasi_rencana"])) {
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<font size='2px'>	

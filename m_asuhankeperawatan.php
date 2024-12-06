@@ -88,7 +88,7 @@ $user = $row[1];
 					</tr>
 					<?php 
 
-					$ql="SELECT  id,jenis,diagnosa_keperawatan,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN";
+					$ql="SELECT  id,jenis,diagnosa_keperawatan,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN where diagnosa_keperawatan like '%NEO%'";
 					$hl  = sqlsrv_query($conn, $ql);
 					while   ($dl = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC)){     
 						echo "	<tr bgcolor=$color>
@@ -128,19 +128,19 @@ if (isset($_POST["simpan"])) {
 	('$jenis','$diagnosa_keperawatan','$diagnosa_nama','$data')";         
 	$hs = sqlsrv_query($conn,$q);
 
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
+	// if($hs){
+	// 	$eror = "Success";
+	// }else{
+	// 	$eror = "Gagal Insert";
 
-	}
+	// }
 
-	echo "
-	<script>
-	alert('".$eror."');
-	history.go(-1);
-	</script>
-	";
+	// echo "
+	// <script>
+	// alert('".$eror."');
+	// history.go(-1);
+	// </script>
+	// ";
 
 }
 ?>

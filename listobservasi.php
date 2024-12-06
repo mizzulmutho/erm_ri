@@ -1,0 +1,191 @@
+<?php 
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+$tgl		= gmdate("Y-m-d", time()+60*60*7);
+
+$id = $_GET["id"];
+$row = explode('|',$id);
+$id  = $row[0];
+$user = $row[1]; 
+
+$qu="SELECT noreg,norm FROM ERM_ASSESMEN_HEADER where id='$id'";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$noreg = $d1u['noreg'];
+$norm = $d1u['norm'];
+
+$q2		= "select norm,kodedept,nik,nama, CASE WHEN kelamin = 'L' THEN 'Laki-laki' ELSE 'Perempuan' END AS kelamin,alamatpasien,kota,kodekel,tlp,tmptlahir, CONVERT(VARCHAR, tgllahir, 103) as tgllahir, jenispekerjaan, 
+jabatan, (select umur from umur where norm=afarm_mstpasien.norm) as UMUR from Afarm_MstPasien where norm='$norm'";
+$hasil2  = sqlsrv_query($conn, $q2);			  
+
+$data2	= sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC);				  
+$kodedept	= $data2[kodedept];
+
+$nama	= $data2[nama];
+$kelamin	= $data2[kelamin];
+$nik	= trim($data2[nik]);
+$alamatpasien	= $data2[alamatpasien];
+$kota	= $data2[kota];
+$kodekel	= $data2[kodekel];
+$telp	= $data2[tlp];
+$tmptlahir	= $data2[tmptlahir];
+$tgllahir	= $data2[tgllahir];
+$jenispekerjaan	= $data2[jenispekerjaan];
+$jabatan	= $data2[jabatan];
+$umur =  $data2[UMUR];
+
+
+?>
+
+<!DOCTYPE html> 
+<html> 
+<head>  
+	<title>eRM-RI</title>  
+	<link rel="icon" href="favicon.ico">  
+	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
+	<script>
+		CKEDITOR.replace('editor1');
+		CKEDITOR.config.width="100%";
+		CKEDITOR.config.height="500px"
+	</script>
+
+</head> 
+
+<div class="container-fluid">
+
+	<body onload="document.myForm.pasien_mcu.focus();">
+		<font size='2px'>
+			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
+				<br>
+				<a href='observasi.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
+				&nbsp;&nbsp;
+				<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+				<br>
+				<br>
+				<div class="row">
+					<div class="col-12">
+						<?php 
+						include "header_soap.php";
+						?>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-12"><b><center>DETAIL OBSERVASI HARIAN PASIEN</center></b></div>
+				</div>
+
+				<hr>
+				<table class="table table-bordered">
+					<tr valign="top">
+						<td rowspan='3' align='center'>no</td>
+						<td rowspan='3'>edit</td>
+						<td rowspan='3'>tgl</td>
+						<td rowspan='3'>jam</td>
+						<td rowspan='1' colspan="10" align='center'>EWS</td>
+						<td rowspan='3'>total ews</td>						
+						<td rowspan='1' colspan="14" align='center'>cairan</td>	
+						<td rowspan='3'>GDA</td>
+						<td rowspan='3'>Petugas</td>	
+					</tr>
+					<tr>
+						<td rowspan='2'>kesadaran</td>
+						<td rowspan='2'>gcs</td>
+						<td rowspan='2'>tensi</td>
+						<td rowspan='2'>suhu</td>
+						<td rowspan='2'>nadi</td>
+						<td rowspan='2'>rr</td>
+						<td rowspan='2'>spo2</td>
+						<td rowspan='2'>oksigen</td>
+						<td rowspan='2'>bb</td>
+						<td rowspan='2'>tb</td>
+						<td rowspan='1' colspan="5" align='center'>Input</td>
+						<td rowspan='1' colspan="8" align='center'>Output</td>
+						<td rowspan='2'>Balance Cairan</td>
+					</tr>
+					<tr>
+						<td>Infus</td>
+						<td>Tranfusi</td>
+						<td>Makan</td>
+						<td>Minum</td>
+						<td>Total</td>
+						<td>Muntah</td>
+						<td>Peradangan</td>
+						<td>Urine</td>
+						<td>BAB</td>
+						<td>IWL</td>
+						<td>NGT</td>
+						<td>Drain</td>
+						<td>Total</td>
+					</tr>
+
+					<?php 
+					$q1		= "select top(50)*, 
+					CONVERT(VARCHAR, tglinput, 23) as tglinput,
+					CONVERT(VARCHAR, tglinput, 24) as jam  
+					from ERM_RI_OBSERVASI where noreg='$noreg' order by id desc";
+					$hasil1  = sqlsrv_query($conn, $q1);
+					$nox=1;           
+					while   ($data1 = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
+						$ket =
+						'tensi :'.$data1[td_sistolik].'/'.$data1[td_diastolik].' ,'.
+						'nadi :'.$data1[nadi].' ,'.
+						'suhu :'.$data1[suhu].' ,'.
+						'pernafasan :'.$data1[pernafasan].' ,'.
+						'spo2 :'.$data1[spo2]
+						;
+						echo "
+						<tr>
+						<td>$nox</td>
+						<td><a href='e_observasi.php?id=$id|$user|$data1[id]'>edit</a></td>
+						<td>$data1[tglinput]</td>
+						<td>$data1[jam]</td>
+						<td>$data1[ob1]</td>
+						<td>$data1[ob6]</td>
+						<td>$data1[td_sistolik]/$data1[td_diastolik]</td>
+						<td>$data1[suhu]</td>
+						<td>$data1[nadi]</td>
+						<td>$data1[pernafasan]</td>
+						<td>$data1[spo2]</td>
+						<td>$data1[ob7]</td>
+						<td>$data1[ob9]</td>
+						<td>$data1[ob10]</td>
+						<td>$data1[ob11]</td>
+						<td>$data1[ob12]</td>
+						<td>$data1[ob13]</td>
+						<td>$data1[ob18]</td>
+						<td>$data1[ob19]</td>
+						<td>$data1[total_input]</td>
+						<td>$data1[ob20]</td>
+						<td>$data1[ob26]</td>
+						<td>$data1[ob22]</td>
+						<td>$data1[ob21]</td>
+						<td>$data1[ob23]</td>
+						<td>$data1[ob24]</td>
+						<td>$data1[ob25]</td>
+						<td>$data1[total_output]</td>
+						<td>$data1[ob27]</td>
+						<td>$data1[ob28]</td>
+						<td>$data1[userinput]</td>
+
+						</tr>
+
+
+						";
+
+						$nox+=1;
+					}
+					?>
+				</table>
+			</font>
+		</form>
+	</font>
+</body>
+</div>

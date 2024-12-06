@@ -125,7 +125,7 @@ $noreg = $d1u['noreg'];
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.kodedokter.focus();">
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
@@ -185,10 +185,10 @@ $noreg = $d1u['noreg'];
 			</div>
 			<br>
 			<div class="row">
-				&nbsp;&nbsp;&nbsp;
-				<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan</button> 
-				&nbsp;
-				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>close</a>
+				<div class="col-3">
+					<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan</button> 
+					<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>close</a>
+				</div>
 			</div>
 			<br>
 

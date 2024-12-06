@@ -1,5 +1,12 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 
 $id = $_GET["id"];
@@ -51,7 +58,7 @@ $umur =  $data2[UMUR];
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<font size='2px'>
@@ -66,7 +73,7 @@ $umur =  $data2[UMUR];
 					<div class="col-6"><?php echo 'NORM : '.$norm.'<br> NAMA : '.$nama.'<br> TGL LAHIR : '.$tgllahir; ?></div>
 				</div>
 				<hr>
-				<table border="1" cellpadding="5px">
+				<table class="table table-bordered">
 					<tr>
 						<td rowspan='2'>no</td>
 						<td rowspan='2'>tgl</td>

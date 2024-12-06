@@ -1,0 +1,148 @@
+general concern
+SELECT        COUNT(ERM_RI_GENERALCONSENT.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_GENERALCONSENT INNER JOIN
+ARM_REGISTER ON ERM_RI_GENERALCONSENT.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_GENERALCONSENT.gc14 <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+form assesment
+
+neonatus
+SELECT        COUNT(ERM_RI_ASSESMEN_AWAL_NEONATUS.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_ASSESMEN_AWAL_NEONATUS INNER JOIN
+ARM_REGISTER ON ERM_RI_ASSESMEN_AWAL_NEONATUS.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_ASSESMEN_AWAL_NEONATUS.tglrawat <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+anak
+SELECT        COUNT(ERM_RI_ASSESMEN_AWAL_ANAK.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_ASSESMEN_AWAL_ANAK INNER JOIN
+ARM_REGISTER ON ERM_RI_ASSESMEN_AWAL_ANAK.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_ASSESMEN_AWAL_ANAK.tglrawat <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+dewasa
+SELECT        COUNT(ERM_RI_ASSESMEN_AWAL_DEWASA.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_ASSESMEN_AWAL_DEWASA INNER JOIN
+ARM_REGISTER ON ERM_RI_ASSESMEN_AWAL_DEWASA.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_ASSESMEN_AWAL_DEWASA.tglrawat <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+bersalin
+SELECT        COUNT(ERM_RI_ASSESMEN_AWAL_BERSALIN.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_ASSESMEN_AWAL_BERSALIN INNER JOIN
+ARM_REGISTER ON ERM_RI_ASSESMEN_AWAL_BERSALIN.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_ASSESMEN_AWAL_BERSALIN.tglrawat <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+rpo
+SELECT        COUNT(ERM_RI_RPO.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_RPO INNER JOIN
+ARM_REGISTER ON ERM_RI_RPO.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_RPO.tgl <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+rencana pulang
+SELECT        COUNT(ERM_RI_RENCANA_PULANG.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_RENCANA_PULANG INNER JOIN
+ARM_REGISTER ON ERM_RI_RENCANA_PULANG.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_RENCANA_PULANG.tglrawat <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+diagnosis
+SELECT        COUNT(ERM_RI_RESUME.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_RESUME INNER JOIN
+ARM_REGISTER ON ERM_RI_RESUME.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_RESUME.resume20 <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+
+informen concern
+SELECT        COUNT(ERM_RI_INFORMCONSENT.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_INFORMCONSENT INNER JOIN
+ARM_REGISTER ON ERM_RI_INFORMCONSENT.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_INFORMCONSENT.tgl <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+
+asuhan keperawatan
+SELECT        COUNT(ERM_ASUHAN_KEPERAWATAN.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_ASUHAN_KEPERAWATAN INNER JOIN
+ARM_REGISTER ON ERM_ASUHAN_KEPERAWATAN.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+soap-ri
+SELECT        COUNT(ERM_RI_SOAP.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_SOAP INNER JOIN
+ARM_REGISTER ON ERM_RI_SOAP.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_SOAP.userid <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+soap-oper sift
+SELECT        COUNT(ERM_SOAP_VERIF.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_SOAP_VERIF INNER JOIN
+ARM_REGISTER ON ERM_SOAP_VERIF.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_SOAP_VERIF.tgloper <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+soap-verif
+SELECT        COUNT(ERM_SOAP_VERIF.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_SOAP_VERIF INNER JOIN
+ARM_REGISTER ON ERM_SOAP_VERIF.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_SOAP_VERIF.tglverif <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+tulbakon
+SELECT        COUNT(ERM_TULBAKON.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_TULBAKON INNER JOIN
+ARM_REGISTER ON ERM_TULBAKON.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_TULBAKON.userid <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+observasi
+SELECT        COUNT(ERM_RI_OBSERVASI.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_OBSERVASI INNER JOIN
+ARM_REGISTER ON ERM_RI_OBSERVASI.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_OBSERVASI.userinput <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+resume
+SELECT        COUNT(ERM_RI_RESUME.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_RESUME INNER JOIN
+ARM_REGISTER ON ERM_RI_RESUME.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_RESUME.resume1 <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+laporan ok
+SELECT        COUNT(ERM_RI_LAPORAN_OK.noreg) AS jumlah, Afarm_Unitlayanan.KET
+FROM            ERM_RI_LAPORAN_OK INNER JOIN
+ARM_REGISTER ON ERM_RI_LAPORAN_OK.noreg = ARM_REGISTER.NOREG INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ERM_RI_LAPORAN_OK.ok1 <> '')
+GROUP BY Afarm_Unitlayanan.KET
+
+
+
+
+
+
+
+
+

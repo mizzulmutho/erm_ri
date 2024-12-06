@@ -61,11 +61,7 @@ $noreg = $d11['noreg'];
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 			<br>
-			<a href='form_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
-			&nbsp;&nbsp;
-			<a href='' class='btn btn-success'>Refresh</a>
-			&nbsp;&nbsp;
-			<a href='d_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Detail Implementasi</a>
+			<a href='askep.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
 			&nbsp;&nbsp;
 			<br>
 			<br>

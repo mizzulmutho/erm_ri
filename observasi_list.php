@@ -1,5 +1,12 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d", time()+60*60*7);
 
@@ -105,21 +112,22 @@ $noreg = $d1u['noreg'];
 	</script>  
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.td_sistolik.focus();">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 				<br>
 				<div class="row">
-					<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<div class="col-3 align-self-center">
+						<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
+					</div>
 					<font size="5px"><b>INPUT OBSERVASI RAWAT INAP</b></font>
 				</div>
 				<br>
 				<div class="row">
 					<div class="col-12 align-self-center">
-						<table class='table'>
+						<table class='table' width="100%">
 							<tr>
 								<td>no</td>								
 								<td>pasien</td>

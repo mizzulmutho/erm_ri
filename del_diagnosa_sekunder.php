@@ -1,0 +1,31 @@
+<?php 
+session_start();
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+$tanggal    = gmdate("Y-m-d H:i:s", time()+60*60*7);
+
+$getid = $_GET["id"];
+$row = explode('|',$getid);
+$id = $row[0]; 
+$user = $row[1]; 
+$iddiagnosa_sekunder = $row[2]; 
+
+
+$q = " 
+DELETE from  ERM_RI_DIAGNOSA_SEKUNDER              
+WHERE id='$iddiagnosa_sekunder'
+";
+$h1  = sqlsrv_query($conn, $q);        
+
+if ($h1){
+  echo "
+  <script>
+  window.location.replace('resume.php?id=$id|$user');
+  </script>
+  ";
+}
+
+?>

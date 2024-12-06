@@ -106,14 +106,14 @@ $noreg = $d1u['noreg'];
 	</script>  
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.ku.focus();">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 				<br>
 				<div class="row">
-					<label for="" class="col-3"><b>REKAM MEDIK : </b></label>
+					<label for="" class="col-3"><b>REKAM MEDIK ELEKTRONIK</b></label>
 				</div>
 				<hr>
 
@@ -165,9 +165,10 @@ $noreg = $d1u['noreg'];
 						</div>
 
 						<br>
-						<label for="" class="">Assesmen : </label>
+						<b>Assesmen</b><br>
 						<input class="form-control form-control-sm" name="assesmen" value="<?php echo $assesmen;?>" id="" type="text" size='' onfocus="nextfield ='aplan';" placeholder="input diagnosa">
-						<label for="" class="">Plan : </label>
+						<hr>
+						<b>Plan : </b></br>
 						<input class="form-control form-control-sm" name="aplan" value="<?php echo $aplan;?>" id="" type="text" size='' onfocus="nextfield ='eye';" placeholder="input plan">
 
 					</div>

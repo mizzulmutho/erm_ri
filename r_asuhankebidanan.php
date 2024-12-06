@@ -1,5 +1,12 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 
 $id = $_GET["id"];
@@ -48,32 +55,49 @@ if (isset($_POST["implementasi_rencana"])) {
 		CKEDITOR.config.width="100%";
 		CKEDITOR.config.height="500px"
 	</script>
-
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 			<br>
 			<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
-			&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;
+			<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i> </a>
+			&nbsp;&nbsp;&nbsp;
+			<a href='form_asuhankebidanan1.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'>+ Rencana Asuhan </a>
+			&nbsp;&nbsp;&nbsp;
+
+
+			<br><br>
+			<b><font size='3px'>Rencana Asuhan Kebidanan</font></b>
 			<br>
-			<h3>Rencana Asuhan Kebidanan</h3>
 			<font size='2px'>
-				<table class="table" border="1">
+				<table class="table" border="1" width="100%">
 					<?php
 					$ql="SELECT *,CONVERT(VARCHAR, tgl_teratasi, 101) as tglteratasi  FROM ERM_ASUHAN_KEPERAWATAN WHERE noreg='$noreg' ORDER BY id desc";
 					$hl  = sqlsrv_query($conn, $ql);
 					$d1  = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC); 
+
 					$rencana = $d1['rencana'];
 					$diagnosa_keperawatan = $d1['diagnosa_keperawatan'];
+					$diagnosa_nama = $d1['diagnosa_nama'];
 					$rencana = html_entity_decode($rencana);
 
-					$q2="SELECT diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN WHERE diagnosa_keperawatan like '%$diagnosa_keperawatan%' ORDER BY id desc";
-					$h2  = sqlsrv_query($conn, $q2);
-					$d2  = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
-					$diagnosa_nama = $d2['diagnosa_nama'];
+					$q  = "update ERM_ASUHAN_KEPERAWATAN set rencana='$rencana',diagnosa_nama='$diagnosa_nama' where noreg='$noreg'";         
+					$hs = sqlsrv_query($conn,$q);
+
+					$ql="SELECT *,CONVERT(VARCHAR, tgl_teratasi, 101) as tglteratasi  FROM ERM_ASUHAN_KEPERAWATAN WHERE noreg='$noreg' ORDER BY id desc";
+					$hl  = sqlsrv_query($conn, $ql);
+					$d1  = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC); 
+
+					$rencana = $d1['rencana'];
+					$diagnosa_keperawatan = $d1['diagnosa_keperawatan'];
+					$diagnosa_nama = $d1['diagnosa_nama'];
+					$rencana = html_entity_decode($rencana);
+
 
 					echo "Diagnosa Keperawatan: ".$d1['diagnosa_keperawatan'];
 					echo " - ";
@@ -89,32 +113,6 @@ if (isset($_POST["implementasi_rencana"])) {
 				</table>
 				<br>
 
-				<h5>Implementasi Asuhan Kebidanan</h5>
-				<table class="table" border="1">
-					<?php
-					$ql="SELECT *,CONVERT(VARCHAR, tgl, 101) as tgl2  FROM ERM_IMPLEMENTASI_ASUHAN WHERE noreg='$noreg' ORDER BY id desc";
-					$hl  = sqlsrv_query($conn, $ql);
-					$no=1;
-					echo 
-					"<tr bgcolor='#969392'>
-					<td>no</td><td>sift</td><td>userid</td><td>tgl2</td><td>implementasi</td>
-					</tr>";
-					while   ($dl = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC)){         
-						$implementasi = $dl[implementasi];
-						$implementasi = html_entity_decode($implementasi);
-
-						echo "	<tr>
-						<td>$no</td>
-						<td>$dl[sift]</td>
-						<td>$dl[userid]</td>
-						<td>$dl[tgl2]</td>
-						<td>$implementasi</td>
-						</tr>
-						";
-						$no += 1;
-					}
-					?>
-				</table>
 			</font>
 		</form>
 	</body>

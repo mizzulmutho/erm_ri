@@ -42,6 +42,7 @@ if (isset($_POST["implementasi_rencana"])) {
 	<title>eRM-RI</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 	<script language="JavaScript" type="text/javascript">
 		nextfield = "box1";
 		netscape = "";
@@ -73,7 +74,7 @@ if (isset($_POST["implementasi_rencana"])) {
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<font size='2px'>	
@@ -82,7 +83,7 @@ if (isset($_POST["implementasi_rencana"])) {
 				<br>
 				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
 				&nbsp;&nbsp;
-				<a href='' class='btn btn-success'>Refresh</a>
+				<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 				&nbsp;&nbsp;
 				<a href='m_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class=''><i>Master</i></a>
 				<br>
@@ -125,8 +126,9 @@ if (isset($_POST["implementasi_rencana"])) {
 						</div>
 						<div class="col-sm-6">
 							
-							<button type="submit" name="implementasi_rencana" class="btn btn-success btn-smal" onfocus="nextfield ='done';">Input Implementasi Asuhan Keperawatan</button> 
-							
+							<button type="submit" name="implementasi_rencana" class="btn btn-success btn-smal" onfocus="nextfield ='done';">
+								<i class='bi bi-file-earmark-text'></i> Implementasi Keperawatan
+							</button> 								
 						</div>
 					</div>
 					<br>
@@ -140,10 +142,14 @@ if (isset($_POST["implementasi_rencana"])) {
 
 						</table>
 					</div>
-
+					<br>
 					<div class="row">
 						&nbsp;&nbsp;&nbsp;&nbsp;
-						<button type="submit" name="edit_rencana" class="btn btn-warning btn-smal" onfocus="nextfield ='done';">edit deskripsi rencana asuhan</button> 
+						<div class="col-sm-3">
+							<button type="submit" name="edit_rencana" class="btn btn-warning btn-smal" onfocus="nextfield ='done';">
+								<i class='bi bi-file-earmark-text'></i> edit deskripsi rencana asuhan
+							</button> 
+						</div>
 					</div>
 				<?php } ?>
 				<br><br>

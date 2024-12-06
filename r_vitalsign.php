@@ -1,5 +1,13 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 
 $id = $_GET["id"];
@@ -97,7 +105,11 @@ $umur =  $data2[UMUR];
 						<canvas id="nadi" width="100" height="100"></canvas>
 					</div>
 				</div>
-
+				<div class="row">
+					<div class="col-4">
+						<canvas id="ews" width="100" height="100"></canvas>
+					</div>
+				</div>
 
 			</font>
 		</form>
@@ -111,7 +123,7 @@ $q="
 SELECT     TOP (200) id, norm, noreg, 
 substring(CONVERT(VARCHAR, tglinput, 103),1,2) as tgl,
 substring(CONVERT(VARCHAR, tglinput, 8),1,2) as jam,
-td_sistolik, td_diastolik, nadi, suhu, pernafasan, spo2
+td_sistolik, td_diastolik, nadi, suhu, pernafasan, spo2,total_ews
 FROM         ERM_RI_OBSERVASI
 where noreg='$noreg' 
 order by id DESC";
@@ -126,6 +138,7 @@ while   ($data = sqlsrv_fetch_array($h, SQLSRV_FETCH_ASSOC)){
 	$nadi  = $nadi."'"."$data[nadi]"."',";
 	$suhu  = $suhu."'"."$data[suhu]"."',";
 	$spo2  = $spo2."'"."$data[spo2]"."',";
+	$ews  = $ews."'"."$data[total_ews]"."',";
 
 	$i+=1;
 
@@ -360,6 +373,48 @@ while   ($data = sqlsrv_fetch_array($h, SQLSRV_FETCH_ASSOC)){
 			pointHoverBackgroundColor: "#29B0D0",
 			pointHoverBorderColor: "#29B0D0",
 			data: [<?php echo $nadi; ?>],
+		}
+		]
+	};
+
+	var myBarChart = new Chart(ctx, {
+		type: 'line',
+		data: data,
+		options: {
+			legend: {
+				display: true
+			},
+			barValueSpacing: 20,
+			scales: {
+				yAxes: [{
+					ticks: {
+						min: 0,
+					}
+				}],
+				xAxes: [{
+					gridLines: {
+						color: "rgba(0, 0, 0, 0)",
+					}
+				}]
+			}
+		}
+	});
+</script>
+
+<script  type="text/javascript">
+	var ctx = document.getElementById("ews").getContext("2d");
+	var data = {
+		labels: [<?php echo $ket; ?>],
+		datasets: [
+		{
+			label: "GRAFIK EWS",
+			fill: false,
+			lineTension: 0.1,
+			backgroundColor: "#29B0D0",
+			borderColor: "#29B0D0",
+			pointHoverBackgroundColor: "#29B0D0",
+			pointHoverBorderColor: "#29B0D0",
+			data: [<?php echo $ews; ?>],
 		}
 		]
 	};

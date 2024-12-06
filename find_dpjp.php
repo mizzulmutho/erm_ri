@@ -1,7 +1,10 @@
 <?php
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-require "koneksi.php";
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $postcode = $_POST['postcode'];
 
 // header('Content-Type: application/json; charset=utf8');

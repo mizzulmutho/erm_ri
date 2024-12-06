@@ -1,5 +1,13 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -116,11 +124,11 @@ $tgllahir	= $data2[tgllahir];
 				<br>
 				<div class="row">
 					<div class="col-12">
-						<i class="bi bi-window-plus"> &nbsp; <b>INPUT DATA OBSERVASI RAWAT INAP HARIAN</b></i>
+						<i class="bi bi-window-plus"> &nbsp; <b>INPUT OPER SHIFT DI CPPT</b></i>
 					</div>
 				</div>
 				<hr>
-				<div class="row">
+<!-- 				<div class="row">
 					<div class="col-6">
 						<label for="" class="col-sm-3">No. RM</label>
 						<input class="" name="norm" value="<?php echo $norm;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
@@ -137,41 +145,43 @@ $tgllahir	= $data2[tgllahir];
 						<label for="" class="col-sm-3">Alamat</label>					
 						<input class="" name="alamat" value="<?php echo $alamat;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
 					</div>				
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-3">Tgl Input</label>
-						<input class="" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-					</div>
-				</div>
-
-				<hr>
-				Ket : Pengisian tanda , diganti dengan tanda .<br><br>
+				</div> -->
 
 				<div class="row">
 					<div class="col-2">
-						<label for="" class="col-sm-2">Petugas</label>
-					</div>					
+						<label for="" class="col-sm-3">Tgl Input</label>
+					</div>
 					<div class="col-10">
-						<input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter atau Perawat">
-					</div>										
+						<input class="form-control" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
+					</div>
 				</div>
 
-				<div class="row">
-					<div class="col-4">
-						&nbsp;
-					</div>
-					<div class="col-6 align-self-center">
-						<a href='r_soap.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit" name="simpan" class="btn btn-danger btn-sm" onfocus="nextfield ='done';">simpan</button> 
-					</div>
+<!-- 				<hr>
+				Ket : Pengisian tanda , diganti dengan tanda .<br><br>
+			-->
+			<div class="row">
+				<div class="col-2">
+					<label for="" class="col-sm-2">Petugas</label>
+				</div>					
+				<div class="col-10">
+					<input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter atau Perawat">
+				</div>										
+			</div>
+			<br><br>
+			<div class="row">
+				<div class="col-4">
+					&nbsp;
+				</div>
+				<div class="col-6 align-self-center">
+					<a href='list_soap.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
+					&nbsp;&nbsp;&nbsp;
+					<button type="submit" name="simpan" class="btn btn-danger btn-sm" onfocus="nextfield ='done';">simpan</button> 
 				</div>
 			</div>
-			<br><br><br>
-		</form>
-	</font>
+		</div>
+		<br><br><br>
+	</form>
+</font>
 </body>
 </div>
 

@@ -109,8 +109,10 @@ if (isset($_POST["simpan"])) {
 	$data2 = stripslashes($data2);
 	$data2 = htmlspecialchars($data2);
 
+	$diagnosa_nama = $_POST["diagnosa_nama"];
+
 		//jika tidak ada insert
-	$q  = "update ERM_MASTER_ASUHANKEPERAWATAN set isian='$data',implementasi='$data2' where id=$id";         
+	$q  = "update ERM_MASTER_ASUHANKEPERAWATAN set diagnosa_nama='$diagnosa_nama',isian='$data',implementasi='$data2' where id=$id";         
 	$hs = sqlsrv_query($conn,$q);
 
 

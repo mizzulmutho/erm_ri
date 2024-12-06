@@ -1,5 +1,12 @@
 <?php 
 include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+// $serverName = "192.168.10.1"; //serverName\instanceName
+// $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+// $conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -33,7 +40,360 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $noreg = $d1u['noreg'];
 
+$qu="SELECT * FROM  V_ERM_RI_KEADAAN_UMUM where noreg='$noreg' and tensi is not null";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$kesadaran = $d1u['kesadaran'];
+$e = $d1u['e'];
+$v = $d1u['v'];
+$m = $d1u['m'];
+// $suhu = $d1u['suhu'];
+// $suhu 			= str_replace(",",".",$suhu);
+
+$tensi = $d1u['tensi'];
+// $nadi = $d1u['nadi'];
+$ket_nadi = $d1u['ket_nadi'];
+$nafas = $d1u['nafas'];
+$spo = $d1u['spo'];
+$bb = $d1u['bb'];
+$tb = $d1u['tb'];
+
+if($bb=='-'){
+	$bb=0;
+}
+if($tb=='-'){
+	$tb=0;
+}
+
 //ambil resep
+
+
+
+//SIMPAN
+if (isset($_POST["simpan"])) {
+
+	$td_sistolik	= trim($_POST["td_sistolik"]);
+	$td_diastolik	= trim($_POST["td_diastolik"]);
+	$nadi	= trim($_POST["nadi"]);
+	$suhu	= trim($_POST["suhu"]);
+	$pernafasan	= trim($_POST["pernafasan"]);
+	$spo2	= trim($_POST["spo2"]);
+
+	$tglinput	= trim($_POST["tglinput"]);
+
+	$jam1a= $_POST["jam1a"];
+	$jam1b= $_POST["jam1b"];
+	$jam2a= $_POST["jam2a"];
+	$jam2b= $_POST["jam2b"];
+
+	$ob14	= $jam1a.' '.$jam1b;
+	$ob17	= $jam2a.' '.$jam2b;
+
+	$ob1	= $_POST["ob1"];
+	$ob2	= $_POST["ob2"];
+	$ob3	= $_POST["ob3"];
+	$ob4	= $_POST["ob4"];
+	$ob5	= $_POST["ob5"];
+	$ob6	= $_POST["ob6"];
+	$ob7	= $_POST["ob7"];
+	$ob8	= $_POST["ob8"];
+	$ob9	= $_POST["ob9"];
+	$ob10	= $_POST["ob10"];
+	$ob11	= $_POST["ob11"];
+	$ob12	= $_POST["ob12"];
+	$ob13	= $_POST["ob13"];
+	
+	$ob15	= $_POST["ob15"];
+	$ob16	= $_POST["ob16"];
+	
+	$ob18	= $_POST["ob18"];
+	$ob19	= $_POST["ob19"];
+	$ob20	= $_POST["ob20"];
+	$ob21	= $_POST["ob21"];
+	$ob22	= $_POST["ob22"];
+	$ob23	= $_POST["ob23"];
+	$ob24	= $_POST["ob24"];
+	$ob25	= $_POST["ob25"];
+	$ob26	= $_POST["ob26"];
+	$ob27	= $_POST["ob27"];
+	$ob28	= $_POST["ob28"];
+	$ob29	= $_POST["ob29"];
+	$ob30	= $_POST["ob30"];
+	$ob31	= $_POST["ob31"];
+	$ob32	= $_POST["ob32"];
+	$ob33	= $_POST["ob33"];
+	$ob34	= $_POST["ob34"];
+	$ob35	= $_POST["ob35"];
+	$ob36	= $_POST["ob36"];
+	$ob37	= $_POST["ob37"];
+	$ob38	= $_POST["ob38"];
+	$ob39	= $_POST["ob39"];
+	$ob40	= $_POST["ob40"];
+	$ob41	= $_POST["ob41"];
+	$ob42	= $_POST["ob42"];
+	$ob43	= $_POST["ob43"];
+	$ob44	= $_POST["ob44"];
+	$ob45	= $_POST["ob45"];
+	$ob46	= $_POST["ob46"];
+	$ob47	= $_POST["ob47"];
+	$ob48	= $_POST["ob48"];
+	$ob49	= $_POST["ob49"];
+	$ob50	= $_POST["ob50"];
+
+	$lanjut="Y";
+
+
+	if(empty($user)){
+		$eror='User Tidak Boleh Kosong !!!';
+		$lanjut='T';
+	}
+
+	if(empty($td_sistolik)){
+		// $eror='Tensi Tidak Boleh Kosong !!!';
+		// $lanjut='T';
+	}
+
+	if($lanjut == 'Y'){
+
+		$ket =
+		'tensi :'.$data1[td_sistolik].'/'.$data1[td_diastolik].' ,'.
+		'nadi :'.$data1[nadi].' ,'.
+		'suhu :'.$data1[suhu].' ,'.
+		'pernafasan :'.$data1[pernafasan].' ,'.
+		'spo2 :'.$data1[spo2]
+		;
+
+		$rr = $pernafasan; 
+		if($rr >=25){ $s_rr=3;}
+		if($rr >=21 && $rr <=24 ){ $s_rr=2;}
+		if($rr >=12 && $rr <=20 ){ $s_rr=0;}
+		if($rr >=9 && $rr <=11 ){ $s_rr=1;}
+		if($rr <=8){ $s_rr=3;}
+
+		$oksigen_tambahan =$ob7; 
+		if($oksigen_tambahan=='ya'){
+			$s_oksigen_tambahan=2;
+		}else{
+			$s_oksigen_tambahan=0;
+		}
+
+		$spo2 = $spo2; 
+		if($spo2 >=25 && $spo2 <=100 ){ $s_spo2=0;}
+		if($spo2 >=94 && $spo2 <=95 ){ $s_spo2=1;}
+		if($spo2 >=92 && $spo2 <=93 ){ $s_spo2=2;}
+		if($spo2 >=91 && $spo2 <=92 ){ $s_spo2=3;}
+
+		$suhu = $suhu; 
+		if($suhu >=39.1){ $s_suhu=2;}
+		if($suhu >=38.1 && $suhu <=39 ){ $s_suhu=1;}
+		if($suhu >=36.1 && $suhu <=38 ){ $s_suhu=0;}
+		if($suhu >=35.1 && $suhu <=36 ){ $s_suhu=1;}
+		if($suhu >=9 && $suhu <=11 ){ $s_suhu=1;}
+		if($suhu <=3 ){ $s_suhu=3;}
+
+		$sistole = $td_sistolik;
+		if($sistole >=220){ $s_sistole=3;}
+		if($sistole >=180 && $sistole <=219 ){ $s_sistole=2;}
+		if($sistole >=150 && $sistole <=179 ){ $s_sistole=1;}
+		if($sistole >=111 && $sistole <=149 ){ $s_sistole=0;}
+		if($sistole >=101 && $sistole <=110 ){ $s_sistole=1;}
+		if($sistole >=91 && $sistole <=100 ){ $s_sistole=2;}
+		if($sistole <=90 ){ $s_sistole=3;}						
+
+		$nadi = $nadi;
+		if($nadi >=131){ $s_nadi=3;}
+		if($nadi >=111 && $nadi <=130 ){ $s_nadi=2;}
+		if($nadi >=91 && $nadi <=110 ){ $s_nadi=1;}
+		if($nadi >=51 && $nadi <=90 ){ $s_nadi=0;}
+		if($nadi >=41 && $nadi <=50 ){ $s_nadi=1;}
+		if($nadi <=40 ){ $s_nadi=3;}	
+
+		$tingkat_kesadaran =$ob1; 
+		if($tingkat_kesadaran=='Tidak'){
+			$s_tingkat_kesadaran=3;
+		}else{
+			$s_tingkat_kesadaran=0;
+		}
+
+
+		$total_score = $s_rr+$s_spo2+$s_oksigen_tambahan+$s_suhu+$s_sistole+$s_nadi+$s_tingkat_kesadaran;
+		$score = intval($total_score);
+		$total_ews = $score;
+
+		if(intval($total_score) == 0){
+			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+			$bgcolor='';
+			$ket_ews='Sangat rendah<hr>Perawat jaga melakukan monitor setiap shift';
+		}else if (intval($total_score) >= 1 and intval($total_score) <= 4 ){
+			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+			$bgcolor='#90EE90';
+			$ket_ews='Rendah<hr>Perawat jaga melakukan monitor setiap 4-6 jam dan menilai apakah perlu untuk meningkatkan frekuensi monitoring';
+		}else if(intval($total_score) > 2 and intval($total_score) < 5){
+			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+			$bgcolor='#FAFAD2';		
+			$ket_ews='Sedang<hr>Perawat jaga melakukan monitor tiap 1 jam dan melaporkan ke dr jaga dan mempersiapkan jika mengalami perburukan kondisi pasien';
+		}else{
+			$score = "<font size='5px' color='black'><b>$total_score</b></font>";	
+			$bgcolor='#FF6347';
+			$ket_ews='Tinggi<hr>Perawat, tim emergency, DPJP melakukan tatalaksana kegawatan, observasi tiap 30 menit/ setiap saat. Aktifkan tim code blue bila terjadi cardiac arrest, transfer ke ruang ICU';
+		}
+
+
+		$t_input = $ob12+$ob13+$ob14+$ob15+$ob18+$ob19;
+		$t_output= $ob20+$ob21+$ob22+$ob23+$ob24+$ob25+$ob26;
+		$balance_cairan = $t_input - $t_output;
+		$ob27 = $balance_cairan;
+
+
+		echo $q  = "insert into ERM_RI_OBSERVASI
+		(
+		norm,noreg,
+		td_sistolik,
+		td_diastolik,
+		nadi,
+		suhu,
+		pernafasan,
+		spo2,
+		bb,
+		tb,
+		tglinput,
+		userinput,
+		total_ews
+		) 
+		values 
+		(
+		'$norm','$noreg',
+		'$td_sistolik',
+		'$td_diastolik',
+		'$nadi',
+		'$suhu',
+		'$pernafasan',
+		'$spo2',
+		'$ob9',
+		'$ob10',
+		'$tglinput',
+		'$user',
+		'$total_ews'
+	)";
+	$hs1 = sqlsrv_query($conn,$q);
+
+	if($hs1){
+		$qu="SELECT TOP(1)id FROM ERM_RI_OBSERVASI where noreg='$noreg' order by id desc";
+		$h1u  = sqlsrv_query($conn, $qu);        
+		$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+		$id_observasi = trim($d1u['id']);
+
+		$q  = "update ERM_RI_OBSERVASI set
+		ob1	='$ob1',
+		ob2	='$ob2',
+		ob3	='$ob3',
+		ob4	='$ob4',
+		ob5	='$ob5',
+		ob6	='$ob6',
+		ob7	='$ob7',
+		ob8	='$ob8',
+		ob9	='$ob9',
+		ob10	='$ob10',
+		ob11	='$ob11',
+		ob12	='$ob12',
+		ob13	='$ob13',
+		ob14	='$ob14',
+		ob15	='$ob15',
+		ob16	='$ob16',
+		ob17	='$ob17',
+		ob18	='$ob18',
+		ob19	='$ob19',
+		ob20	='$ob20',
+		ob21	='$ob21',
+		ob22	='$ob22',
+		ob23	='$ob23',
+		ob24	='$ob24',
+		ob25	='$ob25',
+		ob26	='$ob26',
+		ob27	='$ob27',
+		ob28	='$ob28',
+		ob29	='$ob29',
+		ob30	='$ob30',
+		ob31	='$ob31',
+		ob32	='$ob32',
+		ob33	='$ob33',
+		ob34	='$ob34',
+		ob35	='$ob35',
+		ob36	='$ob36',
+		ob37	='$ob37',
+		ob38	='$ob38',
+		ob39	='$ob39',
+		ob40	='$ob40',
+		ob41	='$ob41',
+		ob42	='$ob42',
+		ob43	='$ob43',
+		ob44	='$ob44',
+		ob45	='$ob45',
+		ob46	='$ob46',
+		ob47	='$ob47',
+		ob48	='$ob48',
+		ob49	='$ob49',
+		ob50	='$ob50'
+		where id='$id_observasi'
+		";
+		$hs = sqlsrv_query($conn,$q);
+
+		if($hs){
+			$eror = "Success";
+
+			echo "
+			<script>
+			alert('".$eror."');
+			window.location.replace('listobservasi.php?id=$id|$user');
+			</script>
+			";
+
+
+
+		}else{
+			$eror = "Gagal Insert";
+
+		}
+
+		// $notif=$eror.'<br>'.$score.'<br>'.$score;
+
+		echo "
+		<script>
+		alert('".$eror."');
+		history.go(-1);
+		</script>
+		";
+
+	}
+
+
+	echo "
+	<script>
+	alert('".$eror."');
+	history.go(-1);
+	</script>
+	";
+
+
+		// echo "
+		// <script>
+		// top.location='index.php?id='$id|$user';
+		// </script>
+		// ";            
+
+}else{
+	echo "
+	<script>
+	alert('".$eror."');
+	history.go(-1);
+	</script>
+	";
+
+}
+
+}
+
+
 ?>
 
 <!DOCTYPE html> 
@@ -107,403 +467,298 @@ $noreg = $d1u['noreg'];
 	</script>  
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.td_sistolik.focus();">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
-				<br>
+
 				<div class="row">
 					<div class="col-12">
-						<i class="bi bi-window-plus"> &nbsp; <b>INPUT DATA OBSERVASI RAWAT INAP HARIAN</b></i>
-					</div>
-				</div>
-				<hr>
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-3">No. RM</label>
-						<input class="" name="norm" value="<?php echo $norm;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-					</div>
-					<div class="col-6">
-						<label for="" class="col-sm-3">Tgl Lahir</label>
-						<input class="" name="tgllahir" value="<?php echo $tgllahir;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-					</div>				
-					<div class="col-6">
-						<label for="" class="col-sm-3">Nama Pasien</label>
-						<input class="" name="nama" value="<?php echo $nama;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-					</div>				
-					<div class="col-6">
-						<label for="" class="col-sm-3">Alamat</label>					
-						<input class="" name="alamat" value="<?php echo $alamat;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
-					</div>				
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-3">Tgl Input</label>
-						<input class="" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
+						<?php 
+						include "header_soap.php";
+						?>
 					</div>
 				</div>
 
-				<hr>
-				Ket : Pengisian tanda , diganti dengan tanda .<br><br>
+				<br>
 
-				<div class="row">
-					<div class="col-4">
-						<label for="" class="col-sm-4">TD Sistolik</label>
-						<input class="" name="td_sistolik" value="<?php echo $td_sistolik;?>" id="" type="text" size='10' onfocus="nextfield ='td_diastolik';" placeholder="">
-						<label for="" class="col-sm-2">mmHg</label>
-					</div>					
-					<div class="col-4">
-						<label for="" class="col-sm-4">TD Diastolik</label>
-						<input class="" name="td_diastolik" value="<?php echo $td_diastolik;?>" id="" type="text" size='10' onfocus="nextfield ='nadi';" placeholder="">
-						<label for="" class="col-sm-2">mmHg</label>
-					</div>					
-					<div class="col-4">
-						<label for="" class="col-sm-4">Nadi</label>
-						<input class="" name="nadi" value="<?php echo $nadi;?>" id="" type="text" size='10' onfocus="nextfield ='suhu';" placeholder="">
-						<label for="" class="col-sm-2">x/menit(Teratur)</label>
-					</div>					
-				</div>
+				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
+				&nbsp;&nbsp;
+				<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i></a>
+				&nbsp;&nbsp;
+				<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
+				<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
+<!-- 				<button type="submit" name="simpan" class="btn btn-info btn-sm" onfocus="nextfield ='done';"><i class="bi bi-save"></i>
+				simpan</button> 
+			-->				
+			<a href='listobservasi.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success btn-sm'><i class="bi bi-list"></i> List</a>
 
-				<div class="row">
-					<div class="col-4">
-						<label for="" class="col-sm-4">Suhu</label>
-						<input class="" name="suhu" value="<?php echo $suhu;?>" id="" type="text" size='10' onfocus="nextfield ='pernafasan';" placeholder="">
-						<label for="" class="col-sm-2">&deg;C</label>
-					</div>					
-					<div class="col-4">
-						<label for="" class="col-sm-4">Frekuensi Pernafasan</label>
-						<input class="" name="pernafasan" value="<?php echo $pernafasan;?>" id="" type="text" size='10' onfocus="nextfield ='spo2';" placeholder="">
-						<label for="" class="col-sm-2">x/menit</label>
-					</div>					
-					<div class="col-4">
-						<label for="" class="col-sm-4">SPO2</label>
-						<input class="" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='10' onfocus="nextfield ='skala_nyeri';" placeholder="">
-						<label for="" class="col-sm-2">%</label>
-					</div>					
-				</div>
+			<br><br>
 
-				<div class="row">
-					<div class="col-4">
-						<label for="" class="col-sm-4">Skala Nyeri</label>
-						<input class="" name="skala_nyeri" value="<?php echo $skala_nyeri;?>" id="" type="text" size='10' onfocus="nextfield ='bb';" placeholder="">
-						<label for="" class="col-sm-4">Isikan 1 s/d 9</label>
-					</div>					
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">BB dan TB</label>
-						<input class="" name="bb" value="<?php echo $bb;?>" id="" type="text" size='10' onfocus="nextfield ='tb';" placeholder="Isian BB">
-						<input class="" name="tb" value="<?php echo $tb;?>" id="" type="text" size='10' onfocus="nextfield ='muntah';" placeholder="Isian TB">
-					</div>					
-					<div class="col-6">
-						<label for="" class="col-sm-4">Muntah</label>
-						<input class="" name="muntah" value="<?php echo $muntah;?>" id="" type="text" size='10' onfocus="nextfield ='muntah_ket';" placeholder="Angka">
-						<input class="" name="muntah_ket" value="<?php echo $muntah_ket;?>" id="" type="text" size='20' onfocus="nextfield ='cairan';" placeholder="Keterangan">
-					</div>					
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Cairan (Infus/Transfusi)</label>
-						<input class="" name="cairan" value="<?php echo $cairan;?>" id="" type="text" size='10' onfocus="nextfield ='cairan_ket';" placeholder="Angka">
-						<input class="" name="cairan_ket" value="<?php echo $cairan_ket;?>" id="" type="text" size='20' onfocus="nextfield ='bab';" placeholder="Keterangan">
-					</div>					
-					<div class="col-6">
-						<label for="" class="col-sm-4">BAB</label>
-						<input class="" name="bab" value="<?php echo $bab;?>" id="" type="text" size='10' onfocus="nextfield ='bab_ket';" placeholder="Angka">
-						<input class="" name="bab_ket" value="<?php echo $bab_ket;?>" id="" type="text" size='20' onfocus="nextfield ='makan';" placeholder="Keterangan">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4"></label>
-					</div>					
-					<div class="col-6">
-						<label for="" class="col-sm-4">GCS</label>
-						<input class="" name="" value="4" id="" type="text" size='10' onfocus="nextfield ='';" placeholder="Angka">
-						<input class="" name="" value="5" id="" type="text" size='10' onfocus="nextfield ='';" placeholder="Keterangan">
-						<input class="" name="" value="6" id="" type="text" size='10' onfocus="nextfield ='';" placeholder="Keterangan">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Makan</label>
-						<input class="" name="makan" value="<?php echo $makan;?>" id="" type="text" size='10' onfocus="nextfield ='makan_ket';" placeholder="Angka">
-						<input class="" name="makan_ket" value="<?php echo $makan_ket;?>" id="" type="text" size='20' onfocus="nextfield ='urine';" placeholder="Keterangan">
-					</div>					
-					<div class="col-6">
-						<label for="" class="col-sm-4">Urine</label>
-						<input class="" name="urine" value="<?php echo $urine;?>" id="" type="text" size='10' onfocus="nextfield ='urine_ket';" placeholder="Angka">
-						<input class="" name="urine_ket" value="<?php echo $urine_ket;?>" id="" type="text" size='20' onfocus="nextfield ='minum';" placeholder="Keterangan">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Minum</label>
-						<input class="" name="minum" value="<?php echo $minum;?>" id="" type="text" size='20' onfocus="nextfield ='drain';" placeholder="Angka">
-					</div>					
-					<div class="col-6">
-						<label for="" class="col-sm-4">Cairan (Drain/GC)</label>
-						<input class="" name="drain" value="<?php echo $drain;?>" id="" type="text" size='10' onfocus="nextfield ='drain_ket';" placeholder="Angka">
-						<input class="" name="drain_ket" value="<?php echo $drain_ket;?>" id="" type="text" size='20' onfocus="nextfield ='oksigen_tambahan';" placeholder="Keterangan">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Oksigen Tambahan</label>
-						<!-- <input class="" name="oksigen_tambahan" value="<?php echo $oksigen_tambahan;?>" id="" type="text" size='20' onfocus="nextfield ='iwl';" placeholder="Angka"> -->
-						<select name="oksigen_tambahan" onfocus="nextfield ='iwl';">
-							<option value="tidak">tidak</option>
-							<option value="ya">ya</option>
-						</select>
-						<label for="" class="col-sm-4">Isikan Tidak / Ya</label>
-					</div>					
-					<div class="col-3">
-						<label for="" class="col-sm-4">IWL</label>
-						<input class="" name="iwl" value="<?php echo $iwl;?>" id="" type="text" size='20' onfocus="nextfield ='pupil';" placeholder="">
-					</div>										
-					<div class="col-3">
-						<label for="" class="col-sm-3">Pupil</label>
-						<input class="" name="pupil" value="<?php echo $pupil;?>" id="" type="text" size='20' onfocus="nextfield ='tingkat_kesadaran';" placeholder="">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Tingkat Kesadaran</label>
-						<!-- <input class="" name="tingkat_kesadaran" value="<?php echo $tingkat_kesadaran;?>" id="" type="text" size='20' onfocus="nextfield ='pendarahan';" placeholder="Angka"> -->
-						<select name="tingkat_kesadaran" onfocus="nextfield ='pendarahan';">
-							<option value="alert">alert</option>
-							<option value="vpu">vpu</option>
-						</select>
-						<label for="" class="col-sm-4">Isikan Salah Satu</label>
-					</div>
-				</div>	
-
-				<div class="row">			
-					<div class="col-6">
-						<label for="" class="col-sm-4">Pendarahan</label>
-						<input class="" name="pendarahan" value="<?php echo $pendarahan;?>" id="" type="text" size='20' onfocus="nextfield ='vip_score';" placeholder="">
-					</div>										
-					<div class="col-3">
-						<label for="" class="col-sm-4">VIP Score</label>
-						<input class="" name="vip_score" value="<?php echo $vip_score;?>" id="" type="text" size='20' onfocus="nextfield ='total_intake';" placeholder="">
-					</div>										
-				</div>	
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Total Intake</label>
-						<input class="" name="total_intake" value="<?php echo $total_intake;?>" id="" type="text" size='20' onfocus="nextfield ='total_output';" placeholder="">
-					</div>					
-					<div class="col-3">
-						<label for="" class="col-sm-4">Total Output</label>
-						<input class="" name="total_output" value="<?php echo $total_output;?>" id="" type="text" size='20' onfocus="nextfield ='sisa_cairan_infus';" placeholder="">
-					</div>										
-				</div>
-
-				<div class="row">
-					<div class="col-6">
-						<label for="" class="col-sm-4">Sisa Cairan Infus</label>
-						<input class="" name="sisa_cairan_infus" value="<?php echo $sisa_cairan_infus;?>" id="" type="text" size='20' onfocus="nextfield ='balance';" placeholder="">
-					</div>					
-					<div class="col-3">
-						<label for="" class="col-sm-4">Balance</label>
-						<input class="" name="balance" value="<?php echo $balance;?>" id="" type="text" size='20' onfocus="nextfield ='simpan';" placeholder="">
-					</div>										
-				</div>
-
-
-				<div class="row">
-					<div class="col-4">
-						&nbsp;
-					</div>
-					<div class="col-6 align-self-center">
-						<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
-						&nbsp;&nbsp;&nbsp;
-						<button type="submit" name="simpan" class="btn btn-danger btn-sm" onfocus="nextfield ='done';">simpan</button> 
-					</div>
+			<div class="row">
+				<div class="col-12">
+					<i class="bi bi-window-plus"> &nbsp; <b>INPUT DATA MONITORING</b></i>
 				</div>
 			</div>
-			<br><br><br>
-		</form>
-	</font>
-</body>
+			<hr>
+
+			<div class="row">
+				<div class="col-6">
+					<table border='0' width="100%">
+						<tr>
+							<td>Tgl/Jam Input</td>
+							<td>: &nbsp;&nbsp; <input class="" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder=""></td>
+						</tr>
+
+						<tr>
+							<td colspan="2"><b>Monitoring EWS</b></td>
+						</tr>
+
+						<tr><td>Kesadaran </td>
+							<td>: 
+								<?php 
+								if(empty($ob1)){
+									// if (strtoupper(trim($kesadaran))=='COMPOSMENTIS'){
+									// 	$ob1="Sadar";
+									// }else{
+									// 	$ob1="Tidak";
+									// 	$ob2=$kesadaran;
+									// }
+								}
+								?>
+								<input type='checkbox' name='ob1' value='Sadar' <?php if ($ob1=="Sadar"){echo "checked";}?> > Sadar
+								<input type='checkbox' name='ob1' value='Tidak' <?php if ($ob1=="Tidak"){echo "checked";}?> > Tidak
+								<input class="" name="ob2" value="<?php echo $ob2;?>" id="" type="text" size='30' placeholder="isikan jika tidak">
+							</td>
+						</tr>
+						<tr><td>GCS </td>
+							<td>: 
+								<?php 
+								if(empty($ob3)){
+									// $ob3=$e;
+									// $ob4=$v;
+									// $ob5=$m;
+									// $ob6=$e+$v+$m;
+
+									// 	//tekanan darah
+									// $row2 = explode('/',$tensi);
+									// $sistole  = $row2[0];
+									// $diastole = $row2[1]; 
+
+									// $td_sistolik = $sistole;
+									// $td_diastolik = $diastole;
+
+									// $suhu = $suhu;
+									// $nadi = $nadi;
+									// $pernafasan = $nafas;
+									// $spo2=$spo;
+
+								}
+								?>
+								&nbsp;&nbsp; 
+								E <input class="" name="ob3" value="<?php echo $ob3;?>" id="" type="text" size='2' placeholder=""> 
+								V <input class="" name="ob4" value="<?php echo $ob4;?>" id="" type="text" size='2' placeholder="">
+								M <input class="" name="ob5" value="<?php echo $ob5;?>" id="" type="text" size='2' placeholder="">
+								Total <input class="" name="ob6" value="<?php echo $ob6;?>" id="" type="text" size='2' placeholder="">
+							</td>
+						</tr>
+						<tr><td>TD Sistole </td>
+							<td>: &nbsp;&nbsp; <input class="" name="td_sistolik" value="<?php echo $td_sistolik;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;mmHg</td>
+						</tr>
+						<tr><td>TD Diastole </td>
+							<td>: &nbsp;&nbsp; <input class="" name="td_diastolik" value="<?php echo $td_diastolik;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;mmHg</td>
+						</tr>
+						<tr><td>Suhu </td><td>: &nbsp;&nbsp; <input class="" name="suhu" value="<?php echo $suhu;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;0C</td></tr>
+						<tr><td>Nadi </td><td>: &nbsp;&nbsp; <input class="" name="nadi" value="<?php echo $nadi;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; x/menit</td></tr>
+						<tr><td>Pernapasan </td><td>: &nbsp;&nbsp; <input class="" name="pernafasan" value="<?php echo $pernafasan;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;  x/menit</td></tr>
+						<tr><td>SpO2 </td><td>: &nbsp;&nbsp; <input class="" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; %</td></tr>
+						<tr><td>Oksigen </td><td>: 
+							<input type='checkbox' name='ob7' value='Ya' <?php if ($ob7=="Ya"){echo "checked";}?> > Ya
+							<input type='checkbox' name='ob7' value='Tidak' <?php if ($ob7=="Tidak"){echo "checked";}?> > Tidak
+							<input class="" name="ob8" value="<?php echo $ob8;?>" id="" type="text" size='30' placeholder="isikan jika tidak">
+						</td>
+					</tr>
+					<tr><td>BB </td><td>: &nbsp;&nbsp; <input class="" name="ob9" value="<?php echo $bb;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; kg</td></tr>
+					<tr><td>TB </td><td>: &nbsp;&nbsp; <input class="" name="ob10" value="<?php echo $tb;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; cm</td></tr>
+
+				</table>
+			</div>
+			<div class="col-6">
+				<?php  
+
+				if($hs){
+					echo "
+					<table>
+					<tr>
+					<td align='center' bgcolor='$bgcolor'>
+					SCORE EWS :<br>
+					$score<br>$ket_ews </td>
+					</tr>
+					</table>
+					";
+				}
+
+
+				?>
+			</div>
+
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-12">
+				<center>
+					<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
+				</center>
+			</div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-12">
+				<table border='0' width="100%">
+					<tr>
+						<td colspan="6"><b>Monitoring Cairan</b></td>
+					</tr>
+					<tr>
+						<td colspan="6"><b>Input</b></td>
+					</tr>
+					<tr>
+						<td>Infus </td>
+						<td>
+							:<input class="" name="ob12" value="<?php echo $ob12;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>Tetesan </td>
+						<td>
+							:<input class="" name="ob13" value="<?php echo $ob13;?>" id="" type="text" size='20' placeholder=""> /menit 
+						</td>
+						<td>Jam </td>
+						<td>
+							:
+							<!-- <input class="" name="ob14" value="<?php echo $ob14;?>" id="" type="text" size='20' placeholder=""> (free text) -->
+							<input type='date' name='jam1a' value=''>
+							&nbsp;
+							<input type='time' name='jam1b' value=''>
+						</td>
+					</tr>
+					<tr>
+						<td>Nama Infus </td>
+						<td>
+							:<input class="" name="ob29" value="<?php echo $ob29;?>" id="" type="text" size='50' placeholder="isikan nama infus"> 
+						</td>
+					</tr>
+					<tr>
+						<td>Transfusi </td>
+						<td>
+							:<input class="" name="ob15" value="<?php echo $ob15;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>Tetesan </td>
+						<td>
+							:<input class="" name="ob16" value="<?php echo $ob16;?>" id="" type="text" size='20' placeholder=""> /menit 
+						</td>
+						<td>Jam </td>
+						<td>
+							:
+							<!-- <input class="" name="ob17" value="<?php echo $ob17;?>" id="" type="text" size='20' placeholder=""> (free text) -->
+							<input type='date' name='jam2a' value=''>
+							&nbsp;
+							<input type='time' name='jam2b' value=''>
+						</td>
+					</tr>
+					<tr>
+						<td>Makan </td>
+						<td>
+							:<input class="" name="ob18" value="<?php echo $ob18;?>" id="" type="text" size='20' placeholder=""> porsi
+						</td>
+						<td>Minum </td>
+						<td>
+							:<input class="" name="ob19" value="<?php echo $ob19;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"><b>Output</b></td>
+					</tr>
+					<tr>
+						<td>Muntah </td>
+						<td>
+							:<input class="" name="ob20" value="<?php echo $ob20;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>BAB </td>
+						<td>
+							:<input class="" name="ob21" value="<?php echo $ob21;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>Urine </td>
+						<td>
+							:<input class="" name="ob22" value="<?php echo $ob22;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+					</tr>
+					<tr>
+						<td>IWL </td>
+						<td>
+							:<input class="" name="ob23" value="<?php echo $ob23;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>NGT </td>
+						<td>
+							:<input class="" name="ob24" value="<?php echo $ob24;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+						<td>Drain </td>
+						<td>
+							:<input class="" name="ob25" value="<?php echo $ob25;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+					</tr>
+					<tr>
+						<td>Perdarahan </td>
+						<td>
+							:<input class="" name="ob26" value="<?php echo $ob26;?>" id="" type="text" size='20' placeholder=""> cc
+						</td>
+					</tr>
+					<tr>
+						<td><b>Balance Cairan</b>  </td>
+						<td colspan="6">
+							:<input class="" name="ob27" value="<?php echo $ob27;?>" id="" type="text" size='20' placeholder=""> (total input - total output)
+
+						</td>
+					</tr>
+			<!-- <br><br>
+			<tr>
+				<td><b>GDA</b>  </td>
+				<td colspan="6">
+					:<input class="" name="ob28" value="<?php echo $ob28;?>" id="" type="text" size='20' placeholder=""> 
+
+				</td>
+			</tr> -->
+
+
+		</table>
+	</div>
+</div>
+<br>
+<div class="row">
+	<div class="col-12">
+		<table border='0' width="100%">
+			<tr>
+				<td colspan="2"></td>
+			</tr>
+			<tr><td><b>GDA</b></td>
+				<td>: 
+					<input class="" name="ob28" value="<?php echo $ob28;?>" id="" type="text" size='20' placeholder=""> 
+				</td>
+			</tr>
+		</table>
+	</div>
 </div>
 
-<?php
-
-if (isset($_POST["simpan"])) {
-
-	$td_sistolik	= trim($_POST["td_sistolik"]);
-	$td_diastolik	= trim($_POST["td_diastolik"]);
-	$nadi	= trim($_POST["nadi"]);
-	$suhu	= trim($_POST["suhu"]);
-	$pernafasan	= trim($_POST["pernafasan"]);
-	$spo2	= trim($_POST["spo2"]);
-	$skala_nyeri	= trim($_POST["skala_nyeri"]);
-	$bb	= trim($_POST["bb"]);
-	$tb	= trim($_POST["tb"]);
-	$muntah	= trim($_POST["muntah"]);
-	$muntah_ket	= trim($_POST["muntah_ket"]);
-	$cairan	= trim($_POST["cairan"]);
-	$cairan_ket	= trim($_POST["cairan_ket"]);
-	$bab	= trim($_POST["bab"]);
-	$bab_ket	= trim($_POST["bab_ket"]);
-	$GCS	= trim($_POST["GCS"]);
-	$makan	= trim($_POST["makan"]);
-	$makan_ket	= trim($_POST["makan_ket"]);
-	$urine	= trim($_POST["urine"]);
-	$urine_ket	= trim($_POST["urine_ket"]);
-	$minum	= trim($_POST["minum"]);
-	$drain	= trim($_POST["drain"]);
-	$drain_ket	= trim($_POST["drain_ket"]);
-	$oksigen_tambahan	= trim($_POST["oksigen_tambahan"]);
-	$iwl	= trim($_POST["iwl"]);
-	$pupil	= trim($_POST["pupil"]);
-	$tingkat_kesadaran	= trim($_POST["tingkat_kesadaran"]);
-	$pendarahan	= trim($_POST["pendarahan"]);
-	$vip_score	= trim($_POST["vip_score"]);
-	$total_intake	= trim($_POST["total_intake"]);
-	$total_output	= trim($_POST["total_output"]);
-	$sisa_cairan_infus	= trim($_POST["sisa_cairan_infus"]);
-	$balance	= trim($_POST["balance"]);
-	$tglinput	= trim($_POST["tglinput"]);
-	$userinput	= trim($_POST["userinput"]);
-
-	$lanjut="Y";
+<div class="row">
+	<div class="col-12">
+		<center>
+			<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
+		</center>
+	</div>
+</div>
 
 
-	if(empty($user)){
-		$eror='User Tidak Boleh Kosong !!!';
-		$lanjut='T';
-	}
-
-	if(empty($td_sistolik)){
-		$eror='Tensi Tidak Boleh Kosong !!!';
-		$lanjut='T';
-	}
-
-	if($lanjut == 'Y'){
-		$q  = "insert into ERM_RI_OBSERVASI
-		(
-		norm,noreg,
-		td_sistolik,
-		td_diastolik,
-		nadi,
-		suhu,
-		pernafasan,
-		spo2,
-		skala_nyeri,
-		bb,
-		tb,
-		muntah,
-		muntah_ket,
-		cairan,
-		cairan_ket,
-		bab,
-		bab_ket,
-		GCS,
-		makan,
-		makan_ket,
-		urine,
-		urine_ket,
-		minum,
-		drain,
-		drain_ket,
-		oksigen_tambahan,
-		iwl,
-		pupil,
-		tingkat_kesadaran,
-		pendarahan,
-		vip_score,
-		total_intake,
-		total_output,
-		sisa_cairan_infus,
-		balance,
-		tglinput,
-		userinput
-		) 
-		values 
-		(
-		'$norm','$noreg',
-		'$td_sistolik',
-		'$td_diastolik',
-		'$nadi',
-		'$suhu',
-		'$pernafasan',
-		'$spo2',
-		'$skala_nyeri',
-		'$bb',
-		'$tb',
-		'$muntah',
-		'$muntah_ket',
-		'$cairan',
-		'$cairan_ket',
-		'$bab',
-		'$bab_ket',
-		'$GCS',
-		'$makan',
-		'$makan_ket',
-		'$urine',
-		'$urine_ket',
-		'$minum',
-		'$drain',
-		'$drain_ket',
-		'$oksigen_tambahan',
-		'$iwl',
-		'$pupil',
-		'$tingkat_kesadaran',
-		'$pendarahan',
-		'$vip_score',
-		'$total_intake',
-		'$total_output',
-		'$sisa_cairan_infus',
-		'$balance',
-		'$tglinput',
-		'$user'
-	)";
-	$hs = sqlsrv_query($conn,$q);
-
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
-
-	}
-
-	echo "
-	<script>
-	alert('".$eror."');
-	history.go(-1);
-	</script>
-	";
-
-		// echo "
-		// <script>
-		// top.location='index.php?id='$id|$user';
-		// </script>
-		// ";            
-
-}else{
-	echo "
-	<script>
-	alert('".$eror."');
-	history.go(-1);
-	</script>
-	";
-
-}
-
-}
-
-
-?>
-
+</div>
+<br><br><br>
+</form>
+</font>
+</body>
+</div>

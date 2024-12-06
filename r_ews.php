@@ -1,5 +1,13 @@
 <?php 
-include ("koneksi.php");
+// include ("koneksi.php");
+
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
+
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 
 $id = $_GET["id"];
@@ -13,7 +21,105 @@ $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC);
 $noreg = $d1u['noreg'];
 $norm = $d1u['norm'];
 
-$q2		= "select norm,kodedept,nik,nama, CASE WHEN kelamin = 'L' THEN 'Laki-laki' ELSE 'Perempuan' END AS kelamin,alamatpasien,kota,kodekel,tlp,tmptlahir, CONVERT(VARCHAR, tgllahir, 103) as tgllahir, jenispekerjaan, 
+
+//select assesment
+//geriatri & dewasa
+$qu="SELECT noreg,umur,dpjp FROM  ERM_RI_ASSESMEN_AWAL_DEWASA where noreg='$noreg' and (dpjp <> '' or dpjp is not null)";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$cnoreg1 = $d1u['noreg'];
+$cumur = intval(substr($d1u['umur'],0,2));
+
+if($cnoreg1){
+	$jenis='DEWASA';
+	if($cumur>60){
+		$jenis='GERIATRI';
+	}else if($cumur>17 and $cumur<=60){
+		$jenis='DEWASA';							
+	}
+}
+
+//anak
+$qu="SELECT noreg,dpjp FROM  ERM_RI_ASSESMEN_AWAL_ANAK where noreg='$noreg' and (dpjp <> '' or dpjp is not null)";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$cnoreg2 = $d1u['noreg'];
+
+if($cnoreg2){
+	$jenis='ANAK';
+
+}
+
+//neonatus
+$qu="SELECT noreg,dpjp FROM  ERM_RI_ASSESMEN_AWAL_NEONATUS where noreg='$noreg' and (dpjp <> '' or dpjp is not null)";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$cnoreg3 = $d1u['noreg'];
+
+if($cnoreg){
+	$jenis3='NEONATUS';
+
+}
+
+//bersalin
+$qu="SELECT noreg,dpjp FROM  ERM_RI_ASSESMEN_AWAL_BERSALIN where noreg='$noreg' and (dpjp <> '' or dpjp is not null)";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$cnoreg4 = $d1u['noreg'];
+
+if($cnoreg4){
+	$jenis='BERSALIN';
+}
+
+
+if($jenis=='ANAK'){
+	echo "
+	<script>
+	window.location.replace('r_ews18.php?id=$id|$user');
+	</script>
+	";
+}
+if($jenis=='NEONATUS'){
+	echo "
+	<script>
+	window.location.replace('r_ews1.php?id=$id|$user');
+	</script>
+	";
+}
+
+$qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
+FROM            ARM_REGISTER INNER JOIN
+Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+WHERE        (ARM_REGISTER.NOREG = '$noreg')";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$KODEUNIT = trim($d1u['KODEUNIT']);
+$KET1 = trim($d1u['KET1']);
+$NORM = trim($d1u['NORM']);
+
+if ($KET1 == 'RSPG'){
+	$nmrs = "RUMAH SAKIT PETROKIMIA GRESIK";
+	$alamat = "
+	Jl. Jend. A. Yani No. 69 Kel. Ngipik, Kec. Ngipik, Kab. Gresik
+	<br>
+	IGD : 031-99100118 Telp : 031-3978658<br>
+	Email : sbu.rspg@gmail.com
+	";
+	$logo = "logo/rspg.png";
+};
+if ($KET1 == 'GRAHU'){
+	$nmrs = "RUMAH SAKIT GRHA HUSADA";
+	$alamat = "Komplek Perum PT Petrokimia Gresik, Jalan Padi No.3, Tlogopojok, Kroman, Kec. Gresik";
+	$logo = "logo/grahu.png";
+};
+if ($KET1 == 'DRIYO'){
+	$nmrs = "RUMAH SAKIT DRIYOREJO";
+	$alamat = "Jalan Raya Legundi KM 0.5Driyorejo, Gresik";
+	$logo = "logo/driyo.png";
+};
+
+
+$q2		= "select norm,kodedept,nik,nama, CASE WHEN kelamin = 'L' THEN 'Laki-laki' ELSE 'Perempuan' END AS kelamin,alamatpasien,kota,kodekel,tlp,tmptlahir, CONVERT(VARCHAR, tgllahir, 103) as tgllahir, jenispekerjaan, noktp,
 jabatan, (select umur from umur where norm=afarm_mstpasien.norm) as UMUR from Afarm_MstPasien where norm='$norm'";
 $hasil2  = sqlsrv_query($conn, $q2);			  
 
@@ -32,6 +138,7 @@ $tgllahir	= $data2[tgllahir];
 $jenispekerjaan	= $data2[jenispekerjaan];
 $jabatan	= $data2[jabatan];
 $umur =  $data2[UMUR];
+$noktp =  $data2[noktp];
 
 
 ?>
@@ -53,7 +160,7 @@ $umur =  $data2[UMUR];
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<font size='2px'>
@@ -61,17 +168,46 @@ $umur =  $data2[UMUR];
 				<br>
 				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
 				&nbsp;&nbsp;
+				<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+				&nbsp;&nbsp;
 				<br>
 				<br>
+
 				<div class="row">
-					<div class="col-6"><b>RUMAH SAKIT PETROKIMIA GRESIK</b><br><b>OBSERVASI EARLY WARNING SCORE SYSTEM (EWS)</b></div>
-					<div class="col-6"><?php echo 'NORM : '.$norm.'<br> NAMA : '.$nama.'<br> TGL LAHIR : '.$tgllahir; ?></div>
+					<div class="col-6">
+						<table cellpadding="10px">
+							<tr valign="top">
+								<td>
+									<img src='<?php echo $logo; ?>' width='150px'></img>								
+								</td>
+								<td>
+									<h5><b><?php echo $nmrs; ?></b></h5>
+									<?php echo $alamat; ?>								
+								</td>
+							</tr>
+						</table>
+					</div>
+					<div class="col-6">
+						<?php echo 'NIK : '.$noktp.'<br>'; ?>					
+						<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+						<?php echo 'JENIS KELAMIN : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
+
+					</div>
 				</div>
 				<hr>
-				<table border="1" cellpadding="5px">
+
+
+				<div class="row">
+					<div class="col-12"><center><b>LEMBAR OBSERVASI NATIONAL EARLY WARNING SYSTEM (NEWS)
+						UNTUK PASIEN USIA > 18 TAHUN
+					</b></center></div>
+				</div>
+				<hr>
+				<table class="table table-bordered">
 					<tr>
 						<td rowspan='2'>No</td>
 						<td rowspan='2'>Tgl & Jam</td>
+						<td rowspan='2'>Total Score</td>						
 						<td rowspan=''>Parameter Respirasi</td>
 						<td rowspan=''>Saturasi Oksigen</td>
 						<td rowspan=''>Oksigen Tambahan</td>
@@ -79,12 +215,11 @@ $umur =  $data2[UMUR];
 						<td rowspan=''>Sistole</td>
 						<td rowspan=''>Nadi</td>
 						<td rowspan=''>Tingkat Kesadaran</td>
-						<td rowspan='2'>Total Score</td>
 						<td rowspan='2'>Petugas</td>
 					</tr>
 					<tr>
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -113,7 +248,7 @@ $umur =  $data2[UMUR];
 						</td>
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -138,7 +273,7 @@ $umur =  $data2[UMUR];
 						</td>
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -155,7 +290,7 @@ $umur =  $data2[UMUR];
 						</td>
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -176,19 +311,11 @@ $umur =  $data2[UMUR];
 									<td>35.1-36</td>
 									<td>1</td>
 								</tr>
-								<tr>
-									<td>9-11</td>
-									<td>1</td>
-								</tr>
-								<tr>
-									<td>&le; 8</td>
-									<td>3</td>
-								</tr>
 							</table>							
 						</td>	
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -225,7 +352,7 @@ $umur =  $data2[UMUR];
 						</td>
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -258,7 +385,7 @@ $umur =  $data2[UMUR];
 						</td>
 
 						<td rowspan=''>
-							<table border='1'>
+							<table  class="table table-bordered">
 								<tr>
 									<td>RANGE</td>
 									<td>SCORE</td>
@@ -279,7 +406,7 @@ $umur =  $data2[UMUR];
 					$q1		= "select top(50)*, 
 					CONVERT(VARCHAR, tglinput, 23) as tglinput,
 					CONVERT(VARCHAR, tglinput, 24) as jam  
-					from ERM_RI_OBSERVASI where noreg='$noreg' order by id desc";
+					from ERM_RI_OBSERVASI where noreg='$noreg' and suhu > 0 order by id desc";
 					$hasil1  = sqlsrv_query($conn, $q1);
 					$nox=1;           
 					while   ($data1 = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
@@ -353,11 +480,31 @@ $umur =  $data2[UMUR];
 
 
 						$total_score = $s_rr+$s_spo2+$s_oksigen_tambahan+$s_suhu+$s_sistole+$s_nadi+$s_tingkat_kesadaran;
+						$score = intval($total_score);
+
+						if(intval($total_score) == 0){
+							$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+							$bgcolor='';
+							$ket_ews='Sangat rendah<br>Perawat jaga melakukan monitor setiap shift';
+						}else if (intval($total_score) >= 1 and intval($total_score) <= 4 ){
+							$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+							$bgcolor='#90EE90';
+							$ket_ews='Rendah<br>Perawat jaga melakukan monitor setiap 4-6 jam <br> dan menilai apakah perlu untuk meningkatkan frekuensi monitoring';
+						}else if(intval($total_score) > 2 and intval($total_score) < 5){
+							$score = "<font size='5px' color='black'><b>$total_score</b></font>";
+							$bgcolor='#FAFAD2';		
+							$ket_ews='Sedang<br>Perawat jaga melakukan monitor tiap 1 jam <br> dan melaporkan ke dr jaga dan mempersiapkan jika mengalami perburukan kondisi pasien';
+						}else{
+							$score = "<font size='5px' color='black'><b>$total_score</b></font>";	
+							$bgcolor='#FF6347';
+							$ket_ews='Tinggi<br>Perawat, tim emergency, DPJP melakukan tatalaksana kegawatan, observasi tiap 30 menit/ setiap saat. <br> Aktifkan tim code blue bila terjadi cardiac arrest, transfer ke ruang ICU';
+						}
 
 						echo "
 						<tr>
 						<td>$nox</td>
 						<td>$data1[tglinput]<br>$data1[jam]</td>
+						<td align='center' bgcolor='$bgcolor'> $score<br>$ket_ews </td>
 						<td>Nilai : $rr<br>Score : $s_rr</td>
 						<td>Nilai : $spo2<br>Score : $s_spo2</td>
 						<td>Nilai : $oksigen_tambahan<br>Score : $s_oksigen_tambahan</td>
@@ -365,7 +512,6 @@ $umur =  $data2[UMUR];
 						<td>Nilai : $sistole<br>Score : $s_sistole</td>
 						<td>Nilai : $nadi<br>Score : $s_nadi</td>
 						<td>Nilai : $tingkat_kesadaran<br>Score : $s_tingkat_kesadaran</td>
-						<td align='center'><font size='5px'><b>$total_score</b></font></td>
 						<td>$data1[userinput]</td>
 						</tr>
 						";

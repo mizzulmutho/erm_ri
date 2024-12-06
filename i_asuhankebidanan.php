@@ -31,6 +31,7 @@ $implementasi = html_entity_decode($implementasi);
 	<title>eRM-RI</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 	<script language="JavaScript" type="text/javascript">
 		nextfield = "box1";
 		netscape = "";
@@ -62,7 +63,7 @@ $implementasi = html_entity_decode($implementasi);
 
 </head> 
 
-<div class="container">
+<div class="container-fluid">
 
 	<body onload="document.myForm.pasien_mcu.focus();">
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
@@ -71,7 +72,9 @@ $implementasi = html_entity_decode($implementasi);
 			&nbsp;&nbsp;
 			<a href='' class='btn btn-success'>Refresh</a>
 			&nbsp;&nbsp;
-			<a href='d_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Detail Implementasi</a>
+			<a href='d_asuhankeperawatan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>
+				<i class="bi bi-list-task"></i> Detail Implementasi
+			</a>
 			&nbsp;&nbsp;
 			<br>
 			<br>
@@ -97,7 +100,9 @@ $implementasi = html_entity_decode($implementasi);
 
 			<br>
 			<div class="row">
-				&nbsp;&nbsp;&nbsp;<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan implementasi</button> 
+				<div class="col-sm-3">
+					&nbsp;&nbsp;&nbsp;<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan implementasi</button>
+				</div> 
 			</div>
 
 			<br>

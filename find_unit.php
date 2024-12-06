@@ -1,14 +1,17 @@
 <?php
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-require "koneksi.php";
+$serverName = "192.168.10.1"; //serverName\instanceName
+$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
+$conn = sqlsrv_connect( $serverName, $connectionInfo);
+
 $postcode = $_POST['postcode'];
 $sbu = $_GET["id"];
 
 // header('Content-Type: application/json; charset=utf8');
 
 $sql="
-select top(10) kodeunit,namaunit from Afarm_Unitlayanan where ket1 like '%sbu%' and
+select top(10) kodeunit,namaunit from Afarm_Unitlayanan where ket1 like '%$sbu%' and
 (kodeunit like'%$postcode%' OR namaunit like '%$postcode%')
 order by namaunit
 ";

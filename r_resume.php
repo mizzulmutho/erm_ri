@@ -1,5 +1,4 @@
 <?php 
-include ("koneksi.php");
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 
 $id = $_GET["id"];
@@ -7,32 +6,23 @@ $row = explode('|',$id);
 $id  = $row[0];
 $user = $row[1]; 
 
-$qu="SELECT noreg,norm FROM ERM_ASSESMEN_HEADER where id='$id'";
-$h1u  = sqlsrv_query($conn, $qu);        
-$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-$noreg = $d1u['noreg'];
-$norm = $d1u['norm'];
+$kodedept	= '9100';
+$nama	= 'Pasien 1';
+$kelamin	= 'Lak-laki';
+$nik	= 'PGM11111';
+$alamatpasien	= 'Gresik';
+$kota	= 'Gresik';
+$kodekel	= '20';
+$telp	= '081....';
+$tmptlahir	= 'Gresik';
+$tgllahir	= '01/01/1988';
+$jenispekerjaan	= 'Swasta';
+$jabatan	= '';
+$umur =  '30';
+$norm='260587';
 
-$q2		= "select norm,kodedept,nik,nama, CASE WHEN kelamin = 'L' THEN 'Laki-laki' ELSE 'Perempuan' END AS kelamin,alamatpasien,kota,kodekel,tlp,tmptlahir, CONVERT(VARCHAR, tgllahir, 103) as tgllahir, jenispekerjaan, 
-jabatan, (select umur from umur where norm=afarm_mstpasien.norm) as UMUR from Afarm_MstPasien where norm='$norm'";
-$hasil2  = sqlsrv_query($conn, $q2);			  
-
-$data2	= sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC);				  
-$kodedept	= $data2[kodedept];
-
-$nama	= $data2[nama];
-$kelamin	= $data2[kelamin];
-$nik	= trim($data2[nik]);
-$alamatpasien	= $data2[alamatpasien];
-$kota	= $data2[kota];
-$kodekel	= $data2[kodekel];
-$telp	= $data2[tlp];
-$tmptlahir	= $data2[tmptlahir];
-$tgllahir	= $data2[tgllahir];
-$jenispekerjaan	= $data2[jenispekerjaan];
-$jabatan	= $data2[jabatan];
-$umur =  $data2[UMUR];
-
+$tglmasuk	= '29/12/2023';
+$kamar	= 'Kamar Kelas 1';
 
 ?>
 
@@ -97,13 +87,13 @@ $umur =  $data2[UMUR];
 					Ruang Perawatan
 				</div>
 				<div class="col-3">
-					:
+					: <?php echo $kamar; ?>
 				</div>
 				<div class="col-3">
 					Tgl. MRS
 				</div>
 				<div class="col-3">
-					:
+					: <?php echo $tglmasuk; ?>
 				</div>
 			</div>
 
@@ -311,7 +301,7 @@ $umur =  $data2[UMUR];
 			<hr> 
 			<div class="row">
 				<div class="col-4">
-					<b>12. TINDAK LANJUT/EDUKASI</b>
+					<b>9. TINDAK LANJUT/EDUKASI</b>
 				</div>
 				<div class="col-8">
 					:
@@ -420,7 +410,7 @@ $umur =  $data2[UMUR];
 			<hr> 
 			<div class="row">
 				<div class="col-4">
-					<b>13. DAFTAR OBAT-OBATAN YANG DIBAWAH PULANG</b>
+					<b>10. DAFTAR OBAT-OBATAN YANG DIBAWAH PULANG</b>
 				</div>
 				<div class="col-8">
 					:
@@ -429,13 +419,39 @@ $umur =  $data2[UMUR];
 			<hr> 
 			<div class="row">
 				<div class="col-4">
-					<b>14. JADWAL KONTROL DOKTER</b>
+					<b>11. JADWAL KONTROL DOKTER</b>
 				</div>
 				<div class="col-8">
 					:
 				</div>
 			</div>
+			<hr> 
+			<div class="row">
+				<div class="col-12">
+					<table border='1' bordercolor='green'>
+						<tr>
+							<td rowspan='3' width='20%'>Pernyataan Menerima Salinan Ringkasan Pulang (Wajin diisi)</td>
+							<td width='20%'>Yang menerima :<br>(Nama Pasien / Wali*)</td>
+							<td width='10%'>Tanda Tangan</td>
+							<td>Yang menyerahkan :<br>(Nama Perawat)</td>
+							<td width='10%'>Tanda Tangan</td>
+							<td width='10%'>Tanggal</td>
+						</tr>
+						<tr height='80px'>
+							<td></td>
+							<td></td>
+							<td rowspan="2"></td>
+							<td rowspan="2"></td>
+							<td rowspan="2"></td>
+						</tr>
+						<tr>
+							<td colspan='2'>No Kontak</td>
+						</tr>
 
+					</table>
+				</div>
+			</div>
+			<br><br><br>
 		</font>
 	</form>
 </font>
