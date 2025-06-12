@@ -125,10 +125,18 @@
 
                     		$i = 1;
                     		foreach ($sift_group[$sift] as $data2) {
+
+                    			$useri = $data2['userid'];
+
+                    			$qu2="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$useri'";
+                    			$h1u2  = sqlsrv_query($conn, $qu2);        
+                    			$d1u2  = sqlsrv_fetch_array($h1u2, SQLSRV_FETCH_ASSOC); 
+                    			$nmuser = trim($d1u2['NamaUser']);
+
                     			echo "
                     			<tr style='background-color:$warna'>
                     			<td>$i</td>
-                    			<td>{$data2['userid']}</td>
+                    			<td>{$nmuser}</td>
                     			<td>{$data2['tanggal']}</td>
                     			<td>{$data2['jam']}</td>
                     			<td>{$data2['implementasi']}</td>
