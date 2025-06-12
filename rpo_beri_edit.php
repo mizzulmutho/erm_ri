@@ -82,7 +82,9 @@ $nomor = trim($data3[nomor]);
 $cek_eresep = $data3[eresep];
 
 
-$q3b       = "select CONVERT(VARCHAR, tgl, 25) as tglrpo, nama_obat, jumlah, dokter, apoteker, periksa, pemberi, keluarga
+$q3b       = "select CONVERT(VARCHAR, tgl, 25) as tglrpo, nama_obat, jumlah, dokter, apoteker, periksa, pemberi, keluarga,ttd_keluarga,
+CONVERT(VARCHAR, tgl_diberi, 25) as tgl_diberi,
+CONVERT(VARCHAR, tgl_diperiksa, 25) as tgl_diperiksa
 from ERM_RI_RPO_BERI
 where id='$idrpo_beri'";
 $hasil3b  = sqlsrv_query($conn, $q3b);  
@@ -93,16 +95,31 @@ $tglrpo = $data3b[tglrpo];
 $jumlah = $data3b[jumlah];
 $dokter = $data3b[dokter];
 $apoteker = $data3b[apoteker];
-$periksa = $data3b[periksa];
-$pemberi = $data3b[pemberi];
+$nm_periksa = trim($data3b[periksa]);
+$nm_pemberi = trim($data3b[pemberi]);
 $keluarga = $data3b[keluarga];
-
+$ttd_keluarga= $data3b[ttd_keluarga];
+$tgl_diberi = $data3b[tgl_diberi];
+$tgl_diperiksa = $data3b[tgl_diperiksa];
 
 if(empty($tglrpo)){
 	$tgli = date('Y-m-d\TH:i:s', strtotime($tgl)); 
 }else{
 	$tgli = date('Y-m-d\TH:i:s', strtotime($tglrpo)); 
 }
+
+if(empty($tgl_diberi)){
+	$tgli2 = date('Y-m-d\TH:i:s', strtotime($tgl)); 
+}else{
+	$tgli2 = date('Y-m-d\TH:i:s', strtotime($tgl_diberi)); 
+}
+
+if(empty($tgl_diperiksa)){
+	$tgli3 = date('Y-m-d\TH:i:s', strtotime($tgl)); 
+}else{
+	$tgli3 = date('Y-m-d\TH:i:s', strtotime($tgl_diperiksa)); 
+}
+
 
 ?>
 
@@ -126,6 +143,27 @@ if(empty($tglrpo)){
 	<link rel="stylesheet" href="jquery-ui.css">
 	<script src="jquery-1.10.2.js"></script>
 	<script src="jquery-ui.js"></script>
+
+	<!-- Tanda Tangan -->
+	<script type="text/javascript" src="js/jquery.signature.min.js"></script>
+	<script type="text/javascript" src="js/jquery.ui.touch-punch.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/jquery.signature.css">
+	<style>
+		.kbw-signature {
+			width: 300px;
+			height: 300px;
+		}
+		#sig canvas {
+			width: 100% !important;
+			height: auto;
+		}
+	</style>
+
+	<style type="text/css">
+		@media print{
+			body {display:none;}
+		}
+	</style>
 
 	<script language="JavaScript" type="text/javascript">
 		nextfield = "box1";
@@ -242,164 +280,309 @@ if(empty($tglrpo)){
 <div id="content"> 
 	<div class="container">
 
-		<body onload="document.myForm.nama_obat.focus();">
+		<body onload="document.myForm.jumlah.focus();">
 			<font size='2px'>
 				<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 					<br>
 					<a href='rpo2.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
 					&nbsp;&nbsp;
 					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
-					&nbsp;&nbsp;
-					<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
-<!-- 					<button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
--->					&nbsp;&nbsp;
-<!-- <a href="http://192.168.10.4:1234/rekam_medik/entry_tindakan/rawat_inap/<?php echo $KODEUNIT; ?>/<?php echo $noreg; ?>/<?php echo $norm; ?>/resep/" target="_blank" class='btn btn-success'><i class="bi bi-box-arrow-in-right"></i> Buat E-Resep</a> -->
-&nbsp;&nbsp;
-<!-- <a href='eresep_list.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-success'><i class="bi bi-box-arrow-in-right"></i> Ambil dari E-Resep</a> -->
-&nbsp;&nbsp;
-<br>
-<br>
-<!-- 				<div class="row">
-					<div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
-				</div>
-			-->				
-			<div class="row">
-			</div>
-
-			<div class="row">
-				<div class="col-6">
-					<h5><b><?php echo $nmrs; ?></b></h5>
-					<?php echo $alamat; ?>
-				</div>
-				<div class="col-6">
-					<?php echo 'NIK : '.$noktp.'<br>'; ?>					
-					<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
-					<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
-				</div>
-			</div>
-			<hr>
-
-			<div class="row">
-				<div class="col-12 text-center">
-					<b>REKAM PEMBERIAN OBAT</b><br>
-				</div>
-			</div>
-
-			<br>
-
-			<table width='100%' border='1'>
-
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Nama obat
-							</div>
-							<div class="col-8">
-								: <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='dosis';" placeholder="Isikan Nama Obat">
-							</div>
-						</div>
-<!-- 						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Dosis
-							</div>
-							<div class="col-8">
-								: <input class="" name="dosis" value="<?php echo $dosis;?>" id="obat" type="text" size='50' onfocus="nextfield ='jumlah';" placeholder="Isikan Dosis">
-							</div>
-						</div>
-					-->						
+					<br>
+					<br>
 					<div class="row">
-						<div class="col-4">
-							&nbsp;&bull; Jumlah
+					</div>
+
+					<div class="row">
+						<div class="col-6">
+							<h5><b><?php echo $nmrs; ?></b></h5>
+							<?php echo $alamat; ?>
 						</div>
-						<div class="col-8">
-							: <input class="" name="jumlah" value="<?php echo $jumlah;?>" id="obat" type="text" size='50' onfocus="nextfield ='interval';" placeholder="Isikan Jumlah">
+						<div class="col-6">
+							<?php echo 'NIK : '.$noktp.'<br>'; ?>					
+							<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+							<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
 						</div>
 					</div>
-				</td>
-			</tr>
+					<hr>
 
-
-			<tr>
-				<td>
 					<div class="row">
-						<div class="col-4">
-							&nbsp;&bull; Tanggal / Jam
-						</div>
-						<div class="col-8">
-							: <input class="" name="tgl" value="<?php echo $tgli;?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';" >
+						<div class="col-12 text-center">
+							<b>REKAM PEMBERIAN OBAT</b><br>
 						</div>
 					</div>
-				</td>
-			</tr>
 
+					<br>
 
-			<tr>
-				<td>
-					<div class="row">
-						<div class="col-4">
-							&nbsp;
-						</div>
-						<div class="col-8">
-							<?php if(empty($cek_eresep)){ ?>
-								<br>
-								<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-								<br><br>
-							<?php } ?>
-						</div>
-					</div>
-				</td>
-			</tr>	
+					<table width='100%' border='0'>
 
-
-
-			<tr>
-				<td>
-
-					<table width="100%">
 						<tr>
 							<td>
-								Dokter<br>
-								<input class="" name="dokter" value="<?php echo $dokter;?>" id="dokter" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td>
-								Apoteker<br>
-								<input class="" name="apoteker" value="<?php echo $apoteker;?>" id="apoteker" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td>
-								Keluarga<br>
-								<input class="" name="keluarga" value="<?php echo $nama;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td width="25%">
-								Pemberi<br>
-								<input class="" name="pemberi" value="<?php echo $user;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td width="25%">
-								Pemeriksa<br>
-								<input class="" name="periksa" value="<?php echo $periksa;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder="">
-							</td>							
-						</tr>
-					</table>
-
-				</td>
-			</tr>
-
-		</table>
+								<div class="row">
+									<div class="col-4">
+										&nbsp;&bull; Nama obat
+									</div>
+									<div class="col-8">
+										: <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='dosis';" placeholder="Isikan Nama Obat">
+									</div>
+								</div>
+<!-- 								<div class="row">
+									<div class="col-4">
+										&nbsp;&bull; Jumlah
+									</div>
+									<div class="col-8">
+										: <input class="" name="jumlah" value="<?php echo $jumlah;?>" id="obat" type="text" size='50' onfocus="nextfield ='interval';" placeholder="Isikan Jumlah">
+									</div>
+								</div>
+							-->								
+						</td>
+					</tr>
 
 
-		<br>
-	</form>
-</font>
-</body>
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&bull; Tanggal / Jam
+								</div>
+								<div class="col-8">
+									: 
+									<!--									<input class="" name="tgl" value="<?php echo $tgli;?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';" > -->
+
+									<input class="" name="tgl" value="<?php echo date('Y-m-d\TH:i', strtotime($tgli)); ?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';">
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&nbsp; Dokter
+								</div>
+								<div class="col-8">
+									: <input class="" name="dokter" value="<?php echo $dokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="">
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&nbsp; Apoteker
+								</div>
+								<div class="col-8">
+									: <input class="" name="apoteker" value="<?php echo $apoteker;?>" id="apoteker" type="text" size='50' onfocus="nextfield ='';" placeholder="">
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<hr>
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&bull; Perawat Pemberi Obat
+								</div>
+								<div class="col-8">
+									: <?php echo $pemberi; ?>
+									<input type='radio' name='pemberi' value='pemberi' <?php if($pemberi==$user){echo 'checked';} ?>> Centang jika yang memberikan Obat 
+									<input type='radio' name='pemberi' value='bpemberi'> Batalkan Centang
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&nbsp; Tanggal / Jam - Pemberian Obat
+								</div>
+								<div class="col-8">
+									: 
+
+									<!--<input class="" name="tglb" value="<?php echo $tgli2;?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';" >-->
+
+									<input class="" name="tglb" value="<?php echo date('Y-m-d\TH:i', strtotime($tgli2)); ?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';">
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&bull; Perawat Pemeriksa Obat
+								</div>
+								<div class="col-8">
+									: <?php echo $periksa; ?>
+									<input type='radio' name='periksa' value='periksa' <?php if($periksa==$user){echo 'checked';} ?>> Centang jika yang menerima Obat
+									<input type='radio' name='periksa' value='bperiksa'> Batalkan Centang
+
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;&nbsp; Tanggal / Jam - Pemeriksa Obat
+								</div>
+								<div class="col-8">
+									: 
+
+									<!--<input class="" name="tglc" value="<?php echo $tgli3;?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';" >-->
+
+									<input class="" name="tglc" value="<?php echo date('Y-m-d\TH:i', strtotime($tgli3)); ?>" id="" type="datetime-local" size='50' onfocus="nextfield ='';">
+
+								</div>
+							</div>
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							<div class="row">
+								<div class="col-4">
+									&nbsp;
+								</div>
+								<div class="col-8">
+									<br>
+									<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
+									<br><br>
+								</div>
+							</div>
+						</td>
+					</tr>	
+
+
+
+					<tr>
+						<td>
+
+							<table width="100%">
+								<tr valign="top">
+									<td>
+										Tanda Tangan Keluarga<br>
+										<!-- <input class="" name="keluarga" value="<?php echo $nama;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder=""> -->
+
+										<?php  
+										if($ttd_keluarga){
+											echo " <img src='$ttd_keluarga' height='150' width='150'>";
+											echo "<br><br>";
+											echo "<input type='text' name='ttd' value='$ttd_keluarga' size='50' hidden>";
+										}
+										?>
+										<div id="sig"></div>
+										<br />
+										<button id="clear" class="btn btn-warning mt-1">Hapus Tanda Tangan</button>
+										<textarea id="signature64" name="signed" style="display: none" class="input-group mb-3"></textarea>
+										<br><br>
+										<button type='submit' name='simpan_ttd' value='simpan_ttd' class="btn btn-info" type="button" style="height: 40px;width: 250px;"><i class="bi bi-save-fill"></i> simpan tanda tangan</button>
+
+									</td>
+									<td width="25%">
+										Perawat Pemberi Obat<br>
+										<!-- <input class="" name="pemberi" value="<?php echo $user;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder=""> -->
+										<?php echo $nm_pemberi;?>
+									</td>
+									<td width="25%">
+										Perawat Pemeriksa Obat<br>
+										<!-- <input class="" name="periksa" value="<?php echo $periksa;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder=""> -->
+										<?php echo $nm_periksa;?>
+									</td>							
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+
+				</table>
+
+
+				<br>
+			</form>
+		</font>
+
+		<script type="text/javascript">
+			var sig = $('#sig').signature({
+				syncField: '#signature64',
+				syncFormat: 'PNG'
+			});
+			$('#clear').click(function(e) {
+				e.preventDefault();
+				sig.signature('clear');
+				$("#signature64").val('');
+			});
+		</script>
+
+	</body>
 </div>
 </div>
 
 <?php 
 
+
+
+if (isset($_POST["simpan_ttd"])) {
+
+	if(empty($_POST['signed'])){
+		echo "Kosong";
+		$eror = "Tanda Tangan Kosong";
+	}else{
+		unlink($ttd);
+		$folderPath = "upload/";
+		$image_parts = explode(";base64,", $_POST['signed']); 
+		$image_type_aux = explode("image/", $image_parts[0]);
+		$image_type = $image_type_aux[1];
+		$image_base64 = base64_decode($image_parts[1]);
+		$file = $folderPath . uniqid() . '.'.$image_type;
+		file_put_contents($file, $image_base64);
+		echo "Tanda Tangan Sukses Diupload ";
+
+		$qInsert = "UPDATE ERM_RI_RPO_BERI SET ttd_keluarga = '$file' WHERE id='$idrpo_beri'";
+		$qInsert;
+		$result = sqlsrv_query($conn, $qInsert);
+
+		$eror = 'Berhasil';
+
+	}
+
+
+	echo "
+	<script>
+	alert('".$eror."');
+	history.go(-1);
+	</script>
+	";
+
+
+}
+
 if (isset($_POST["simpan"])) {
 	// echo "edit_data";
 	$tgl		= $_POST["tgl"];
 	$tgl3 = date('Y-m-d H:i:s', strtotime($tgl)); 
+
+	$tglb		= $_POST["tglb"];
+	$tgl4 = date('Y-m-d H:i:s', strtotime($tglb)); 
+
+	$tglc		= $_POST["tglc"];
+	$tgl5 = date('Y-m-d H:i:s', strtotime($tglc)); 
+
 
 	$jumlah		= $_POST["jumlah"];
 	$dokter		= $_POST["dokter"];
@@ -408,7 +591,28 @@ if (isset($_POST["simpan"])) {
 	$pemberi	= $_POST["pemberi"];
 	$keluarga	= $_POST["keluarga"];
 
-	$q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker',periksa='$periksa',pemberi='$pemberi',keluarga='$keluarga',tgl='$tgl3' where id=$idrpo_beri";
+	if($pemberi or $periksa){
+		if($pemberi){
+			if($pemberi<>'bpemberi'){
+				$pemberi=$user;
+				$q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker', pemberi='$pemberi',keluarga='$keluarga',tgl='$tgl3',tgl_diberi='$tgl4' where id=$idrpo_beri";
+			}else{
+				echo$q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker', pemberi='',keluarga='$keluarga',tgl='$tgl3',tgl_diberi=NULL where id=$idrpo_beri";
+			}
+		}
+		if($periksa){
+			if($periksa<>'bperiksa'){
+				$periksa=$user;
+				echo $q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker', periksa='$periksa',keluarga='$keluarga',tgl='$tgl3',tgl_diperiksa='$tgl5' where id=$idrpo_beri";			
+			}else{
+				$q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker', periksa='',keluarga='$keluarga',tgl='$tgl3',tgl_diperiksa=NULL where id=$idrpo_beri";			
+			}
+		}
+
+	}else{
+		$q  = "update ERM_RI_RPO_BERI set jumlah='$jumlah',dokter='$dokter',apoteker='$apoteker',keluarga='$keluarga',tgl='$tgl3' where id=$idrpo_beri";
+	}
+
 	$hs = sqlsrv_query($conn,$q);		
 
 	if($hs){

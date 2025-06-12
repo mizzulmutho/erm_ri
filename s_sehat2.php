@@ -245,6 +245,14 @@ if($lanjut=='Y'){
         $eror = 'Success';
     }else{
         $eror = 'Data Sudah Terkirim ';
+        
+        $q="
+        INSERT INTO SS_RI_RESUME
+        (NOREG, ihsnumber, namapasien, iddokter, namadokter, IDENCOUNTER) 
+        VALUES
+        ('$noreg','$ihsnumber','$namapasien','$iddokter','$namadokter','$idencounter')";
+        $h1  = sqlsrv_query($conn, $q);
+        
     }
 
 }else{

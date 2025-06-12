@@ -43,149 +43,147 @@ $umur =  $data2[UMUR];
 
 ?>
 
-<!DOCTYPE html> 
-<html> 
-<head>  
-	<title>eRM-RI</title>  
-	<link rel="icon" href="favicon.ico">  
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
-	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-	<script>
-		CKEDITOR.replace('editor1');
-		CKEDITOR.config.width="100%";
-		CKEDITOR.config.height="500px"
-	</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Observasi Harian Pasien</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+	<style>
+		body {
+			padding: 20px;
+			background-color: #f8f9fa;
+		}
+		h4 {
+			margin-bottom: 20px;
+		}
+		.table thead th {
+			vertical-align: middle;
+			text-align: center;
+		}
+	</style>
+</head>
+<body onload="document.myForm.pasien_mcu?.focus();">
 
-</head> 
+	<div class="container-fluid">
 
-<div class="container-fluid">
-
-	<body onload="document.myForm.pasien_mcu.focus();">
-		<font size='2px'>
-			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
-				<br>
-				<a href='observasi.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
-				&nbsp;&nbsp;
-				<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
-				<br>
-				<br>
-				<div class="row">
-					<div class="col-12">
-						<?php 
-						include "header_soap.php";
-						?>
-					</div>
+		<form method="POST" name='myForm' enctype="multipart/form-data">
+			<div class="d-flex justify-content-between align-items-center mb-3">
+				<h4><i class="bi bi-clipboard-pulse"></i> Detail Observasi Harian Pasien</h4>
+				<div>
+					<a href='observasi.php?id=<?php echo $id."|".$user; ?>' class='btn btn-warning btn-sm'>
+						<i class="bi bi-x-circle"></i> Close
+					</a>
+					<a href='' class='btn btn-success btn-sm'>
+						<i class="bi bi-arrow-clockwise"></i> Refresh
+					</a>
 				</div>
+			</div>
 
-				<div class="row">
-					<div class="col-12"><b><center>DETAIL OBSERVASI HARIAN PASIEN</center></b></div>
-				</div>
+			<?php include "header_soap.php"; ?>
 
-				<hr>
-				<table class="table table-bordered">
-					<tr valign="top">
-						<td rowspan='3' align='center'>no</td>
-						<td rowspan='3'>edit</td>
-						<td rowspan='3'>tgl</td>
-						<td rowspan='3'>jam</td>
-						<td rowspan='1' colspan="10" align='center'>EWS</td>
-						<td rowspan='3'>total ews</td>						
-						<td rowspan='1' colspan="14" align='center'>cairan</td>	
-						<td rowspan='3'>GDA</td>
-						<td rowspan='3'>Petugas</td>	
-					</tr>
-					<tr>
-						<td rowspan='2'>kesadaran</td>
-						<td rowspan='2'>gcs</td>
-						<td rowspan='2'>tensi</td>
-						<td rowspan='2'>suhu</td>
-						<td rowspan='2'>nadi</td>
-						<td rowspan='2'>rr</td>
-						<td rowspan='2'>spo2</td>
-						<td rowspan='2'>oksigen</td>
-						<td rowspan='2'>bb</td>
-						<td rowspan='2'>tb</td>
-						<td rowspan='1' colspan="5" align='center'>Input</td>
-						<td rowspan='1' colspan="8" align='center'>Output</td>
-						<td rowspan='2'>Balance Cairan</td>
-					</tr>
-					<tr>
-						<td>Infus</td>
-						<td>Tranfusi</td>
-						<td>Makan</td>
-						<td>Minum</td>
-						<td>Total</td>
-						<td>Muntah</td>
-						<td>Peradangan</td>
-						<td>Urine</td>
-						<td>BAB</td>
-						<td>IWL</td>
-						<td>NGT</td>
-						<td>Drain</td>
-						<td>Total</td>
-					</tr>
-
-					<?php 
-					$q1		= "select top(50)*, 
-					CONVERT(VARCHAR, tglinput, 23) as tglinput,
-					CONVERT(VARCHAR, tglinput, 24) as jam  
-					from ERM_RI_OBSERVASI where noreg='$noreg' order by id desc";
-					$hasil1  = sqlsrv_query($conn, $q1);
-					$nox=1;           
-					while   ($data1 = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
-						$ket =
-						'tensi :'.$data1[td_sistolik].'/'.$data1[td_diastolik].' ,'.
-						'nadi :'.$data1[nadi].' ,'.
-						'suhu :'.$data1[suhu].' ,'.
-						'pernafasan :'.$data1[pernafasan].' ,'.
-						'spo2 :'.$data1[spo2]
-						;
-						echo "
+			<div class="table-responsive">
+				<table class="table table-bordered table-sm align-middle">
+					<thead class="table-light">
 						<tr>
-						<td>$nox</td>
-						<td><a href='e_observasi.php?id=$id|$user|$data1[id]'>edit</a></td>
-						<td>$data1[tglinput]</td>
-						<td>$data1[jam]</td>
-						<td>$data1[ob1]</td>
-						<td>$data1[ob6]</td>
-						<td>$data1[td_sistolik]/$data1[td_diastolik]</td>
-						<td>$data1[suhu]</td>
-						<td>$data1[nadi]</td>
-						<td>$data1[pernafasan]</td>
-						<td>$data1[spo2]</td>
-						<td>$data1[ob7]</td>
-						<td>$data1[ob9]</td>
-						<td>$data1[ob10]</td>
-						<td>$data1[ob11]</td>
-						<td>$data1[ob12]</td>
-						<td>$data1[ob13]</td>
-						<td>$data1[ob18]</td>
-						<td>$data1[ob19]</td>
-						<td>$data1[total_input]</td>
-						<td>$data1[ob20]</td>
-						<td>$data1[ob26]</td>
-						<td>$data1[ob22]</td>
-						<td>$data1[ob21]</td>
-						<td>$data1[ob23]</td>
-						<td>$data1[ob24]</td>
-						<td>$data1[ob25]</td>
-						<td>$data1[total_output]</td>
-						<td>$data1[ob27]</td>
-						<td>$data1[ob28]</td>
-						<td>$data1[userinput]</td>
-
+							<th rowspan="3">No</th>
+							<th rowspan="3">Edit</th>
+							<th rowspan="3">Hapus</th>
+							<th rowspan="3">Tgl</th>
+							<th rowspan="3">Jam</th>
+							<th colspan="10">EWS</th>
+							<th rowspan="3">Total EWS</th>
+							<th colspan="14">Cairan</th>
+							<th rowspan="3">GDA</th>
+							<th rowspan="3">Petugas</th>
 						</tr>
-
-
-						";
-
-						$nox+=1;
-					}
-					?>
+						<tr>
+							<th rowspan="2">Kesadaran</th>
+							<th rowspan="2">GCS</th>
+							<th rowspan="2">Tensi</th>
+							<th rowspan="2">Suhu</th>
+							<th rowspan="2">Nadi</th>
+							<th rowspan="2">RR</th>
+							<th rowspan="2">SpO2</th>
+							<th rowspan="2">Oksigen</th>
+							<th rowspan="2">BB</th>
+							<th rowspan="2">TB</th>
+							<th colspan="5">Input</th>
+							<th colspan="8">Output</th>
+							<th rowspan="2">Balance</th>
+						</tr>
+						<tr>
+							<th>Infus</th>
+							<th>Transfusi</th>
+							<th>Makan</th>
+							<th>Minum</th>
+							<th>Total</th>
+							<th>Muntah</th>
+							<th>Peradangan</th>
+							<th>Urine</th>
+							<th>BAB</th>
+							<th>IWL</th>
+							<th>NGT</th>
+							<th>Drain</th>
+							<th>Total</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php 
+						$q1 = "SELECT TOP(50)*, 
+						CONVERT(VARCHAR, tglinput, 23) as tglinput,
+						CONVERT(VARCHAR, tglinput, 24) as jam  
+						FROM ERM_RI_OBSERVASI 
+						WHERE noreg='$noreg' 
+						ORDER BY id DESC";
+						$hasil1  = sqlsrv_query($conn, $q1);
+						$nox=1;           
+						while ($data1 = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
+							echo "<tr>
+							<td>$nox</td>
+							<td><a href='e_observasi.php?id=$id|$user|{$data1['id']}' class='text-primary'><i class='bi bi-pencil-square'></i></a></td>
+							<td><a href='d_observasi.php?id=$id|$user|{$data1['id']}' class='text-danger'><i class='bi bi-trash'></i></a></td>
+							<td>{$data1['tglinput']}</td>
+							<td>{$data1['jam']}</td>
+							<td>{$data1['ob1']}</td>
+							<td>{$data1['ob6']}</td>
+							<td>{$data1['td_sistolik']}/{$data1['td_diastolik']}</td>
+							<td>{$data1['suhu']}</td>
+							<td>{$data1['nadi']}</td>
+							<td>{$data1['pernafasan']}</td>
+							<td>{$data1['spo2']}</td>
+							<td>{$data1['ob7']}</td>
+							<td>{$data1['ob9']}</td>
+							<td>{$data1['ob10']}</td>
+							<td>{$data1['ob11']}</td>
+							<td>{$data1['ob12']}</td>
+							<td>{$data1['ob13']}</td>
+							<td>{$data1['ob18']}</td>
+							<td>{$data1['ob19']}</td>
+							<td>{$data1['total_input']}</td>
+							<td>{$data1['ob20']}</td>
+							<td>{$data1['ob26']}</td>
+							<td>{$data1['ob22']}</td>
+							<td>{$data1['ob21']}</td>
+							<td>{$data1['ob23']}</td>
+							<td>{$data1['ob24']}</td>
+							<td>{$data1['ob25']}</td>
+							<td>{$data1['total_output']}</td>
+							<td>{$data1['ob27']}</td>
+							<td>{$data1['ob28']}</td>
+							<td>{$data1['userinput']}</td>
+							</tr>";
+							$nox++;
+						}
+						?>
+					</tbody>
 				</table>
-			</font>
+			</div>
 		</form>
-	</font>
+
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-</div>
+</html>

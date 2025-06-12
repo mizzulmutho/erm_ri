@@ -102,6 +102,8 @@ if(empty($regcek)){
 	$riwayat_penyakit_sekarang = $de['riwayat_penyakit_sekarang'];
 
 	$tglrawat = $de['tglrawat'];
+	$jamrawat = $de['jamrawat'];
+	
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -493,7 +495,7 @@ if(empty($regcek)){
 						<tr>
 							<td width="70%">
 								Masuk di Ruang Rawat Tanggal : <input type='date' disabled name='tglrawat' value='<?php echo $tglrawat;?>'>
-								
+								, jam Masuk : <?php echo $jamrawat;?>
 							</td>
 							<td>
 								Fungsional

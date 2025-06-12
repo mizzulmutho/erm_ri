@@ -460,125 +460,171 @@ if(empty($regcek)){
                     &nbsp;&nbsp;
                     <br>
                     <br>
-<!--                <div class="row">
-                    <div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
-                </div>
-            -->             
-            <div class="row">
-            </div>
+                    <div class="row">
+                    </div>
 
-            <div class="row">
-                <div class="col-6">
-                    <h5><b><?php echo $nmrs; ?></b></h5>
-                    <?php echo $alamat; ?>
-                </div>
-                <div class="col-6">
-                    <?php echo 'NIK : '.$noktp.'<br>'; ?>                   
-                    <?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
-                    <?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
-                </div>
-            </div>
-            <hr>
-
-            <div class="row">
-                <div class="col-12 text-center">
-                    <b>Pemeriksaan Penunjang (LABORAT)</b><br>
-                </div>
-            </div>
-
-            <br>
-
-            <table width='100%' border='1'>
-
-                <tr>
-                    <td>
-                        <div class="row">
-                            <div class="col-12">
-
-                                <?php 
-                                $qlab="
-                                SELECT 
-                                CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,KEL_PEMERIKSAAN,PARAMETER_NAME,HASIL,SATUAN,NILAI_RUJUKAN,FLAG
-                                FROM        LINKYAN5.SHARELIS.dbo.hasilLIS
-                                WHERE        (NOLAB_RS = '$noreg') order by REG_DATE desc, KEL_PEMERIKSAAN,PARAMETER_NAME
-                                ";
-                                $hqlab  = sqlsrv_query($conn, $qlab);
-
-                                $labh = "no | tgl          | pemeriksaan | hasil | nilai normal";
-                                $labh2 = "====================================";
-
-                                echo "<table class='table'>
-                                <tr>
-                                <td width='1%'>no</td><td>tgl</td><td>pemeriksaan</td><td>hasil</td><td>nilai normal</td>
-                                </tr>
-                                ";
-                                $i=1;
-                                while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
-                                    $lab0 = $i.'|'.$dhqlab[REG_DATE].'|'.$dhqlab[KEL_PEMERIKSAAN].'-'.trim($dhqlab[PARAMETER_NAME]).' : '.    $dhqlab[HASIL].' | '.trim($dhqlab[NILAI_RUJUKAN]).' ('.trim($dhqlab[FLAG]).')';
-                                    $nnormal = trim($dhqlab[FLAG]);
-                                // if($i==1){
-                                //     $lab = $labh.'&#13;&#10;'.$labh2.'&#13;&#10;'.$lab0;        
-                                // }else{
-                                //     $lab = $lab.'&#13;&#10;'.$lab0;                
-                                // }
-
-                                    $PARAMETER_NAME          = str_replace("-","",$dhqlab[PARAMETER_NAME]);
-
-                                    if($nnormal=='H'){
-                                        echo "
-                                        <tr>
-                                        <td bgcolor='#DFF2EB'>$i</td>
-                                        <td bgcolor='#DFF2EB'>$dhqlab[REG_DATE]</td>
-                                        <td bgcolor='#DFF2EB'>$dhqlab[KEL_PEMERIKSAAN] - $PARAMETER_NAME</td>
-                                        <td bgcolor='#DFF2EB'>$dhqlab[HASIL]</td>
-                                        <td bgcolor='#DFF2EB'>$dhqlab[NILAI_RUJUKAN] - $dhqlab[FLAG]</td>
-                                        </tr>
-                                        ";
-                                    }else{                                        
-                                        echo "
-                                        <tr>
-                                        <td>$i</td>
-                                        <td>$dhqlab[REG_DATE]</td>
-                                        <td>$dhqlab[KEL_PEMERIKSAAN] - $PARAMETER_NAME</td>
-                                        <td>$dhqlab[HASIL]</td>
-                                        <td>$dhqlab[NILAI_RUJUKAN] - $dhqlab[FLAG]</td>
-                                        </tr>
-                                        ";
-                                    }
-
-                                    $i=$i+1;
-                                }
-
-
-                                ?>
-
-                            </div>
-
+                    <div class="row">
+                        <div class="col-6">
+                            <h5><b><?php echo $nmrs; ?></b></h5>
+                            <?php echo $alamat; ?>
                         </div>
-                    </td>
-                </tr>
-                <tr>
-                 <td>
-                  <div class="row">
-                   <div class="col-4">
-                    &nbsp;
-                </div>
-                <div class="col-8">
-                    &nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
-                </div>
-            </div>
-        </td>
-    </tr>   
-</table>
+                        <div class="col-6">
+                            <?php echo 'NIK : '.$noktp.'<br>'; ?>                   
+                            <?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+                            <?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
+                        </div>
+                    </div>
+                    
+                    <hr>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-</form>
-</font>
-</body>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <b>Pemeriksaan Penunjang (LABORAT)</b><br>
+                        </div>
+                    </div>
+
+                    <br>
+
+                    <table width='100%' border='1'>
+
+                        <tr>
+                            <td>
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <?php 
+                                        $noreg_igd = substr($noreg, 1,12);
+
+                                //jumlah
+                                        $qu="SELECT        TOP (1) DAY(REG_DATE) AS hari
+                                        FROM            LINKYAN5.SHARELIS.dbo.hasilLIS
+                                        WHERE        (NOLAB_RS = '$noreg_igd')
+                                        ORDER BY REG_DATE DESC";
+                                        $h1u  = sqlsrv_query($conn, $qu);        
+                                        $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+                                        $harix = intval($d1u['hari']);
+                                        $hari = $harix;
+
+                                        $hari2 = $hari+1;
+                                        $hari3 = $hari2+1;
+                                        $hari4 = $hari3+1;
+                                        $hari5 = $hari4+1;
+                                        $hari6 = $hari5+1;
+                                        $hari7 = $hari6+1;
+                                        $hari8 = $hari7+1;
+                                        $hari9 = $hari8+1;
+                                        $hari10 = $hari9+1;
+
+                                        $qlab="
+                                        SELECT * 
+                                        FROM 
+                                        (
+                                            SELECT 
+                                            DAY(REG_DATE) AS day, 
+                                            TARIF_NAME,
+                                            KEL_PEMERIKSAAN,
+                                            PARAMETER_NAME, 
+                                            CASE 
+                                            WHEN LEFT(NOLAB_RS, 1) <> 'R' THEN HASIL + FLAG + ' (igd)'
+                                            ELSE HASIL + FLAG 
+                                            END AS HASIL
+                                            FROM LINKYAN5.SHARELIS.dbo.hasilLIS
+                                            WHERE 
+                                            NOLAB_RS like '%$noreg_igd%'
+                                            AND DAY(REG_DATE) BETWEEN $hari AND $hari10 
+                                            ) AS SourceTable
+                                        PIVOT
+                                        (
+                                            MAX(HASIL) 
+                                            FOR day IN ([$hari], [$hari2], [$hari3], [$hari4], [$hari5], [$hari6], [$hari7], [$hari8], [$hari9], [$hari10])  
+                                            ) AS PivotTable;
+                                        ";
+                                        $hqlab  = sqlsrv_query($conn, $qlab);
+
+                                        echo "<table class='table'>
+                                        <tr>
+                                        <td width='1%'>no</td><td>tarif name</td><td>kel pemeriksaan</td><td>parameter name</td>
+                                        <td>$hari</td>
+                                        <td>$hari2</td>
+                                        <td>$hari3</td>
+                                        <td>$hari4</td>
+                                        <td>$hari5</td>
+                                        <td>$hari6</td>
+                                        <td>$hari7</td>
+                                        <td>$hari8</td>
+                                        <td>$hari9</td>
+                                        <td>$hari10</td>
+                                        </tr>
+                                        ";
+                                        $i=1;
+                                        while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
+                                            $dhqlab[REG_DATE];
+                                            $noreglab = $dhqlab[NOLAB_RS];
+                                    // if(substr($noreglab,0,1)<>'R'){
+                                    //     $labu='IGD';
+                                    // }else{
+                                    //     $labu='';
+                                    // }
+                                            if(substr($dhqlab[PARAMETER_NAME],0,1)=='-'){
+                                                $kethlab=' <i>HITUNG JENIS (DIFF) :<i>';
+                                            }else if(substr($dhqlab[PARAMETER_NAME],0,1)==' '){
+                                                $kethlab=' <i>INDEX ERITROSIT :<i>';
+                                            }else{
+                                                $kethlab='';
+                                            }
+                                            echo "
+                                            <tr>
+                                            <td>$i</td>
+                                            <td>$dhqlab[TARIF_NAME]</td>
+                                            <td>$dhqlab[KEL_PEMERIKSAAN]</td>
+                                            <td>$kethlab $dhqlab[PARAMETER_NAME]</td>
+                                            <td>$dhqlab[$hari]</td>
+                                            <td>$dhqlab[$hari2]</td>
+                                            <td>$dhqlab[$hari3]</td>
+                                            <td>$dhqlab[$hari4]</td>
+                                            <td>$dhqlab[$hari5]</td>
+                                            <td>$dhqlab[$hari6]</td>
+                                            <td>$dhqlab[$hari7]</td>
+                                            <td>$dhqlab[$hari8]</td>
+                                            <td>$dhqlab[$hari9]</td>
+                                            <td>$dhqlab[$hari10]</td>
+                                            </tr>
+                                            ";
+
+
+                                            $i=$i+1;
+                                        }
+
+
+                                        ?>
+
+                                    </div>
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                           <td>
+                              <div class="row">
+                                 <div class="col-4">
+                                    &nbsp;
+                                </div>
+                                <div class="col-8">
+                                    &nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
+                                </div>
+                            </div>
+                        </td>
+                    </tr>   
+                </table>
+
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </form>
+        </font>
+    </body>
 </div>
 </div>
 

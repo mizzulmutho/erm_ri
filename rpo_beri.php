@@ -12,7 +12,10 @@ $row = explode('|',$id);
 $id  = $row[0];
 $user = $row[1]; 
 $id_rpo_header = $row[2]; 
-$nama_obat = $row[3]; 
+$nama_obat = trim($row[3]); 
+//$nama_obat = str_replace(",",".",$nama_obat);
+
+$id_rpo = $row[4]; 
 
 $qu="SELECT norm,noreg FROM ERM_ASSESMEN_HEADER where id='$id'";
 $h1u  = sqlsrv_query($conn, $qu);        
@@ -75,8 +78,8 @@ $tglmasuk = $data3[tglmasuk];
 $tglkeluar = $data3[tglkeluar];
 
 
-$q  = "insert into ERM_RI_RPO_BERI(noreg,userid,tglentry,nama_obat,id_rpo_header) 
-values ('$noreg','$user','$tgl','$nama_obat','$id_rpo_header')";
+$q  = "insert into ERM_RI_RPO_BERI(noreg,userid,tglentry,nama_obat,id_rpo_header,id_rpo) 
+values ('$noreg','$user','$tgl','$nama_obat','$id_rpo_header','$id_rpo')";
 $hs = sqlsrv_query($conn,$q);
 
 if($hs){
@@ -88,8 +91,15 @@ if($hs){
 
 echo "
 <script>
-window.location.replace('rpo2.php?id=$id|$user');
+alert('".$eror."');
+window.location.replace('rpo2.php?id=$id|$user|edit|$nama_obat');
 </script>
 ";
+
+// echo "
+// <script>
+// window.location.replace('rpo2.php?id=$id|$user');
+// </script>
+// ";
 
 ?>

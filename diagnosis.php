@@ -1145,6 +1145,7 @@ if (isset($_POST["Print"])) {
 	</script> 
 
 </head> 
+
 <div id="content"> 
 	<div class="container">
 
@@ -1183,7 +1184,12 @@ if (isset($_POST["Print"])) {
 					<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
 				</div>
 			</div>
-			<hr>
+
+<div class="row">
+<?php include('menu_dokter.php');?>
+</div>
+<hr>
+
 			<div class="row">
 				<div class="col-12 text-center">
 					<b>Diagnosis</b><br>
@@ -1207,27 +1213,133 @@ if (isset($_POST["Print"])) {
 				<div class="col-8">
 					: 
 					<input class="" name="resume20" value="<?php echo $resume20;?>" id="icd101" type="text" size='80' onfocus="nextfield ='';" placeholder="ICD 10, ICD 9 CM" style="min-width:150px; min-height:50px;">
-				</div>
+                    <br>
+                    <font size='4px'>
+                        &nbsp;<a href='diagnosis_awal_dokter2.php?id=<?php echo $id.'|'.$user;?>'>(+) Tambah Diagnosa Awal/Masuk</a><br>
+                    </font>
 
-				<div class="col-4">
-					&bull; Diagnosis Akhir (Primer)
-				</div>
-				<div class="col-8">
-					: <input class="" name="resume21" value="<?php echo $resume21;?>" id="icd102" type="text" size='80' onfocus="nextfield ='';" placeholder="ICD 10, ICD 9 CM" style="min-width:150px; min-height:50px;">
-				</div>
-				<div class="col-4">
-					&bull; Diagnosis Akhir (Sekunder)
-				</div>
-				<div class="col-8">
-					: <input class="" name="resume22" value="<?php echo $resume22;?>" id="icd103" type="text" size='80' onfocus="nextfield ='periode';" placeholder="ICD 10, ICD 9 CM" style="min-width:150px; min-height:50px;">
-				</div>
-			</div>
-			<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;min-width:100px; min-height:50px;">
+                    <?php
+                    $qds="SELECT * FROM  ERM_RI_DIAGNOSA_AWAL where noreg='$noreg'";
+                    $hqds  = sqlsrv_query($conn, $qds);        
+                    $dhqds  = sqlsrv_fetch_array($hqds, SQLSRV_FETCH_ASSOC);            
+                    $diagnosa1  = $dhqds['diagnosa_sekunder1'];
+                    $diagnosa2  = $dhqds['diagnosa_sekunder2'];
+                    $diagnosa3  = $dhqds['diagnosa_sekunder3'];
+                    $diagnosa4   = $dhqds['diagnosa_sekunder4'];
+                    $diagnosa5   = $dhqds['diagnosa_sekunder5'];
+                    $diagnosa6   = $dhqds['diagnosa_sekunder6'];
+                    $diagnosa7   = $dhqds['diagnosa_sekunder7'];
+                    $diagnosa8   = $dhqds['diagnosa_sekunder8'];
+                    $diagnosa9   = $dhqds['diagnosa_sekunder9'];
+                    $diagnosa10   = $dhqds['diagnosa_sekunder10'];
+                    if($diagnosa1){
+                        echo $diagnosa1;echo "<br>";
+                    }
+                    if($diagnosa2){
+                        echo $diagnosa2;echo "<br>";
+                    }
+                    if($diagnosa3){
+                        echo $diagnosa3;echo "<br>";
+                    }
+                    if($diagnosa4){
+                        echo $diagnosa4;echo "<br>";
+                    }
+                    if($diagnosa5){
+                        echo $diagnosa5;echo "<br>";
+                    }
+                    if($diagnosa6){
+                        echo $diagnosa6;echo "<br>";
+                    }
+                    if($diagnosa7){
+                        echo $diagnosa7;echo "<br>";
+                    }
+                    if($diagnosa8){
+                        echo $diagnosa8;echo "<br>";
+                    }
+                    if($diagnosa9){
+                        echo $diagnosa9;echo "<br>";
+                    }
+                    if($diagnosa10){
+                        echo $diagnosa10;echo "<br>";
+                    }
+
+                    ?>
+
+                </div>
+                <div class="col-12">
+                    <hr>
+                </div>
+                <div class="col-4">
+                 &bull; Diagnosis Akhir (Primer)
+             </div>
+             <div class="col-8">
+                 : <input class="" name="resume21" value="<?php echo $resume21;?>" id="icd102" type="text" size='80' onfocus="nextfield ='';" placeholder="ICD 10, ICD 9 CM" style="min-width:150px; min-height:50px;">
+             </div>
+             <div class="col-4">
+                 &bull; Diagnosis Akhir (Sekunder)
+             </div>
+             <div class="col-8">
+                 : <input class="" name="resume22" value="<?php echo $resume22;?>" id="icd103" type="text" size='80' onfocus="nextfield ='periode';" placeholder="ICD 10, ICD 9 CM" style="min-width:150px; min-height:50px;">
+                 <br>
+                 <font size='4px'>
+                    &nbsp;<a href='diagnosis_sekunder_dokter2.php?id=<?php echo $id.'|'.$user;?>'>(+) Tambah Diagnosa Sekunder</a><br>
+                </font>
+
+                <?php
+                $qds="SELECT * FROM  ERM_RI_DIAGNOSA_SEKUNDER where noreg='$noreg'";
+                $hqds  = sqlsrv_query($conn, $qds);        
+                $dhqds  = sqlsrv_fetch_array($hqds, SQLSRV_FETCH_ASSOC);            
+                $diagnosa1  = $dhqds['diagnosa_sekunder1'];
+                $diagnosa2  = $dhqds['diagnosa_sekunder2'];
+                $diagnosa3  = $dhqds['diagnosa_sekunder3'];
+                $diagnosa4   = $dhqds['diagnosa_sekunder4'];
+                $diagnosa5   = $dhqds['diagnosa_sekunder5'];
+                $diagnosa6   = $dhqds['diagnosa_sekunder6'];
+                $diagnosa7   = $dhqds['diagnosa_sekunder7'];
+                $diagnosa8   = $dhqds['diagnosa_sekunder8'];
+                $diagnosa9   = $dhqds['diagnosa_sekunder9'];
+                $diagnosa10   = $dhqds['diagnosa_sekunder10'];
+                if($diagnosa1){
+                    echo $diagnosa1;echo "<br>";
+                }
+                if($diagnosa2){
+                    echo $diagnosa2;echo "<br>";
+                }
+                if($diagnosa3){
+                    echo $diagnosa3;echo "<br>";
+                }
+                if($diagnosa4){
+                    echo $diagnosa4;echo "<br>";
+                }
+                if($diagnosa5){
+                    echo $diagnosa5;echo "<br>";
+                }
+                if($diagnosa6){
+                    echo $diagnosa6;echo "<br>";
+                }
+                if($diagnosa7){
+                    echo $diagnosa7;echo "<br>";
+                }
+                if($diagnosa8){
+                    echo $diagnosa8;echo "<br>";
+                }
+                if($diagnosa9){
+                    echo $diagnosa9;echo "<br>";
+                }
+                if($diagnosa10){
+                    echo $diagnosa10;echo "<br>";
+                }
+
+                ?>
+
+            </div>
+        </div>
+        <input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;min-width:100px; min-height:50px;">
 
 
-			<br><br><br>
-		</font>
-	</form>
+        <br><br><br>
+    </font>
+</form>
 </font>
 </body>
 </div>
@@ -1243,7 +1355,7 @@ if (isset($_POST["simpan"])) {
 
 	$q  = "update ERM_RI_RESUME set
 	resume20	='$resume20',
-	resume21	='$resume20',
+	resume21	='$resume21',
 	resume22	='$resume22'
 	where noreg='$noreg'
 	";

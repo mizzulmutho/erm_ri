@@ -4,6 +4,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include "phpqrcode/qrlib.php";
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tgl2		= gmdate("d/m/Y", time()+60*60*7);
 
@@ -164,7 +166,7 @@ if(empty($regcek)){
 <!DOCTYPE html> 
 <html> 
 <head>  
-	<title>Resume Medis</title>  
+	<title>Edukasi Pasien</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
@@ -500,334 +502,218 @@ if(empty($regcek)){
 			<font size='3px'>
 				<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 					<br>
-					<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+					<a href='close.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
 					&nbsp;&nbsp;
-					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
-					&nbsp;&nbsp;
-					<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
 					<button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
 					&nbsp;&nbsp;
+					<br><br>
+					<div class="row">
+					</div>
+
+					<div class="row">
+						<div class="col-6">
+							<h5><b><?php echo $nmrs; ?></b></h5>
+							<?php echo $alamat; ?>
+						</div>
+						<div class="col-6">
+							<?php echo 'NIK : '.$noktp.'<br>'; ?>					
+							<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+							<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
+						</div>
+					</div>
+					<hr>
+
+					<div class="row">
+						<div class="col-12 text-center">
+							<b>FORMULIR EDUKASI PASIEN DAN KELUARGA TERINTEGRASI</b><br>
+						</div>
+					</div>
+
+					<br>
+
+					<table width='100%' border='0'>
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'><b>PERSIAPAN EDUKASI</b></font>
+									</div>
+								</div>
+							</td>
+						</tr>	
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Bahasa</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed1;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Kebutuhan Penterjemah</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed2;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Pendidikan Pasien</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed3;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Baca dan Tulis</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed4;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Pilihan Tipe Pembelajaran</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed5;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Hambatan Edukasi</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed6;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Kesediaan Menerima Edukasi</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed7;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Edukasi</font>
+									</div>
+									<div class="col-8">
+										: <?php echo $ed8;?>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-4">
+										<font size='3'>Pendidikan Kesehatan yang dibutuhkan : </font>
+									</div>
+									<div class="col-8">
+										<?php if ($ed9=="Ya"){echo "☑";}else{echo "☐";}?> Penggunaan Obat Secara Efektif dan Aman, Efek Samping Serta Interaksinya 
+										<br>
+										<?php if ($ed10=="Ya"){echo "☑";}else{echo "☐";}?> Penggunaan peralatan medis secara efektif dan aman
+										<br>
+										<?php if ($ed11=="Ya"){echo "☑";}else{echo "☐";}?> Potensi interaksi obat & makanan
+										<br>
+										<?php if ($ed12=="Ya"){echo "☑";}else{echo "☐";}?> Hasil asesmen, diagnosis, dan rencana asuhan
+										<br>
+										<?php if ($ed13=="Ya"){echo "☑";}else{echo "☐";}?> Diet dan Nutrisi
+										<br>
+										<?php if ($ed14=="Ya"){echo "☑";}else{echo "☐";}?> Tehnik Rehabilitasi
+										<br>
+										<?php if ($ed15=="Ya"){echo "☑";}else{echo "☐";}?> Orientasi ruangan 
+										<br>
+										<?php if ($ed16=="Ya"){echo "☑";}else{echo "☐";}?> Pemeriksaan Penunjang
+										<br>
+										<?php if ($ed17=="Ya"){echo "☑";}else{echo "☐";}?> Manajemen Nyeri
+										<br>
+										<?php if ($ed18=="Ya"){echo "☑";}else{echo "☐";}?> Cuci tangan yang benar
+										<br>
+										<?php if ($ed19=="Ya"){echo "☑";}else{echo "☐";}?> Pemasangan gelang 
+										<br>
+										<?php if ($ed20=="Ya"){echo "☑";}else{echo "☐";}?> Edukasi Proses Rujukan 
+										<br>
+									</div>
+								</div>
+								<br>
+
+							</td>
+						</tr>	
+
+
+					</table>
+
 					<br>
 					<br>
-<!-- 				<div class="row">
-					<div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
-				</div>
-			-->				
-			<div class="row">
-			</div>
 
-			<div class="row">
-				<div class="col-6">
-					<h5><b><?php echo $nmrs; ?></b></h5>
-					<?php echo $alamat; ?>
-				</div>
-				<div class="col-6">
-					<?php echo 'NIK : '.$noktp.'<br>'; ?>					
-					<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
-					<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
-				</div>
-			</div>
-			<hr>
+					<table width="100%">
+						<tr>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>No</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>PPA</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Materi</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Durasi</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Metode</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Evaluasi</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Tgl Input</font></td>
+							<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>paraf<br>edukator - pasien</font></td>
+						</tr>
+						<?php 
+						$q="
+						select TOP(100) userid,materi,durasi,metode,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id,ttd,ppa
+						from ERM_RI_EDUKASI_DETAIL
+						where noreg='$noreg' order by id desc
+						";
+						$hasil  = sqlsrv_query($conn, $q);  
+						$no=1;
+						while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
 
-			<div class="row">
-				<div class="col-12 text-center">
-					<b>FORMULIR EDUKASI PASIEN DAN KELUARGA TERINTEGRASI</b><br>
-				</div>
-			</div>
+							$verif = 'Document ini telah diverifikasi oleh petugas : '.$data[userid];
 
-			<br>
+							QRcode::png($verif, "image_verif_edukasi.png", "L", 2, 2);   
 
-			<table width='100%' border='0'>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'><b>PERSIAPAN EDUKASI</b></font>
-							</div>
-						</div>
-					</td>
-				</tr>	
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Bahasa</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed1' value='Indonesia' <?php if ($ed1=="Indonesia"){echo "checked";}?> >Indonesia
-								<input type='radio' disabled name='ed1' value='Inggris' <?php if ($ed1=="Inggris"){echo "checked";}?> >Inggris
-								<input type='radio' disabled name='ed1' value='Daerah' <?php if ($ed1=="Daerah"){echo "checked";}?> >Daerah
-								<input type='radio' disabled name='ed1' value='Lain-lain' <?php if ($ed1=="Lain-lain"){echo "checked";}?> >Lain-lain
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Kebutuhan Penterjemah</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed2' value='Ya' <?php if ($ed2=="Ya"){echo "checked";}?> >Ya
-								<input type='radio' disabled name='ed2' value='Tidak' <?php if ($ed2=="Tidak"){echo "checked";}?> >Tidak
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Pendidikan Pasien</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed3' value='SD' <?php if ($ed3=="SD"){echo "checked";}?> >SD
-								<input type='radio' disabled name='ed3' value='SLTP' <?php if ($ed3=="SLTP"){echo "checked";}?> >SLTP
-								<input type='radio' disabled name='ed3' value='SLTA' <?php if ($ed3=="SLTA"){echo "checked";}?> >SLTA
-								<input type='radio' disabled name='ed3' value='S1' <?php if ($ed3=="S1"){echo "checked";}?> >S1
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Baca dan Tulis</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed4' value='Baik' <?php if ($ed4=="Baik"){echo "checked";}?> >Baik
-								<input type='radio' disabled name='ed4' value='Kurang' <?php if ($ed4=="Kurang"){echo "checked";}?> >Kurang
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Pilihan Tipe Pembelajaran</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed5' value='Verbal' <?php if ($ed5=="Verbal"){echo "checked";}?> >Verbal
-								<input type='radio' disabled name='ed5' value='Tulisan' <?php if ($ed5=="Tulisan"){echo "checked";}?> >Tulisan
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Hambatan Edukasi</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed6' value='Tiak Ada' <?php if ($ed6=="Tiak Ada"){echo "checked";}?> >Tidak Ada
-								<input type='radio' disabled name='ed6' value='Ada' <?php if ($ed6=="Ada"){echo "checked";}?> >Ada
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Kesediaan Menerima Edukasi</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed7' value='Ya' <?php if ($ed7=="Ya"){echo "checked";}?> >Ya
-								<input type='radio' disabled name='ed7' value='Tidak' <?php if ($ed7=="Tidak"){echo "checked";}?> >Tidak
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Edukasi</font>
-							</div>
-							<div class="col-8">
-								: <input type='radio' disabled name='ed8' value='Tulisan' <?php if ($ed8=="Tulisan"){echo "checked";}?> >Tulisan
-								<input type='radio' disabled name='ed8' value='Lisan' <?php if ($ed8=="Lisan"){echo "checked";}?> >Lisan
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-4">
-								<font size='3'>Pendidikan Kesehatan yang dibutuhkan : </font>
-							</div>
-							<div class="col-8">
-								<input type='radio' disabled name='ed9' value='Ya' <?php if ($ed9=="Ya"){echo "checked";}?> >Penggunaan Obat Secara Efektif dan Aman, Efek Samping Serta Interaksinya 
-								<br>
-								<input type='radio' disabled name='ed10' value='Ya' <?php if ($ed10=="Ya"){echo "checked";}?> >Penggunaan peralatan medis secara efektif dan aman
-								<br>
-								<input type='radio' disabled name='ed11' value='Ya' <?php if ($ed11=="Ya"){echo "checked";}?> >Potensi interaksi obat & makanan
-								<br>
-								<input type='radio' disabled name='ed12' value='Ya' <?php if ($ed12=="Ya"){echo "checked";}?> >Hasil asesmen, diagnosis, dan rencana asuhan
-								<br>
-								<input type='radio' disabled name='ed13' value='Ya' <?php if ($ed13=="Ya"){echo "checked";}?> >Diet dan Nutrisi
-								<br>
-								<input type='radio' disabled name='ed14' value='Ya' <?php if ($ed14=="Ya"){echo "checked";}?> >Tehnik Rehabilitasi
-								<br>
-								<input type='radio' disabled name='ed15' value='Ya' <?php if ($ed15=="Ya"){echo "checked";}?> >Orientasi ruangan 
-								<br>
-								<input type='radio' disabled name='ed16' value='Ya' <?php if ($ed16=="Ya"){echo "checked";}?> >Pemeriksaan Penunjang
-								<br>
-								<input type='radio' disabled name='ed17' value='Ya' <?php if ($ed17=="Ya"){echo "checked";}?> >Manajemen Nyeri
-								<br>
-								<input type='radio' disabled name='ed18' value='Ya' <?php if ($ed18=="Ya"){echo "checked";}?> >Cuci tangan yang benar
-								<br>
-								<input type='radio' disabled name='ed19' value='Ya' <?php if ($ed19=="Ya"){echo "checked";}?> >Pemasangan gelang 
-								<br>
-								<input type='radio' disabled name='ed20' value='Ya' <?php if ($ed20=="Ya"){echo "checked";}?> >Edukasi Proses Rujukan 
-								<br>
-							</div>
-						</div>
-						<br>
+							echo "
+							<tr>
+							<td align='center'>$no</td>
+							<td align='center'>$data[ppa]</td>
+							<td align='center'>$data[materi]</td>
+							<td align='center'>$data[durasi]</td>
+							<td align='center'>$data[metode]</td>
+							<td align='center'>$data[evaluasi]</td>
+							<td align='center'>$data[tglentry]</td>
+							<td align='center'>
+							<table width='100%'>
+							<tr>						
+							<td width='25%'style='border: 1px solid;' align='center'><font size='2'>$data[userid]</font></td>
+							<td width='25%' style='border: 1px solid;' align='center'><center><img src='image_verif_edukasi.png'></center></td>	
+							<td width='25%' style='border: 1px solid;' align='center'><font size='2'>$nama</font></td>
+							<td width='25%' style='border: 1px solid;' align='center'><img src='$data[ttd]' height='100' width='100'></td>
+							</tr>
+							</table>
+							</td>
+							</tr>
+							";
+							$no += 1;
 
-					</td>
-				</tr>	
-
-				
-			</table>
-
-			<br>
-			<br>
-
-			<table width="100%">
-				<tr>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>materi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>durasi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>metode</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>evaluasi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>tgl input</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>paraf<br>edukator - pasien</font></td>
-				</tr>
-				<?php 
-				$q="
-				select TOP(100) userid,materi,durasi,metode,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id
-				from ERM_RI_EDUKASI_DETAIL
-				where noreg='$noreg' order by id desc
-				";
-				$hasil  = sqlsrv_query($conn, $q);  
-				$no=1;
-				while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
-					echo "
-					<tr>
-					<td>$no</td>
-					<td>$data[materi]</td>
-					<td>$data[durasi]</td>
-					<td>$data[metode]</td>
-					<td>$data[evaluasi]</td>
-					<td>$data[tglentry]</td>
-					<td>$data[userid] - $nama</td>
-					</tr>
-					";
-					$no += 1;
-
-				}
+						}
 
 
-				?>
-			</table>
+						?>
+					</table>
 
 
-			<br>
-			<br>
-			<br>
-		</form>
-	</font>
-</body>
-</div>
+					<br>
+					<br>
+					<br>
+				</form>
+			</font>
+		</body>
+	</div>
 </div>
 
-<?php 
-if (isset($_POST["simpan_detail"])) {
-
-	$tgl	= $_POST["tgl"];
-	$materi	= $_POST["materi"];
-	$durasi	= $_POST["durasi"];
-	$metode	= $_POST["metode"];
-	$evaluasi	= $_POST["evaluasi"];
-
-	$q  = "insert into ERM_RI_EDUKASI_DETAIL(noreg,userid,tglentry,tgl,materi,durasi,metode,evaluasi) 
-	values ('$noreg','$user','$tgl','$tgl','$materi','$durasi','$metode','$evaluasi')";
-	$hs = sqlsrv_query($conn,$q);
-
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
-
-	}
-
-	echo "
-	<script>
-	history.go(-1);
-	</script>
-	";
-
-}
-
-
-if (isset($_POST["simpan"])) {
-
-	$ed1	= $_POST["ed1"];
-	$ed2	= $_POST["ed2"];
-	$ed3	= $_POST["ed3"];
-	$ed4	= $_POST["ed4"];
-	$ed5	= $_POST["ed5"];
-	$ed6	= $_POST["ed6"];
-	$ed7	= $_POST["ed7"];
-	$ed8	= $_POST["ed8"];
-	$ed9	= $_POST["ed9"];
-	$ed10	= $_POST["ed10"];
-	$ed11	= $_POST["ed11"];
-	$ed12	= $_POST["ed12"];
-	$ed13	= $_POST["ed13"];
-	$ed14	= $_POST["ed14"];
-	$ed15	= $_POST["ed15"];
-	$ed16	= $_POST["ed16"];
-	$ed17	= $_POST["ed17"];
-	$ed18	= $_POST["ed18"];
-	$ed19	= $_POST["ed19"];
-	$ed20	= $_POST["ed20"];
-	$ed21	= $_POST["ed21"];
-	$ed22	= $_POST["ed22"];
-	$ed23	= $_POST["ed23"];
-	$ed24	= $_POST["ed24"];
-	$ed25	= $_POST["ed25"];
-	$ed26	= $_POST["ed26"];
-	$ed27	= $_POST["ed27"];
-	$ed28	= $_POST["ed28"];
-	$ed29	= $_POST["ed29"];
-	$ed30	= $_POST["ed30"];
-
-	$q  = "update ERM_RI_EDUKASI_HEADER set
-	ed1	='$ed1',
-	ed2	='$ed2',
-	ed3	='$ed3',
-	ed4	='$ed4',
-	ed5	='$ed5',
-	ed6	='$ed6',
-	ed7	='$ed7',
-	ed8	='$ed8',
-	ed9	='$ed9',
-	ed10	='$ed10',
-	ed11	='$ed11',
-	ed12	='$ed12',
-	ed13	='$ed13',
-	ed14	='$ed14',
-	ed15	='$ed15',
-	ed16	='$ed16',
-	ed17	='$ed17',
-	ed18	='$ed18',
-	ed19	='$ed19',
-	ed20	='$ed20',
-	ed21	='$ed21',
-	ed22	='$ed22',
-	ed23	='$ed23',
-	ed24	='$ed24',
-	ed25	='$ed25',
-	ed26	='$ed26',
-	ed27	='$ed27',
-	ed28	='$ed28',
-	ed29	='$ed29',
-	ed30	='$ed30'
-	where noreg='$noreg'
-	";
-
-	$hs = sqlsrv_query($conn,$q);
-
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
-
-	}
-
-	echo "
-	<script>
-	history.go(-1);
-	</script>
-	";
-
-
-}
+<?php
 
 if (isset($_POST["print"])) {
 	echo "

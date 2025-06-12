@@ -397,9 +397,7 @@ if (isset($_POST["simpan"])) {
 	$skala_nyeri	= trim($_POST["skala_nyeri"]);
 	$berat_badan	= trim($_POST["berat_badan"]);
 
-	$objektif=$objektif.
-	" GCS - Eye : ".$eye.", Verbal : ".$verbal.", Movement : ".$movement.",".
-	"Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.", Penunjang : ".$penunjang;
+	$objektif=$objektif;
 
 
 	//subyek

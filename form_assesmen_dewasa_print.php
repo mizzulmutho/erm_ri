@@ -235,6 +235,8 @@ if(empty($regcek)){
 	$he  = sqlsrv_query($conn, $qe);        
 	$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
 	$tglrawat = $de['tglrawat'];
+	$jamrawat = $de['jamrawat'];
+
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -673,6 +675,7 @@ if(empty($regcek)){
 								<tr>
 									<td width="70%">
 										Masuk di Ruang Rawat Tanggal : <?php echo $tglrawat;?>
+										, jam Masuk : <?php echo $jamrawat;?>
 									</td>
 									<td>
 										Fungsional

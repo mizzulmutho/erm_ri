@@ -23,6 +23,7 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
+$noreg_igd = substr($noreg, 1,12);
 
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
 FROM            ARM_REGISTER INNER JOIN
@@ -87,19 +88,19 @@ $regcek = $di['noreg'];
 //laborat
 $qlab="
 SELECT 
-CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,KEL_PEMERIKSAAN,PARAMETER_NAME,HASIL,SATUAN,NILAI_RUJUKAN,FLAG
+CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,KEL_PEMERIKSAAN,PARAMETER_NAME,HASIL,SATUAN,NILAI_RUJUKAN,FLAG,NOLAB_RS
 FROM        LINKYAN5.SHARELIS.dbo.hasilLIS
-WHERE        (NOLAB_RS = '$noreg') order by REG_DATE desc, KEL_PEMERIKSAAN,PARAMETER_NAME
+WHERE        (NOLAB_RS like '%$noreg_igd%') order by REG_DATE desc, KEL_PEMERIKSAAN,PARAMETER_NAME
 ";
 $hqlab  = sqlsrv_query($conn, $qlab);
 
-$labh = "no | tgl          | pemeriksaan | hasil | nilai normal";
+$labh = "no | tgl          | pemeriksaan | hasil | nilai normal | register";
 $labh2 = "====================================";
 
 $i=1;
 while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
     // $lab0 = " | no | tgl | pemeriksaan | hasil | nilai normal | ";
-    $lab0 = $i.'|'.$dhqlab[REG_DATE].'|'.$dhqlab[KEL_PEMERIKSAAN].'-'.trim($dhqlab[PARAMETER_NAME]).' : '.    $dhqlab[HASIL].' | '.trim($dhqlab[NILAI_RUJUKAN]).' ('.trim($dhqlab[FLAG]).')';
+    $lab0 = $i.'|'.$dhqlab[REG_DATE].'|'.$dhqlab[KEL_PEMERIKSAAN].'-'.trim($dhqlab[PARAMETER_NAME]).' : '.    $dhqlab[HASIL].' | '.trim($dhqlab[NILAI_RUJUKAN]).' ('.trim($dhqlab[FLAG]).')'.'|'.$dhqlab[NOLAB_RS];
 
     if($i==1){
         $lab = $labh.'&#13;&#10;'.$labh2.'&#13;&#10;'.$lab0;        
@@ -118,7 +119,7 @@ SELECT HASILRAD_PEMERIKSAAN_RAD.HASIL, HASILRAD_PEMERIKSAAN_RAD.URAIAN,
 CONVERT(VARCHAR, HASILRAD_PEMERIKSAAN_RAD.TANGGAL, 103) as TANGGAL
 FROM            ERM_RI_ASSESMEN_AWAL_DEWASA INNER JOIN
 HASILRAD_PEMERIKSAAN_RAD ON ERM_RI_ASSESMEN_AWAL_DEWASA.noreg = HASILRAD_PEMERIKSAAN_RAD.NOREG
-where HASILRAD_PEMERIKSAAN_RAD.noreg='$noreg'
+where HASILRAD_PEMERIKSAAN_RAD.noreg like '%$noreg_igd%'
 ORDER BY ERM_RI_ASSESMEN_AWAL_DEWASA.noreg, HASILRAD_PEMERIKSAAN_RAD.TANGGAL
 ";
 $hqrad  = sqlsrv_query($conn, $qrad);
@@ -549,25 +550,25 @@ if(empty($regcek)){
                     </td>
                 </tr>
                 <tr>
-                 <td>
-                  <div class="row">
-                   <div class="col-4">
-                    &nbsp;
-                </div>
-                <div class="col-8">
-                    &nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
-                </div>
-            </div>
-        </td>
-    </tr>   
-</table>
+                   <td>
+                      <div class="row">
+                         <div class="col-4">
+                            &nbsp;
+                        </div>
+                        <div class="col-8">
+                            &nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
+                        </div>
+                    </div>
+                </td>
+            </tr>   
+        </table>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-</form>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+    </form>
 </font>
 </body>
 </div>

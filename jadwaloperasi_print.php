@@ -166,6 +166,8 @@ if(empty($regcek)){
 	$ok58= $de['ok58'];
 	$ok59= $de['ok59'];
 	$ok60= $de['ok60'];
+	$ok61= $de['ok61'];
+	$ok62= $de['ok62'];
 }
 
 if (isset($_POST["Print"])) {
@@ -513,6 +515,10 @@ if (isset($_POST["Print"])) {
             });
 		});
 	</script> 
+
+	<!-- Link ke Bootstrap 5 CSS dan Font Awesome -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
 </head> 
 <div id="content"> 
 	<div class="container">
@@ -565,14 +571,21 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-4">
-										Diagnosa pra pembedahan
+										Diagnosa pra pembedahan  <i class="fas fa-notes-medical"></i>
 									</div>
-									<div class="col-8">
+									<div class="col-6">
 										: <?php 
-										$row = explode('-',$ok1);$ok1  = $row[1];
-										echo $ok1;?>
-
-										BB : <?php echo $ok2;?> kg
+										// $row = explode('-',$ok1);$ok1  = $row[1];
+										echo $ok1;
+										?>
+										
+									</div>
+									<div class="col-2">
+										<table border='1'>
+											<tr><td>
+												&nbsp;BB : <?php echo $ok2;?> kg&nbsp;											
+											</td></tr>
+										</table>
 									</div>
 								</div>
 							</td>
@@ -581,16 +594,19 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-4">
-										Tindakan yang dilakukan
+										Tindakan yang dilakukan <i class="fas fa-procedures"></i>
 									</div>
 									<div class="col-8">
 										: 
 										<!-- <input type='text' name='' value='' size='50'> -->
-										<?php $row = explode('-',$ok3);$ok3  = $row[1]; echo $ok3;?><br>
-										<?php $row = explode('-',$ok4);$ok4  = $row[1]; echo $ok4;?><br>
-										<?php $row = explode('-',$ok5);$ok5  = $row[1]; echo $ok5;?><br>
-										<?php $row = explode('-',$ok6);$ok6  = $row[1]; echo $ok6;?><br>
-										<?php $row = explode('-',$ok7);$ok7  = $row[1]; echo $ok7;?>
+										<?php //$row = explode('-',$ok3);$ok3  = $row[1]; echo $ok3;?>
+										<?php //$row = explode('-',$ok4);$ok4  = $row[1]; echo $ok4;?>
+										<?php //$row = explode('-',$ok5);$ok5  = $row[1]; echo $ok5;?>
+										<?php //$row = explode('-',$ok6);$ok6  = $row[1]; echo $ok6;?>
+										<?php //$row = explode('-',$ok7);$ok7  = $row[1]; echo $ok7;?>
+										<?php 
+										echo $ok3.'<br>'.$ok4.'<br>'.$ok5.'<br>'.$ok6.'<br>'.$ok7;
+										?>
 									</div>
 								</div>
 							</td>
@@ -599,10 +615,11 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-4">
-										Diagnosa pasca pembedahan
+										Diagnosa pasca pembedahan <i class="fas fa-stethoscope"></i>
 									</div>
 									<div class="col-8">
-										:<?php $row = explode('-',$ok8);$ok8  = $row[1]; echo $ok8;?>
+										:<?php //$row = explode('-',$ok8);$ok8  = $row[1]; echo $ok8;?>
+										<?php echo $ok8.'<br>'.$ok61.'<br>'.$ok62;?>
 									</div>
 								</div>
 							</td>
@@ -612,7 +629,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-3">
-										Tgl Operasi
+										Tgl Operasi <i class="fas fa-calendar-alt"></i>
 									</div>
 									<div class="col-3">
 										<?php 
@@ -628,7 +645,7 @@ if (isset($_POST["Print"])) {
 										: <?php echo $ok9;?>
 									</div>
 									<div class="col-3">
-										Lama Operasi
+										Lama Operasi <i class="fas fa-clock"></i>
 									</div>
 									<div class="col-3">
 										: <?php echo $ok10;?>
@@ -640,13 +657,13 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-3">
-										Mulai Jam
+										Mulai Jam <i class="fas fa-clock"></i>
 									</div>
 									<div class="col-3">
 										: <?php echo $ok11;?>
 									</div>
 									<div class="col-3">
-										Selesai jam
+										Selesai jam <i class="fas fa-clock"></i>
 									</div>
 									<div class="col-3">
 										: <?php echo $ok12;?>
@@ -658,18 +675,18 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-6">
-										Dokter Operator : <?php $row = explode('-',$ok42);$ok42  = $row[1]; echo $ok42;?>
+										Dokter Operator <i class="fas fa-user-md"></i> : <?php $row = explode('-',$ok42);$ok42  = $row[1]; echo $ok42;?>
 									</div>
 									<div class="col-6">
-										Asisten : <?php $row = explode('-',$ok43);$ok43  = $row[1]; echo $ok43;?>
+										Asisten <i class="fas fa-user-nurse"></i> : <?php $row = explode('-',$ok43);$ok43  = $row[1]; echo $ok43;?>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-6">
-										Instrumen : <?php $row = explode('-',$ok44);$ok44  = $row[1]; echo $ok44;?>
+										Instrumen <i class="fas fa-tools"></i> : <?php $row = explode('-',$ok44);$ok44  = $row[1]; echo $ok44;?>
 									</div>
 									<div class="col-6">
-										Petugas on Steril : <?php $row = explode('-',$ok45);$ok45  = $row[1]; echo $ok45;?>
+										Petugas on Steril <i class="fas fa-user-shield"></i> : <?php $row = explode('-',$ok45);$ok45  = $row[1]; echo $ok45;?>
 									</div>
 								</div>
 
@@ -679,7 +696,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-12">
-										Jumlah Perdarahan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <?php echo $ok13;?><br>
+										Jumlah Perdarahan <i class="fas fa-tint"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <?php echo $ok13;?><br>
 										Tranfusi durante operasi : 
 										<?php if ($ok46=="TIDAK"){echo "TIDAK";}?>
 										<?php if ($ok46=="YA"){echo "YA : ";}?>
@@ -687,7 +704,7 @@ if (isset($_POST["Print"])) {
 									</div>
 
 									<div class="col-12">
-										Pemeriksaan jaringan &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
+										Pemeriksaan jaringan <i class="fas fa-cogs"></i> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: 
 										<!-- <input type='text' name='ok47' value='<?php echo $ok47;?>' size='30'><br> -->
 										<?php if ($ok47=="TIDAK"){echo "TIDAK";}?>
 										<?php if ($ok47=="YA"){echo "YA : ";}?>
@@ -703,7 +720,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-3">
-										Jenis Anestesi : <?php echo $ok37;?>
+										Jenis Anestesi <i class="fas fa-bed"></i> : <?php echo $ok37;?>
 									</div>
 									<div class="col-3">
 										Mulai Jam : <?php echo $ok38;?>
@@ -751,22 +768,23 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-4">
-										<?php if ($ok16=="YA"){echo "[&radic;]";}else{echo "[]";}?> Poliklinik<br>
-										<?php if ($ok17=="YA"){echo "[&radic;]";}else{echo "[]";}?> Kecil<br>
-										<?php if ($ok18=="YA"){echo "[&radic;]";}else{echo "[]";}?> Sedang<br>
-										<?php if ($ok19=="YA"){echo "[&radic;]";}else{echo "[]";}?> Besar<br>
-										<?php if ($ok20=="YA"){echo "[&radic;]";}else{echo "[]";}?> Besar Khusus<br>
+										<?php if ($ok16=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Poliklinik<br>
+										<?php if ($ok17=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Kecil<br>
+										<?php if ($ok18=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Sedang<br>
+										<?php if ($ok19=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Besar<br>
+										<?php if ($ok20=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Besar Khusus<br>
+										<?php if ($ok49=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?> Khusus<br>
 									</div>
 									<div class="col-4">
-										<?php if ($ok21=="YA"){echo "[&radic;]";}else{echo "[]";}?>Bersih<br>
-										<?php if ($ok22=="YA"){echo "[&radic;]";}else{echo "[]";}?>Bersih Terkontaminasi<br>
-										<?php if ($ok23=="YA"){echo "[&radic;]";}else{echo "[]";}?>Kontaminasi<br>
-										<?php if ($ok24=="YA"){echo "[&radic;]";}else{echo "[]";}?>kotor<br>
+										<?php if ($ok21=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Bersih<br>
+										<?php if ($ok22=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Bersih Terkontaminasi<br>
+										<?php if ($ok23=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Kontaminasi<br>
+										<?php if ($ok24=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>kotor<br>
 									</div>
 									<div class="col-4">
-										<?php if ($ok25=="YA"){echo "[&radic;]";}else{echo "[]";}?>Darurat<br>
-										<?php if ($ok26=="YA"){echo "[&radic;]";}else{echo "[]";}?>Urgen<br>
-										<?php if ($ok27=="YA"){echo "[&radic;]";}else{echo "[]";}?>Elektif<br>
+										<?php if ($ok25=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Darurat<br>
+										<?php if ($ok26=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Urgen<br>
+										<?php if ($ok27=="YA"){echo "&#x2611;";}else{echo "&#x2610;";}?>Elektif<br>
 									</div>
 								</div>
 							</td>
@@ -776,13 +794,13 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-4">
-										Kamar Operasi No : <?php echo $ok28;?>
+										Kamar Operasi No <i class="fas fa-hospital"></i> : <?php echo $ok28;?>
 									</div>
 									<div class="col-4">
-										Ronde Ke : <?php echo $ok29;?>
+										Ronde Ke <i class="fas fa-sync-alt"></i> : <?php echo $ok29;?>
 									</div>
 									<div class="col-4">
-										Hasil Perhitungan Kasa : <?php echo $ok30;?>
+										Hasil Perhitungan Kasa <i class="fas fa-calculator"></i> : <?php echo $ok30;?>
 									</div>
 								</div>
 							</td>
@@ -791,7 +809,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2" align="left">
 								<div class="row">
 									<div class="col-12">
-										Penjelasan Teknik Operasi dan Rincian Temuan
+										Penjelasan Teknik Operasi dan Rincian Temuan <i class="fas fa-file-alt"></i>
 										<br>
 										<?php echo nl2br($ok31);?>
 									</div>
@@ -802,7 +820,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-12">
-										Komplikasi : <?php echo $ok32;?>
+										Komplikasi <i class="fas fa-exclamation-triangle"></i> : <?php echo $ok32;?>
 									</div>
 								</div>
 							</td>
@@ -811,7 +829,7 @@ if (isset($_POST["Print"])) {
 							<td colspan="2">
 								<div class="row">
 									<div class="col-12">
-										Implan : 
+										Implan <i class="fas fa-implant"></i> : 
 										<?php if ($ok33=="YA"){echo "[&radic;]";}else{echo "[]";}?> Tidak 
 										<?php if ($ok34=="YA"){echo "[&radic;]";}else{echo "[]";}?> Ya, 
 										sebutkan: <?php echo nl2br($ok35);?>
@@ -830,12 +848,12 @@ if (isset($_POST["Print"])) {
 										$d  = sqlsrv_fetch_array($h, SQLSRV_FETCH_ASSOC); 
 										$doc = trim($d['doc']);
 
-										if($doc){
-											echo "
-											Gambar Upload<br>
-											<img src=$doc width='300px' height='200px'>
-											";
-										}
+										// if(!empty($doc)){
+										// 	echo "
+										// 	Gambar Upload<br>
+										// 	<img src=$doc width='300px' height='200px'>
+										// 	";
+										// }
 
 										?>						
 

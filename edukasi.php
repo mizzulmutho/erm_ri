@@ -18,6 +18,11 @@ $row = explode('|',$id);
 $id  = $row[0];
 $user = $row[1]; 
 
+$qu="SELECT  [user],role FROM ROLERSPGENTRY.dbo.user_roleERM where [user] like '%$user%'";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$role = trim($d1u['role']);
+
 $qu="SELECT norm,noreg FROM ERM_ASSESMEN_HEADER where id='$id'";
 $h1u  = sqlsrv_query($conn, $qu);        
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
@@ -505,7 +510,9 @@ if(empty($regcek)){
 					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
 					<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
-					<button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
+					<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
+					<a href='edukasi_print.php?id=<?php echo $id.'|'.$user;?>' target='_blank' class='btn btn-info'><i class="bi bi-printer-fill"></i> Print</a>
+
 					&nbsp;&nbsp;
 					<br>
 					<br>
@@ -527,6 +534,15 @@ if(empty($regcek)){
 					<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
 				</div>
 			</div>
+
+			<div class="row">
+				<?php 
+				if($role=='DOKTER'){
+					include('menu_dokter.php');
+				}
+				?>
+			</div>
+
 			<hr>
 
 			<div class="row">
@@ -679,121 +695,60 @@ if(empty($regcek)){
 			<br>
 			<br>
 
-			<table width='100%' border='1'>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Tanggal
-							</div>
-							<div class="col-8">
-								: <input class="" name="tgl" value="<?php echo $tgl;?>" id="" type="text" size='50' onfocus="nextfield ='';" >
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Materi
-							</div>
-							<div class="col-8">
-								: <input class="" name="materi" value="<?php echo $materi;?>" id="obat" type="text" size='50' onfocus="nextfield ='';" placeholder="">
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Durasi
-							</div>
-							<div class="col-8">
-								: <input class="" name="durasi" value="<?php echo $durasi;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Metode
-							</div>
-							<div class="col-8">
-								: <input class="" name="metode" value="<?php echo $metode;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Evaluasi
-							</div>
-							<div class="col-8">
-								: <input class="" name="evaluasi" value="<?php echo $evaluasi;?>" id="" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Waktu Penggunaan">
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;
-							</div>
-							<div class="col-8">
-								&nbsp;&nbsp;<input type='submit' name='simpan_detail' value='simpan_detail' onfocus="nextfield ='done';" style="color: white;background: #66CDAA;border-color: #66CDAA;">
-							</div>
-						</div>
-					</td>
-				</tr>	
-			</table>
-			<br>
-			<table width="100%">
-				<tr>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>materi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>durasi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>metode</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>evaluasi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>tgl input</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>paraf<br>edukator - pasien</font></td>
-					<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>aksi</font></td>
-				</tr>
-				<?php 
-				$q="
-				select TOP(100) userid,materi,durasi,metode,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id
-				from ERM_RI_EDUKASI_DETAIL
-				where noreg='$noreg' order by id desc
-				";
-				$hasil  = sqlsrv_query($conn, $q);  
-				$no=1;
-				while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
-					echo "
+			<?php if($regcek) { ?>
+				<br>				
+				<a href='edukasi_detail.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-info-circle"></i> Tambah Edukasi Detail</a>
+				<br><br>
+				<table width="100%">
 					<tr>
-					<td>$no</td>
-					<td>$data[materi]</td>
-					<td>$data[durasi]</td>
-					<td>$data[metode]</td>
-					<td>$data[evaluasi]</td>
-					<td>$data[tglentry]</td>
-					<td>$data[userid] - $nama</td>
-					<td align='center'><a href='del_edukasi.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>No</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>PPA</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>Materi Edukasi</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>Tgl & Jam</font></td>						
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>Durasi</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>Metode</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>Evaluasi</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>Edukator</font></td>
+						<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>Paraf Pasien/Keluarga</font></td>
 					</tr>
+					<?php 
+					$q="
+					select TOP(100) ppa,userid,materi,durasi,metode,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id
+					from ERM_RI_EDUKASI_DETAIL
+					where noreg='$noreg' order by id desc
 					";
-					$no += 1;
+					$hasil  = sqlsrv_query($conn, $q);  
+					$no=1;
+					while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
+						echo "
+						<tr>
+						<td>$no</td>
+						<td>$data[ppa]</td>						
+						<td>$data[materi]</td>
+						<td>$data[tglentry]</td>
+						<td>$data[durasi]</td>
+						<td>$data[metode]</td>
+						<td>$data[evaluasi]</td>
+						<td>$data[userid]</td>
+						<td align='center'>
+						<table border='1'>
+						<tr>
+						<td></td>
+						<td><a href='edukasi_detail_edit.php?id=$id|$user|$data[id]'><font color='green'>[<i>paraf</i>]</font></a></td>
+						</tr>
+						</table>						
+						</td>
+						</tr>
+						";
+						$no += 1;
 
-				}
+					}
 
 
-				?>
-			</table>
+					?>
+				</table>
 
+			<?php } ?>
 
 			<br>
 			<br>

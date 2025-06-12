@@ -174,6 +174,7 @@ if(empty($regcek)){
 	$abidan41 = $de['abidan41'];
 	$abidan42 = $de['abidan42'];
 	$abidan43 = $de['abidan43'];
+	$t_persalinan = $de['t_persalinan'];
 	$abidan44 = $de['abidan44'];
 	$abidan45 = $de['abidan45'];
 	$abidan46 = $de['abidan46'];
@@ -522,10 +523,10 @@ if(empty($regcek)){
                             		}
                             	}));
                             //if a single result is returned
-                        }           
-                    });
-                }
+                    }           
             });
+                }
+        });
 		});
 	</script> 
 

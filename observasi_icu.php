@@ -296,23 +296,7 @@ $lamaperawatan = $data4[Duration];
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-	<script>
-		CKEDITOR.replace('editor1');
-		CKEDITOR.config.width="100%";
-		CKEDITOR.config.height="500px"
-	</script>
-	<script src="linechartjs/js/Chart.js"></script>
-	<style type="text/css">
-		.container {
-			/*width: 40%;*/
-			margin: 15px auto;
-		}
-	</style>
-
-	<!-- Jqueri autocomplete untuk procedure !!! -->
-	<link rel="stylesheet" href="jquery-ui.css">
-	<script src="jquery-1.10.2.js"></script>
-	<script src="jquery-ui.js"></script>
+	
 
 	<script>
 		$(function() {
@@ -401,8 +385,6 @@ $lamaperawatan = $data4[Duration];
 		});
 	</script> 
 
-
-
 </head> 
 
 <div class="container-fluid">
@@ -423,9 +405,6 @@ $lamaperawatan = $data4[Duration];
 				<!-- &nbsp;&nbsp;
 				<a href='listobservasi_icu.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success btn-sm'><i class="bi bi-x-circle"></i> Edit Data</a>
 			-->				<br>
-			<br>
-			&nbsp;&nbsp;
-			<br>
 			<br>
 			<div class="row">
 				<div class="col-12">
@@ -556,24 +535,12 @@ $lamaperawatan = $data4[Duration];
 				<tr>
 					<td>
 						<div class="row">
-							<div class="col-3">
-								<canvas id="sistole" width="100" height="100"></canvas>
-							</div>
-							<div class="col-3">
-								<canvas id="diastole" width="100" height="100"></canvas>
-							</div>
-							<div class="col-3">
-								<canvas id="nadi" width="100" height="100"></canvas>
-							</div>
+							<canvas id="combinedChart" height="110"></canvas>
+
+							<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+							<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 						</div>
-						<div class="row">
-							<div class="col-3">
-								<canvas id="suhu" width="100" height="100"></canvas>
-							</div>
-							<div class="col-3">
-								<canvas id="cvp" width="100" height="100"></canvas>
-							</div>
-						</div>
+
 					</td>
 				</tr>
 			</table>
@@ -727,216 +694,97 @@ if (isset($_POST["print"])) {
 ?>
 
 
+<script type="text/javascript">
+	var ctx = document.getElementById("combinedChart").getContext("2d");
 
-
-<script  type="text/javascript">
-	var ctx = document.getElementById("sistole").getContext("2d");
 	var data = {
 		labels: [<?php echo $ket; ?>],
 		datasets: [
 		{
-			label: "GRAFIK TENSI SISTOLIK",
-			fill: false,
-			lineTension: 0.1,
-			backgroundColor: "#808080",
-			borderColor: "#808080",
-			pointHoverBackgroundColor: "#29B0D0",
-			pointHoverBorderColor: "#29B0D0",
+			label: "Tensi Sistolik",
 			data: [<?php echo $sistole; ?>],
-		}
-		]
-	};
-
-	var myBarChart = new Chart(ctx, {
-		type: 'line',
-		data: data,
-		options: {
-			legend: {
-				display: true
-			},
-			barValueSpacing: 20,
-			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
-					}
-				}],
-				xAxes: [{
-					gridLines: {
-						color: "rgba(0, 0, 0, 0)",
-					}
-				}]
-			}
-		}
-	});
-</script>
-
-<script  type="text/javascript">
-	var ctx = document.getElementById("diastole").getContext("2d");
-	var data = {
-		labels: [<?php echo $ket; ?>],
-		datasets: [
-		{
-			label: "GRAFIK TENSI DIASTOLIK",
 			fill: false,
-			lineTension: 0.1,
+			lineTension: 0.4,
 			backgroundColor: "#808080",
 			borderColor: "#808080",
-			pointHoverBackgroundColor: "#29B0D0",
-			pointHoverBorderColor: "#29B0D0",
-			data: [<?php echo $diastole; ?>],
-		}
-		]
-	};
-
-	var myBarChart = new Chart(ctx, {
-		type: 'line',
-		data: data,
-		options: {
-			legend: {
-				display: true
-			},
-			barValueSpacing: 20,
-			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
-					}
-				}],
-				xAxes: [{
-					gridLines: {
-						color: "rgba(0, 0, 0, 0)",
-					}
-				}]
-			}
-		}
-	});
-</script>
-
-<script  type="text/javascript">
-	var ctx = document.getElementById("suhu").getContext("2d");
-	var data = {
-		labels: [<?php echo $ket; ?>],
-		datasets: [
+			pointHoverBackgroundColor: "#808080",
+			pointHoverBorderColor: "#808080"
+		},
 		{
-			label: "GRAFIK SUHU",
+			label: "Tensi Diastolik",
+			data: [<?php echo $diastole; ?>],
 			fill: false,
-			lineTension: 0.1,
+			lineTension: 0.4,
+			backgroundColor: "#A9A9A9",
+			borderColor: "#A9A9A9",
+			pointHoverBackgroundColor: "#A9A9A9",
+			pointHoverBorderColor: "#A9A9A9"
+		},
+		{
+			label: "Suhu",
+			data: [<?php echo $suhu; ?>],
+			fill: false,
+			lineTension: 0.4,
 			backgroundColor: "#29B0D0",
 			borderColor: "#29B0D0",
 			pointHoverBackgroundColor: "#29B0D0",
-			pointHoverBorderColor: "#29B0D0",
-			data: [<?php echo $suhu; ?>],
-		}
-		]
-	};
-
-	var myBarChart = new Chart(ctx, {
-		type: 'line',
-		data: data,
-		options: {
-			legend: {
-				display: true
-			},
-			barValueSpacing: 20,
-			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
-					}
-				}],
-				xAxes: [{
-					gridLines: {
-						color: "rgba(0, 0, 0, 0)",
-					}
-				}]
-			}
-		}
-	});
-</script>
-
-
-<script  type="text/javascript">
-	var ctx = document.getElementById("nadi").getContext("2d");
-	var data = {
-		labels: [<?php echo $ket; ?>],
-		datasets: [
+			pointHoverBorderColor: "#29B0D0"
+		},
 		{
-			label: "GRAFIK NADI",
+			label: "Nadi",
+			data: [<?php echo $nadi; ?>],
 			fill: false,
-			lineTension: 0.1,
+			lineTension: 0.4,
 			backgroundColor: "#FF0000",
 			borderColor: "#FF0000",
-			pointHoverBackgroundColor: "#29B0D0",
-			pointHoverBorderColor: "#29B0D0",
-			data: [<?php echo $nadi; ?>],
-		}
-		]
-	};
-
-	var myBarChart = new Chart(ctx, {
-		type: 'line',
-		data: data,
-		options: {
-			legend: {
-				display: true
-			},
-			barValueSpacing: 20,
-			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
-					}
-				}],
-				xAxes: [{
-					gridLines: {
-						color: "rgba(0, 0, 0, 0)",
-					}
-				}]
-			}
-		}
-	});
-</script>
-
-
-<script  type="text/javascript">
-	var ctx = document.getElementById("cvp").getContext("2d");
-	var data = {
-		labels: [<?php echo $ket; ?>],
-		datasets: [
+			pointHoverBackgroundColor: "#FF0000",
+			pointHoverBorderColor: "#FF0000"
+		},
 		{
-			label: "GRAFIK CVP",
+			label: "CVP",
+			data: [<?php echo $cvp; ?>],
 			fill: false,
-			lineTension: 0.1,
+			lineTension: 0.4,
 			backgroundColor: "#2E8B57",
 			borderColor: "#2E8B57",
-			pointHoverBackgroundColor: "#29B0D0",
-			pointHoverBorderColor: "#29B0D0",
-			data: [<?php echo $cvp; ?>],
+			pointHoverBackgroundColor: "#2E8B57",
+			pointHoverBorderColor: "#2E8B57"
 		}
 		]
 	};
 
-	var myBarChart = new Chart(ctx, {
+	var myLineChart = new Chart(ctx, {
 		type: 'line',
 		data: data,
 		options: {
-			legend: {
-				display: true
+			responsive: true,  // Membuat chart responsif
+			plugins: {
+				legend: {
+					display: true
+				},
+				datalabels: {
+					color: 'black',
+					anchor: 'end',
+					align: 'top',
+					font: {
+						weight: 'bold'
+					},
+					formatter: function(value) {
+						return value;
+					}
+				}
 			},
-			barValueSpacing: 20,
 			scales: {
-				yAxes: [{
-					ticks: {
-						min: 0,
+				y: {
+					beginAtZero: true
+				},
+				x: {
+					grid: {
+						color: "rgba(0, 0, 0, 0)"
 					}
-				}],
-				xAxes: [{
-					gridLines: {
-						color: "rgba(0, 0, 0, 0)",
-					}
-				}]
+				}
 			}
-		}
+		},
+		plugins: [ChartDataLabels]
 	});
 </script>

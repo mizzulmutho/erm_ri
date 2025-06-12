@@ -9,12 +9,23 @@ $sbu = $id;
 
 $postcode = $_POST['postcode'];
 
+// $sql="
+// SELECT        TOP (10) ARM_REGISTER.NOREG AS noreg, ARM_REGISTER.NORM AS norm, AFarm_MstPasien.NAMA AS nama_pasien, CONVERT(VARCHAR, ARM_REGISTER.TANGGAL, 103) AS tgl_periksa, CONVERT(VARCHAR, AFarm_MstPasien.TGLLAHIR, 103) AS tgl_lahir
+// FROM            ARM_REGISTER INNER JOIN
+// AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM INNER JOIN
+// Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+// WHERE       (ARM_REGISTER.NOREG LIKE 'R%') AND (Afarm_Unitlayanan.KET1 = '$sbu') AND ((ARM_REGISTER.NOREG LIKE '%$postcode%') OR (ARM_REGISTER.NORM LIKE '%$postcode%') OR (AFarm_MstPasien.NAMA LIKE '%$postcode%'))
+// ORDER BY ARM_REGISTER.TANGGAL DESC
+// ";
+
 $sql="
-SELECT        TOP (10) ARM_REGISTER.NOREG AS noreg, ARM_REGISTER.NORM AS norm, AFarm_MstPasien.NAMA AS nama_pasien, CONVERT(VARCHAR, ARM_REGISTER.TANGGAL, 103) AS tgl_periksa
+SELECT        TOP (10) ARM_REGISTER.NOREG AS noreg, ARM_REGISTER.NORM AS norm, AFarm_MstPasien.NAMA AS nama_pasien, CONVERT(VARCHAR, ARM_REGISTER.TANGGAL, 103) AS tgl_periksa, CONVERT(VARCHAR, 
+                         AFarm_MstPasien.TGLLAHIR, 103) AS tgl_lahir, ARM_REGISTER.CUSTNO, Afarm_Customer.NMCUST
 FROM            ARM_REGISTER INNER JOIN
-AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM INNER JOIN
-Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
-WHERE       (ARM_REGISTER.NOREG LIKE 'R%') AND (ARM_REGISTER.NOREG LIKE 'R%') AND (Afarm_Unitlayanan.KET1 = '$sbu') AND ((ARM_REGISTER.NOREG LIKE '%$postcode%') OR (ARM_REGISTER.NORM LIKE '%$postcode%') OR (AFarm_MstPasien.NAMA LIKE '%$postcode%'))
+                         AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM INNER JOIN
+                         Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT INNER JOIN
+                         Afarm_Customer ON ARM_REGISTER.CUSTNO = Afarm_Customer.CUSTNO
+WHERE       (ARM_REGISTER.NOREG LIKE 'R%') AND (Afarm_Unitlayanan.KET1 = '$sbu') AND ((ARM_REGISTER.NOREG LIKE '%$postcode%') OR (ARM_REGISTER.NORM LIKE '%$postcode%') OR (AFarm_MstPasien.NAMA LIKE '%$postcode%'))
 ORDER BY ARM_REGISTER.TANGGAL DESC
 ";
 $hasil  = sqlsrv_query($conn, $sql); 

@@ -13,7 +13,30 @@ $row = explode('|',$id);
 $id  = $row[0];
 $user = $row[1]; 
 $aresep = $row[2]; 
+$afilter = $row[3];
 
+if (isset($_POST["hasil_lab"])) {
+
+	$afilter='hasil_lab';
+	echo "
+	<script>
+	window.location.replace('soap_dokter.php?id=$id|$user|$aresep|$afilter');
+	</script>
+	";
+
+}
+
+
+if (isset($_POST["hasil_lab_close"])) {
+
+	$afilter='hasil_lab';
+	echo "
+	<script>
+	window.location.replace('soap_dokter.php?id=$id|$user|$aresep');
+	</script>
+	";
+
+}
 
 $qu="SELECT noreg,norm,sbu,kodeunit FROM ERM_ASSESMEN_HEADER where id='$id'";
 $h1u  = sqlsrv_query($conn, $qu);        
@@ -26,9 +49,9 @@ $sbu2 = $sbu;
 
 if (isset($_POST["ambil_lab"])) {
 	$subjektif	= trim($_POST["subjektif"]);
-	$objektif	= trim($_POST["objektif"]);
+	//$objektif	= trim($_POST["objektif"]);
 	$assesment	= trim($_POST["assesment"]);
-	$planning	= trim($_POST["planning"]);
+	//$planning	= trim($_POST["planning"]);
 	$penunjang	= trim($_POST["penunjang"]);
 	$assesmen	= trim($_POST["assesmen"]);
 
@@ -65,9 +88,9 @@ if (isset($_POST["ambil_lab"])) {
 }
 if (isset($_POST["ambil_rad"])) {
 	$subjektif	= trim($_POST["subjektif"]);
-	$objektif	= trim($_POST["objektif"]);
+	//$objektif	= trim($_POST["objektif"]);
 	$assesment	= trim($_POST["assesment"]);
-	$planning	= trim($_POST["planning"]);
+	// $planning	= trim($_POST["planning"]);
 	$penunjang	= trim($_POST["penunjang"]);
 	$assesmen	= trim($_POST["assesmen"]);
 
@@ -342,9 +365,11 @@ if($aresep<>'i_rad'){
 	$prad = $dht[prad];
 }
 
+$kodedokter = substr($user, 0,3);
+
 $qr="
 SELECT count(NOREG) as jreg FROM ERM_SOAP
-where noreg='$noreg' group by noreg";
+where noreg='$noreg' and kodedokter='$kodedokter' group by noreg";
 $hr  = sqlsrv_query($conn, $qr);        
 $dr  = sqlsrv_fetch_array($hr, SQLSRV_FETCH_ASSOC); 
 $jreg = $dr['jreg'];
@@ -405,17 +430,13 @@ if(empty($jreg)){
 		$objektif='kesadaran : '.$kesadaran;
 	}
 
-
 	$eye	= $e;
 	$verbal	= $v;
 	$movement	= $m;
 	$tekanan_darah	= $tensi;
 	$frekuansi_pernafasan	= $nafas;
 
-
-
-
-
+	$objektif = $am76;
 }
 
 $qe="
@@ -537,11 +558,12 @@ if(!empty($resume22)){
 	$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21.'<br>Diagnosis Akhir (Sekunder) : '.$resume22;		
 }
 
-
 //ambil dari observasi...
 $qo="SELECT TOP(1) ob3 as e, ob4 as v, ob5 as m, ob6 as total, ob9 as bb,
-td_sistolik,td_diastolik,nadi,suhu,pernafasan,spo2,bb,tb,total_ews
-FROM  ERM_RI_OBSERVASI where noreg='$noreg' and suhu > 0";
+td_sistolik,td_diastolik,nadi,suhu,pernafasan,spo2,bb,tb,total_ews,
+CONVERT(VARCHAR, tglinput, 103) as tgl_observasi,
+CONVERT(VARCHAR, tglinput, 8) as jam_observasi
+FROM  ERM_RI_OBSERVASI where noreg='$noreg' and suhu > 0 order by id desc";
 $ho  = sqlsrv_query($conn, $qo);        
 $dho  = sqlsrv_fetch_array($ho, SQLSRV_FETCH_ASSOC); 
 $kesadaran = $dho['kesadaran'];
@@ -557,6 +579,8 @@ $suhu = $dho['suhu'];
 $frekuansi_pernafasan = $dho['pernafasan'];
 $berat_badan = $dho['bb'];
 $skala_nyeri = 0;
+$tgl_observasi = $dho['tgl_observasi'];
+$jam_observasi = $dho['jam_observasi'];
 
 $qn="select TOP(1) skala from ERM_RI_NYERI where noreg='$noreg' order by id desc";
 $hn  = sqlsrv_query($conn, $qn);        
@@ -566,7 +590,82 @@ if(empty($skala_nyeri)){
 	$skala_nyeri='0';
 }
 
-$planning = $am77;
+
+$noreg_igd = substr($noreg, 1,12);
+
+$kodedokter  = substr($user,0,3);
+
+//history cppt
+$qhis="
+SELECT        TOP (1) ERM_SOAP.kodedokter, ERM_SOAP.planning, ERM_SOAP.instruksi, Afarm_DOKTER.NAMA
+FROM            ERM_SOAP INNER JOIN
+Afarm_DOKTER ON ERM_SOAP.kodedokter = Afarm_DOKTER.KODEDOKTER
+WHERE        (ERM_SOAP.noreg LIKE '%$noreg_igd%') AND (ERM_SOAP.kodedokter = '$kodedokter') order by id desc
+";
+$hasilhis  = sqlsrv_query($conn, $qhis);  
+$no=1;
+while   ($datahis = sqlsrv_fetch_array($hasilhis,SQLSRV_FETCH_ASSOC)){ 
+
+	$dokter2 = trim($datahis[NAMA]);
+	$planning2 = trim($datahis[planning]);
+	$instruksi2 = $datahis[instruksi];
+
+	// $det_cppt = $no.'. '.$dokter2."\n Plan : ".$planning2."\n Instruksi : ".$instruksi2."\n\n";
+	$det_cppt = $planning2."\n\n";
+
+	$his_cppt = $his_cppt.$det_cppt;
+
+	$no += 1;
+
+}
+
+
+//ambil cppt terakhir dokter
+$qhiscppt="
+SELECT        TOP (1) subjektif, objektif, assesment, planning
+FROM            ERM_SOAP INNER JOIN
+Afarm_DOKTER ON ERM_SOAP.kodedokter = Afarm_DOKTER.KODEDOKTER
+WHERE        (ERM_SOAP.noreg LIKE '%$noreg%') AND (ERM_SOAP.kodedokter = '$kodedokter') order by id desc
+";
+$hasilhiscppt  = sqlsrv_query($conn, $qhiscppt);  
+while   ($datahiscppt = sqlsrv_fetch_array($hasilhiscppt,SQLSRV_FETCH_ASSOC)){ 
+
+	$subjektif3 = trim($datahiscppt[subjektif]);
+	$objektif3 = trim($datahiscppt[objektif]);
+	$assesment3 = trim($datahiscppt[assesment]);
+	$planning3 = trim($datahiscppt[planning]);
+}
+
+
+
+if(!empty($am77)){
+	$planning = $planning."\n\n".$am77;
+}else{
+	$planning = $planning;
+}
+
+if($his_cppt){
+	$planning = $his_cppt;
+}
+
+
+if($planning3){
+	$planning = $planning3;
+}
+if($subjektif3){
+	$subjektif = $subjektif3;
+}
+if($subjektif3){
+	$objektif = $objektif3;
+}
+if($assesment3){
+	$assesment = $assesment3;
+}
+
+
+if(empty($objektif)){
+	$objektif = $am76;	
+}
 
 ?>
 
@@ -577,6 +676,7 @@ $planning = $am77;
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">	
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 	<script language="JavaScript" type="text/javascript">
 		nextfield = "box1";
 		netscape = "";
@@ -673,7 +773,7 @@ $planning = $am77;
 
 <div class="container-fluid">
 
-	<body onload="document.myForm.ku.focus();">
+	<body onload="document.myForm.ku.focus();" style="background-color: #E8F9FF;">
 		
 		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 			<br>
@@ -681,9 +781,11 @@ $planning = $am77;
 			&nbsp;&nbsp;
 			<a href='soap_dokter.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 			&nbsp;&nbsp;
-			<a href='soap_dokter_list.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-info-circle"></i> Edit</a>
+			<a href='soap_dokter_list.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-info-circle"></i> Edit / Tulbakon</a>
 			&nbsp;&nbsp;
 			<a href='r_soap_dokter.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info' target='_blank'><i class="bi bi-list-ol"></i> History</a>
+			&nbsp;&nbsp;
+			<a href='r_soap_dokter2.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info' target='_blank'><i class="bi bi-list-ol"></i> Rekap CPPT/PPA</a>
 			<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
 			&nbsp;&nbsp;
 			<br><br>
@@ -691,204 +793,201 @@ $planning = $am77;
 			<div class="row">
 
 				<div class="col-12">
-					<?php 
-					include "header_soap.php";
-					?>
+					<font size='2'>
+						<?php 
+						include "header_soap2.php";
+						?>
+					</font>
 				</div>
 
-			</div>
-
-			<div class="row">
-				<div class="col-12 text-left">
-					&nbsp;<b>Assesment Awal Medik</b><br>
-					<table width="100%">
-						<tr>
-							<td width="50%">
-								<table width="100%">
-									<tr>
-										<td>Diagnosa</td>
-										<td>: <?php echo $diagnosa;?></td>
-									</tr>
-									<tr>
-										<td>Keluhan Utama</td>
-										<td>: <?php echo $am1;?></td>
-									</tr>
-									<tr>
-										<td>Nama Penyakit</td>
-										<td>: <?php echo $am2;?></td>
-									</tr>
-									<tr>
-										<td>Penunjang</td>
-										<td>: <?php echo $am76;?></td>
-									</tr>
-
-								</table>
-							</td>
-							<td>
-								<table width="100%">
-									<tr>
-										<td>Rencana Terapi</td>
-										<td>
-											<textarea class="form-control" name="am77" cols="100%" onfocus="nextfield ='';" style="min-height:100px;" disabled><?php echo $am77;?></textarea>
-										</td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-
-
-			<div class="row">
-				<div class="col-12 text-center">
-					<b>INPUT SOAP </b><br>
-				</div>
-			</div>
-
-			<hr>
-
-<!-- 				<div class="row">
-					<div class="col-6"><?php echo 'NORM : '.$norm.'<br> NAMA : '.$nama.'<br> TGL LAHIR : '.$tgllahir; ?></div>
-					<div class="col-6"><?php echo 'L/P : '.$kelamin.'<br> UMUR : '.$umur.'<br> ALAMAT : '.$alamatpasien; ?></div>
-				</div>
-			-->
-
-			<font size='4px'>	
 				<div class="row">
-					<div class="col-6">
-						&nbsp;&nbsp;&nbsp;<button type="submit" name="kosongkan_isian" class="btn btn-warning btn-sm" onfocus="nextfield ='done';">Kosongkan isian</button>
-					</div>
+					<?php include('menu_dokter.php');?>
 				</div>
-				<br>
-				<div class="row">
-					<div class="col-6">
-						<div class="col-12">Subjektif<br>
-							<textarea name= "subjektif" id="" style="min-width:650px; min-height:150px;" required><?php echo $subjektif;?></textarea>
-						</div>
-						<div class="col-6">Assesment<br>
-							<textarea name= "assesment" id="" style="min-width:650px; min-height:150px;"><?php echo $assesment;?></textarea>
-						</div>
-						<div class="col-6">Planning -  
-							<!-- <a href='eresep_list_dokter.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info btn-sm'><i class="bi bi-box-arrow-in-right"></i> Ambil data e-Resep</a> -->
+				<hr>
+			</div>
 
-							<button type="submit" name="ambil_eresep" class="btn btn-info btn-sm" onfocus="nextfield ='done';">Ambil data e-Resep</button> 
-
-							<br><br>
-							<textarea name= "planning" id="" style="min-width:650px; min-height:250px;"><?php echo $planning;?></textarea>
-						</div>
-						<div class="col-6">Instruksi<br>
-							<textarea name= "instruksi" id="" style="min-width:650px; min-height:150px;"><?php echo $instruksi;?></textarea>
-						</div>	
-					</div>
-					<div class="col-6">
-						<div class="col-12">
-							<div class="row">
-								<div class="col-12">
-									Objektif<br>
-									<textarea name= "objektif" id="" style="min-width:650px; min-height:150px;"><?php echo $objektif;?></textarea>
-<!-- 									<hr>
-									<textarea name= "ket_object" id="" style="min-width:650px; min-height:50px;"><?php echo $ket_object;?></textarea>
-								-->								
-							</div>
-						</div>
-						<div class="col-12">
-							<div class="row">
-								<div class="col-12">							
-									Glassow Comma Scale (GCS)
-								</div>
-								<div class="col-12">
-									Eye &nbsp;&nbsp;: 
-									<input class="form-control-sm" name="eye" value="<?php echo $eye;?>" id="" type="text" size='5' onfocus="nextfield ='verbal';" placeholder="" style="min-height:50px;">
-									Verbal : 
-									<input class="form-control-sm" name="verbal" value="<?php echo $verbal;?>" id="" type="text" size='5' onfocus="nextfield ='movement';" placeholder="" style="min-height:50px;">
-									Movement : 
-									<input class="form-control-sm" name="movement" value="<?php echo $movement;?>" id="" type="text" size='5' onfocus="nextfield ='tekanan_darah';" placeholder="" style="min-height:50px;">
-								</div>
-								<br>
-								<div class="col-12">
-									Vital Sign
-								</div>
-								<div class="col-12">
-									Tensi : 
-									<input class="form-control-sm" name="tekanan_darah" value="<?php echo $tekanan_darah;?>" id="" type="text" size='5' onfocus="nextfield ='nadi';" placeholder="" style="min-width:50px; min-height:50px;">mmHg
-								</div> 
-								<br><br>
-								<div class="col-12">
-									Nadi : 
-									<input class="form-control-sm" name="nadi" value="<?php echo $nadi;?>" id="" type="text" size='5' onfocus="nextfield ='suhu';" placeholder="" style="min-width:50px; min-height:50px;">x/menit 
-									<input class="" name="ket_nadi" value="teratur" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" <?php if ($ket_nadi=="teratur"){echo "checked";}?>>Teratur
-									<input class="" name="ket_nadi" value="tidak teratur" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" <?php if ($ket_nadi=="tidak teratur"){echo "checked";}?>>Tidak Teratur
-								</div>
-								<br><br>
-								<div class="col-12">
-									Suhu : 
-									<input class="form-control-sm" name="suhu" value="<?php echo $suhu;?>" id="" type="text" size='5' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="" style="min-width:50px; min-height:50px;">C
-									-
-									Frekuensi Pernafasan : 
-									<input class="form-control-sm" name="frekuansi_pernafasan" value="<?php echo $frekuansi_pernafasan;?>" id="" type="text" size='5' onfocus="nextfield ='skala_nyeri';" placeholder="" style="min-width:50px; min-height:50px;">x/menit
-									-
-									Skala Nyeri : 
-									<input class="form-control-sm" name="skala_nyeri" value="<?php echo $skala_nyeri;?>" id="" type="text" size='3' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;">						
-								</div>
-								<br><br>
-								<div class="col-12">
-									Berat : 
-									<input class="form-control-sm" name="berat_badan" value="<?php echo $berat_badan;?>" id="" type="text" size='5' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:50px; min-height:50px;">Kg	
-								</div>
-							</div>
-						</div>
-						<br>
+			<table>
+				<tr valign="top">
+					
+					<td>
 						<div class="row">
+							<div class="col-4 text-left">
+								<font size="2">
+									&nbsp;<b>Assesment Awal Medik</b><br>
+									<table width="100%">
+										<tr>
+											<td width="50%">
+												<table width="100%">
+													<tr>
+														<td>Diagnosa : <?php echo $diagnosa;?></td>
+													</tr>
+													<tr>
+														<td>Keluhan Utama : <?php echo $am1;?></td>
+													</tr>
+													<tr>
+														<td>Nama Penyakit : <?php echo $am2;?></td>
+													</tr>
+													<tr>
+														<td>Penunjang : <?php echo $am76;?></td>
+													</tr>
+
+												</table>
+											</td>
+										</tr>
+									</table>
+								</font>
+							</div>
+							<div class="col-8 text-left glowing-text">
+								<br>
+								INPUT SOAP DPJP
+							</div>
+
+							<style>
+								.glowing-text {
+									font-size: 2rem;
+									font-weight: bold;
+									color: #fff;
+									text-shadow: 0 0 5px #00f, 0 0 10px #00f, 0 0 15px #00f, 0 0 20px #00f;
+								}
+							</style>
+
+						</div>
+
+					</div>
+
+					<hr>
+					<div class="row">
+						<div class="col-12 text-center" style="color: #00879E; font-family: Arial; font-weight: bold;">
+							Data yang ditampilkan adalah data CPPT terakhir yang diinputkan oleh DPJP
+						</div>
+					</div>
+
+					<br>
+					<div class="row">
+						<div class="col-6">
+							<div class="col-12">Subjektif<br>
+								<textarea name= "subjektif" id="" style="min-width:650px; min-height:60px;"><?php echo $subjektif;?></textarea>
+							</div>
+							<div class="col-6">Assesment<br>
+								<textarea name= "assesment" id="" style="min-width:650px; min-height:100px;"><?php echo $assesment;?></textarea>
+							</div>
+							<div class="col-6">Planning -  
+								<button type="submit" name="ambil_eresep" class="btn btn-info btn-sm">Ambil data e-Resep</button> 
+								<br><br>
+								<textarea name= "planning" id="" style="min-width:650px; min-height:380px;"><?php echo $planning;?></textarea>
+							</div>
+							<div class="col-6">Instruksi<br>
+								<textarea name= "instruksi" id="" style="min-width:650px; min-height:80px;"><?php echo $instruksi;?></textarea>
+							</div>	
+						</div>
+						<div class="col-6">
 							<div class="col-12">
-								Laborat :
-								<button type="submit" name="ambil_lab" class="btn btn-info btn-sm" onfocus="nextfield ='done';">Ambil data hasil Laborat</button> 
+								<div class="row">
+									<div class="col-12">
+										Objektif<br>
+										<textarea name= "objektif" id="" style="min-width:650px; min-height:150px;"><?php echo $objektif;?></textarea>
+									</div>
+								</div>
+								<div class="col-12">
+									<table cellpadding="10" bgcolor='white'>
+										<tr>
+											<td>
+												<div class="row">
+													<div class="col-12">							
+														Glassow Comma Scale (GCS)
+														<br>
+														<u>Observasi terakhir tgl : <?php echo $tgl_observasi; ?> jam : <?php echo $jam_observasi; ?></u>
+													</div>
+													<div class="col-12">
+														Eye &nbsp;&nbsp;: 
+														<input class="form-control-sm" name="eye" value="<?php echo $eye;?>" id="" type="text" size='4' onfocus="nextfield ='verbal';" placeholder="" style="min-height:20px;">
+														Verbal : 
+														<input class="form-control-sm" name="verbal" value="<?php echo $verbal;?>" id="" type="text" size='4' onfocus="nextfield ='movement';" placeholder="" style="min-height:20px;">
+														Movement : 
+														<input class="form-control-sm" name="movement" value="<?php echo $movement;?>" id="" type="text" size='4' onfocus="nextfield ='tekanan_darah';" placeholder="" style="min-height:20px;">
+													</div>
+													<br>
+													<div class="col-12">
+														Vital Sign
+													</div>
+													<div class="col-12">
+														Tensi : 
+														<input class="form-control-sm" name="tekanan_darah" value="<?php echo $tekanan_darah;?>" id="" type="text" size='5' onfocus="nextfield ='nadi';" placeholder="" style="min-width:20px; min-height:20px;">mmHg
+													</div> 
+													<br><br>
+													<div class="col-12">
+														Nadi : 
+														<input class="form-control-sm" name="nadi" value="<?php echo $nadi;?>" id="" type="text" size='5' onfocus="nextfield ='suhu';" placeholder="" style="min-width:20px; min-height:20px;">x/menit 
+														<input class="" name="ket_nadi" value="teratur" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" <?php if ($ket_nadi=="teratur"){echo "checked";}?>>Teratur
+														<input class="" name="ket_nadi" value="tidak teratur" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" <?php if ($ket_nadi=="tidak teratur"){echo "checked";}?>>Tidak Teratur
+													</div>
+													<br><br>
+													<div class="col-12">
+														Suhu : 
+														<input class="form-control-sm" name="suhu" value="<?php echo $suhu;?>" id="" type="text" size='4' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="" style="min-width:20px; min-height:20px;">C
+														<br><br>
+														Nafas : 
+														<input class="form-control-sm" name="frekuansi_pernafasan" value="<?php echo $frekuansi_pernafasan;?>" id="" type="text" size='5' onfocus="nextfield ='skala_nyeri';" placeholder="" style="min-width:20px; min-height:20px;"> Frekuesni Pernafasan (x/menit)
+														<br><br>
+														Nyeri : 
+														<input class="form-control-sm" name="skala_nyeri" value="<?php echo $skala_nyeri;?>" id="" type="text" size='4' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:20px; min-height:20px;"> Skala Nyeri			<br><br>			
+													</div>
+													<br><br>
+													<div class="col-12">
+														Berat : 
+														<input class="form-control-sm" name="berat_badan" value="<?php echo $berat_badan;?>" id="" type="text" size='4' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:20px; min-height:20px;">Kg	
+													</div>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
 								<br>
-								<textarea name= "plab" id="" style="min-width:650px; min-height:150px;"><?php echo $plab;?></textarea>
-								<br>
-								Radiologi :
-								<button type="submit" name="ambil_rad" class="btn btn-info btn-sm" onfocus="nextfield ='done';">Ambil data hasil Radiologi</button> 
-								<br>
-								<textarea name= "prad" id="" style="min-width:650px; min-height:150px;"><?php echo $prad;?></textarea>
+								<div class="row">
+									<div class="col-12">
+										Laborat :
+										<button type="submit" name="ambil_lab" class="btn btn-info btn-sm" onfocus="nextfield ='done';">Ambil data hasil Laborat</button> 
+										<br>
+										<textarea name= "plab" id="" style="min-width:650px; min-height:60px;"><?php echo $plab;?></textarea>
+										<br>
+										Radiologi :
+										<button type="submit" name="ambil_rad" class="btn btn-info btn-sm" onfocus="nextfield ='done';">Ambil data hasil Radiologi</button> 
+										<br>
+										<textarea name= "prad" id="" style="min-width:650px; min-height:60px;"><?php echo $prad;?></textarea>
+
+									</div>
+								</div>
+
+
 
 							</div>
 						</div>
 
+						<div class="col-12 align-self-center">
+							<center>
+								<br>
+								<br>
+								<input type='checkbox' name='dobel' value='dobel' style="min-width:20px; min-height:20px;">&nbsp;Tetap Simpan&nbsp;&nbsp;&nbsp;
+								<button type='submit' name='simpan' value='simpan' class="btn btn-success" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button> <br><br><p style="background-color: yellow; color: red;">Mohon tunggu hingga pesan sukses muncul</p>
+							</center>
+							<br><br><br>
+						</div>
+
+					</div>						
+
+				</td>
+			</tr>
+		</table>
 
 
-					</div>
-				</div>
-
-				<div class="col-12 align-self-center">
-					<center>
-						<br>
-						<br>
-						<button type='submit' name='simpan' value='simpan' class="btn btn-success" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-					</center>
-				</div>
 
 
-<!-- 				<div class="row">
-					<div class="col-6">Penunjang<br>
-						<textarea name= "penunjang" id="" style="min-width:650px; min-height:50px;"><?php echo $penunjang;?></textarea>
-					</div>
-				</div>
-			-->				
 
-		</div>
-	</div>
-</div>				
-</div>
-
-<br><br><br>
-</form>
-</font>
+	</form>
 </body>
 </div>
 
 <?php
-
-
 
 if (isset($_POST["simpan"])) {
 
@@ -898,6 +997,7 @@ if (isset($_POST["simpan"])) {
 	$objektif	= trim($_POST["objektif"]);
 	$assesment	= trim($_POST["assesment"]);
 	$planning	= trim($_POST["planning"]);
+
 	$instruksi	= trim($_POST["instruksi"]);
 	$plab	= trim($_POST["plab"]);
 	$prad	= trim($_POST["prad"]);
@@ -924,19 +1024,7 @@ if (isset($_POST["simpan"])) {
 	"Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.", Penunjang : ".$penunjang;
 
 
-	//subyek
-	$dsubjektif = $subjektif;
 
-	//assemen
-	$dassesment = $assesment;
-
-	//plaing
-	$dplanning = $planning;
-
-	//object
-	$dobjektif= $objektif;
-
-	// $tglinput	= trim($_POST["tglinput"]);
 	$userinput	= trim($_POST["userinput"]);
 
 	$lanjut="Y";
@@ -946,25 +1034,36 @@ if (isset($_POST["simpan"])) {
 	$kodedokter  = trim($row[0]);
 	$kodedokter  = substr($user,0,3);
 	$pass = trim($_POST["pass"]);
+	
 	$instruksi = trim($_POST["instruksi"]);
+
+	$subjektif = str_replace("'","`",$subjektif);
+	$assesment = str_replace("'","`",$assesment);
+	$planning = str_replace("'","`",$planning);
+	$objektif = str_replace("'","`",$objektif);
+	$instruksi = str_replace("'","`",$instruksi);
 
 	$lanjut="Y";
 
+	$qcekinput="SELECT top(1)id FROM ERM_SOAP where norm='$norm' and tanggal='$tglinput' and kodedokter='$kodedokter'";
 
-	// if(empty($pass)){
-	// 	$eror='Password Tidak Boleh Kosong !!!';
-	// 	$lanjut='T';
-	// }
+	$h_qcekinput  = sqlsrv_query($conn, $qcekinput);        
+	$d_qcekinput  = sqlsrv_fetch_array($h_qcekinput, SQLSRV_FETCH_ASSOC); 
+	$cekinput = $d_qcekinput['id'];
 
-	// if(empty($kodedokter)){
-	// 	$eror='Kodedokter Tidak Boleh Kosong !!!';
-	// 	$lanjut='T';
-	// }
+	if(empty($subjektif)){
+		$lanjut='T';
+		$eror='Data Subjektif kosong';
+	}
 
-	// if(empty($dpjp)){
-	// 	$eror='DPJP Tidak Boleh Kosong !!!';
-	// 	$lanjut='T';
-	// }
+	$dobel	= trim($_POST["dobel"]);
+	if($cekinput){
+		if(empty($dobel)){
+			$lanjut='T';
+			$eror='Data sudah pernah diinput';
+		}
+	}
+
 
 	if($lanjut == 'Y'){
 		$q  = "insert into ERM_SOAP
@@ -973,114 +1072,151 @@ if (isset($_POST["simpan"])) {
 		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
 		$hs = sqlsrv_query($conn,$q);
 
+		$qr  = "insert into ERM_SOAP_DOKTER
+		(norm, noreg, tanggal, sbu, kodeunit, kodedokter, subjektif, objektif, assesment, planning, userid, tglentry,instruksi,dpjp) 
+		values 
+		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
+		$hsr = sqlsrv_query($conn,$qr);
+
+
 		$qu="SELECT top(1)id FROM ERM_SOAP where noreg='$noreg' order by id desc";
 		$h1u  = sqlsrv_query($conn, $qu);        
 		$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 		$idsoap = $d1u['id'];
 
-		echo	$q  = "insert into ERM_RI_SOAP
-		(
-		norm,noreg,
-		tglupdate,
-		userid,
-		ku,
-		rps,
-		anamnesa,
-		rpd,
-		alergi,
-		assesmen,
-		aplan,
-		eye,
-		verbal,
-		movement,
-		tekanan_darah,
-		nadi,
-		suhu,
-		frekuansi_pernafasan,
-		skala_nyeri,
-		berat_badan,
-		fisik_kepala,
-		fisik_mata,
-		fisik_tht,
-		fisik_leher,
-		fisik_paru,
-		fisik_jantung,
-		fisik_abdomen,
-		fisik_ekstermitas,
-		fisik_urogenital,
-		status_lokalis,
-		pemeriksaan_penunjang,
-		ket_nadi,id_soap, instruksi
-		) 
-		values 
-		(
-		'$norm','$noreg',
-		'$tglinput',
-		'$user',
-		'$ku',
-		'$rps',
-		'$anamnesa',
-		'$rpd',
-		'$alergi',
-		'$assesmen',
-		'$aplan',
-		'$eye',
-		'$verbal',
-		'$movement',
-		'$tekanan_darah',
-		'$nadi',
-		'$suhu',
-		'$frekuansi_pernafasan',
-		'$skala_nyeri',
-		'$berat_badan',
-		'$fisik_kepala',
-		'$fisik_mata',
-		'$fisik_tht',
-		'$fisik_leher',
-		'$fisik_paru',
-		'$fisik_jantung',
-		'$fisik_abdomen',
-		'$fisik_ekstermitas',
-		'$fisik_urogenital',
-		'$status_lokalis',
-		'$penunjang',
-		'$ket_nadi','$idsoap','$instruksi'
-	)";
-	$hs = sqlsrv_query($conn,$q);
-
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
-
+		if($hs){
+			$q  = "insert into ERM_RI_SOAP
+			(
+			norm,noreg,
+			tglupdate,
+			userid,
+			ku,
+			rps,
+			anamnesa,
+			rpd,
+			alergi,
+			assesmen,
+			aplan,
+			eye,
+			verbal,
+			movement,
+			tekanan_darah,
+			nadi,
+			suhu,
+			frekuansi_pernafasan,
+			skala_nyeri,
+			berat_badan,
+			fisik_kepala,
+			fisik_mata,
+			fisik_tht,
+			fisik_leher,
+			fisik_paru,
+			fisik_jantung,
+			fisik_abdomen,
+			fisik_ekstermitas,
+			fisik_urogenital,
+			status_lokalis,
+			pemeriksaan_penunjang,
+			ket_nadi,id_soap, instruksi
+			) 
+			values 
+			(
+			'$norm','$noreg',
+			'$tglinput',
+			'$user',
+			'$ku',
+			'$rps',
+			'$anamnesa',
+			'$rpd',
+			'$alergi',
+			'$assesmen',
+			'$aplan',
+			'$eye',
+			'$verbal',
+			'$movement',
+			'$tekanan_darah',
+			'$nadi',
+			'$suhu',
+			'$frekuansi_pernafasan',
+			'$skala_nyeri',
+			'$berat_badan',
+			'$fisik_kepala',
+			'$fisik_mata',
+			'$fisik_tht',
+			'$fisik_leher',
+			'$fisik_paru',
+			'$fisik_jantung',
+			'$fisik_abdomen',
+			'$fisik_ekstermitas',
+			'$fisik_urogenital',
+			'$status_lokalis',
+			'$penunjang',
+			'$ket_nadi','$idsoap','$instruksi'
+		)";
+		$hs = sqlsrv_query($conn,$q);
 	}
 
-	echo "
-	<script>
-	alert('".$eror."');
-	history.go(-1);
-	</script>
-	";
+	if($hs){
+		$eror = "Input Data CPPT Berhasil";
 
-		// echo "
-		// <script>
-		// top.location='index.php?id='$id|$user';
-		// </script>
-		// ";            
+		echo "<script>
+		Swal.fire({
+			title: 'Good job!',
+			text: '$eror',
+			icon: 'success',
+			confirmButtonText: 'OK'
+			}).then((result) => {
+				if (result.isConfirmed || result.isDismissed) {
+					history.go(-1); 
+				}
+				});
+				</script>";
 
-}else{
-	echo "
-	<script>
-	alert('".$eror."');
-	history.go(-1);
-	</script>
-	";
+			}else{
+				$eror = "Gagal Insert - Hubungi IT";
 
-}
+				echo "<script>
+				Swal.fire({
+					title: 'Gagal!',
+					text: '$eror',
+					icon: 'error',
+					confirmButtonText: 'OK'
+					}).then((result) => {
+						if (result.isConfirmed || result.isDismissed) {
+							history.go(-1); 
+						}
+						});
+						</script>";				
+					}
 
-}
+	// echo "
+	// <script>
+	// alert('".$eror."');
+	// history.go(-1);
+	// </script>
+	// ";
+
+
+				}else{
+
+					echo "<script>
+					Swal.fire({
+						title: 'Gagal!',
+						text: '$eror',
+						icon: 'error',
+						confirmButtonText: 'OK'
+						}).then((result) => {
+							if (result.isConfirmed || result.isDismissed) {
+								history.go(-1); 
+							}
+							});
+							</script>";
+
+						}
+
+					}
 
 
 
-?>
+					?>
 

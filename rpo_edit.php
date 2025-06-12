@@ -293,7 +293,7 @@ if($idresep=='edit'){
 					<br>
 					<a href='rpo2.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
 					&nbsp;&nbsp;
-					<a href='rpo_edit.php?id=<?php echo $id.'|'.$user.'|'.$idrpo;?>' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
 					<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
 <!-- 					<button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
@@ -341,139 +341,100 @@ if($idresep=='edit'){
 								&nbsp;&bull; Nama obat
 							</div>
 							<div class="col-8">
-								: <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='dosis';" placeholder="Isikan Nama Obat">
+								: <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Obat">
 							</div>
 						</div>
-<!-- 						<div class="row">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
 							<div class="col-4">
 								&nbsp;&bull; Dosis
 							</div>
 							<div class="col-8">
-								: <input class="" name="dosis" value="<?php echo $dosis;?>" id="obat" type="text" size='50' onfocus="nextfield ='jumlah';" placeholder="Isikan Dosis">
+								: <input class="" name="dosis" value="<?php echo $dosis;?>" id="obat" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Dosis Obat">
 							</div>
 						</div>
-					-->						
-					<div class="row">
-						<div class="col-4">
-							&nbsp;&bull; Jumlah
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-4">
+								&nbsp;&bull; Interval Jadwal Pemberian Obat
+							</div>
+							<div class="col-8">
+								: 
+								<!-- <input class="" name="interval" value="<?php echo $interval;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder=""> -->
+								<?php 
+								if(empty($interval)){
+									?>
+									<select id="interval" name="interval">
+										<option value=""></option>
+										<option value="1x1 - 05.00-07.00, 11.00-12.00, 17.00-18.00, 21.00-23.00">
+											1x1 - 05.00-07.00, 11.00-12.00, 17.00-18.00, 21.00-23.00
+										</option>
+										<option value="2x1 - 05.00 & 17.00 atau 07.00 & 19.00 atau 11.00 & 23.00">
+											2x1 - 05.00 & 17.00 atau 07.00 & 19.00 atau 11.00 & 23.00
+										</option>
+										<option value="3x1 - 05.00-13.00-21.00 atau 06.00-14.00-22.00">
+											3x1 - 05.00-13.00-21.00 atau 06.00-14.00-22.00
+										</option>
+										<option value="4x1 - 05.00-11.00-17.00-23.00 atau 06.00-12.00-18.00-00.00">
+											4x1 - 05.00-11.00-17.00-23.00 atau 06.00-12.00-18.00-00.00
+										</option>
+										<option value="5x1 - 05.00-09.00-13.00-17.00-21.00 atau 06.00-10.00-14.00-18.00-22.00">
+											5x1 - 05.00-09.00-13.00-17.00-21.00 atau 06.00-10.00-14.00-18.00-22.00
+										</option>
+										<option value="6x1 - 05.00-09.00-13.00-17.00-21.00-01.00 atau 06.00-10.00-14.00-18.00-22.00-02.00">
+											6x1 - 05.00-09.00-13.00-17.00-21.00-01.00 atau 06.00-10.00-14.00-18.00-22.00-02.00
+										</option>
+									</select>
+								<?php } else{ ?>
+									<input class="" name="interval" value="<?php echo $interval;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
+								<?php } ?>
+							</div>
 						</div>
-						<div class="col-8">
-							: <input class="" name="jumlah" value="<?php echo $jumlah;?>" id="obat" type="text" size='50' onfocus="nextfield ='interval';" placeholder="Isikan Jumlah">
-						</div>
-					</div>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<div class="row">
-						<div class="col-4">
-							&nbsp;&bull; Interval Jadwal Pemberian Obat
-						</div>
-						<div class="col-8">
-							: 
-							<!-- <input class="" name="interval" value="<?php echo $interval;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder=""> -->
-							<?php 
-							if(empty($interval)){
-								?>
-								<select id="interval" name="interval">
-									<option value=""></option>
-									<option value="1x1 - 05.00-07.00, 11.00-12.00, 17.00-18.00, 21.00-23.00">
-										1x1 - 05.00-07.00, 11.00-12.00, 17.00-18.00, 21.00-23.00
-									</option>
-									<option value="2x1 - 05.00 & 17.00 atau 07.00 & 19.00 atau 11.00 & 23.00">
-										2x1 - 05.00 & 17.00 atau 07.00 & 19.00 atau 11.00 & 23.00
-									</option>
-									<option value="3x1 - 05.00-13.00-21.00 atau 06.00-14.00-22.00">
-										3x1 - 05.00-13.00-21.00 atau 06.00-14.00-22.00
-									</option>
-									<option value="4x1 - 05.00-11.00-17.00-23.00 atau 06.00-12.00-18.00-00.00">
-										4x1 - 05.00-11.00-17.00-23.00 atau 06.00-12.00-18.00-00.00
-									</option>
-									<option value="5x1 - 05.00-09.00-13.00-17.00-21.00 atau 06.00-10.00-14.00-18.00-22.00">
-										5x1 - 05.00-09.00-13.00-17.00-21.00 atau 06.00-10.00-14.00-18.00-22.00
-									</option>
-									<option value="6x1 - 05.00-09.00-13.00-17.00-21.00-01.00 atau 06.00-10.00-14.00-18.00-22.00-02.00">
-										6x1 - 05.00-09.00-13.00-17.00-21.00-01.00 atau 06.00-10.00-14.00-18.00-22.00-02.00
-									</option>
-								</select>
-							<?php } else{ ?>
-								<input class="" name="interval" value="<?php echo $interval;?>" id="" type="text" size='50' onfocus="nextfield ='';" placeholder="">
-							<?php } ?>
-						</div>
-					</div>
-				</td>
-			</tr>
+					</td>
+				</tr>
 
-			<tr>
-				<td>
-					<div class="row">
-						<div class="col-4">
-							&nbsp;&bull; Tanggal / Jam
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-4">
+								&nbsp;&bull; Tanggal / Jam
+							</div>
+							<div class="col-8">
+								: <input class="" name="tgl" value="<?php echo $tgl;?>" id="" type="text" size='50' onfocus="nextfield ='';" >
+							</div>
 						</div>
-						<div class="col-8">
-							: <input class="" name="tgl" value="<?php echo $tgl;?>" id="" type="text" size='50' onfocus="nextfield ='';" >
-						</div>
-					</div>
-				</td>
-			</tr>
+					</td>
+				</tr>
 
 
-			<tr>
-				<td>
-					<div class="row">
-						<div class="col-4">
-							&nbsp;
-						</div>
-						<div class="col-8">
-							<?php if(empty($cek_eresep)){ ?>
+				<tr>
+					<td>
+						<div class="row">
+							<div class="col-4">
+								&nbsp;
+							</div>
+							<div class="col-8">
 								<br>
 								<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
 								<br><br>
-							<?php } ?>
+							</div>
 						</div>
-					</div>
-				</td>
-			</tr>	
+					</td>
+				</tr>	
 
 
-
-			<tr>
-				<td>
-
-					<table width="100%">
-						<tr>
-							<td>
-								Dokter<br>
-								<input class="" name="dokter" value="<?php echo $dokter;?>" id="dokter" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td>
-								Apoteker<br>
-								<input class="" name="apoteker" value="<?php echo $apoteker;?>" id="apoteker" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td>
-								Keluarga<br>
-								<input class="" name="keluarga" value="<?php echo $nama;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td width="25%">
-								Pemberi<br>
-								<input class="" name="pemberi" value="<?php echo $user;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder="">
-							</td>
-							<td width="25%">
-								Pemeriksa<br>
-								<input class="" name="periksa" value="<?php echo $periksa;?>" id="" type="text" size='30' onfocus="nextfield ='';" placeholder="">
-							</td>							
-						</tr>
-					</table>
-
-				</td>
-			</tr>
-
-		</table>
+			</table>
 
 
-		<br>
-	</form>
-</font>
+			<br>
+		</form>
+	</font>
 </body>
 </div>
 </div>
@@ -483,30 +444,20 @@ if($idresep=='edit'){
 if (isset($_POST["simpan"])) {
 	// echo "edit_data";
 	$interval	= $_POST["interval"];
-	$dokter	= $_POST["dokter"];
-	$apoteker	= $_POST["apoteker"];
-	$periksa	= $_POST["periksa"];
-	$pemberi	= $_POST["pemberi"];
-	$keluarga	= $_POST["keluarga"];
+	$dosis	= $_POST["dosis"];
 
 	if($idresep=='edit'){
-		echo $q  = "update ERM_RI_RPO set interval='$interval',dokter='$dokter',apoteker='$apoteker',periksa='$periksa',pemberi='$pemberi',keluarga='$keluarga',tgl='$tgl' where id=$idrpo_detail";
+		$q  = "update ERM_RI_RPO set interval='$interval',dosis='$dosis' where id=$idrpo_detail";
 		$hs = sqlsrv_query($conn,$q);		
 	}else{
 
 		$nama_obat= $_POST["nama_obat"];
 		$dosis= $_POST["dosis"];
-		$jumlah= $_POST["jumlah"];
 		$interval= $_POST["interval"];
-		$dokter= $_POST["dokter"];
-		$apoteker= $_POST["apoteker"];
 		$tgl= $_POST["tgl"];
-		$periksa= $_POST["periksa"];
-		$pemberi= $_POST["pemberi"];
-		$keluarga= $_POST["keluarga"];
 
-		$q  = "insert into ERM_RI_RPO(noreg,userid,tglentry,tgl,nama_obat,dosis,jumlah,interval,id_eresep,id_eresep_detail,id_rpo_header,nomor) 
-		values ('$noreg','$user','$tgl','$tgl','$nama_obat','$dosis','$jumlah','$interval','0','0','$idrpo','$nomor')";
+		$q  = "insert into ERM_RI_RPO(noreg,userid,tglentry,tgl,nama_obat,dosis,interval,id_eresep,id_eresep_detail,id_rpo_header,nomor) 
+		values ('$noreg','$user','$tgl','$tgl','$nama_obat','$dosis','$interval','0','0','$idrpo','$nomor')";
 		$hs = sqlsrv_query($conn,$q);
 	}
 

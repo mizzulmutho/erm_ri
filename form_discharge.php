@@ -293,7 +293,7 @@ $resume22= $de['resume22'];
 
 			<div class="row">
 				<div class="col-12">
-					Asalan Masuk RS : 						
+					Alasan Masuk RS : 						
 					<input class="form-control" name="alasanmasuk_rs" value="<?php echo $alasanmasuk_rs;?>" id="" type="text" onfocus="nextfield ='';" placeholder="">					
 				</div>
 			</div>
@@ -458,8 +458,8 @@ $resume22= $de['resume22'];
 
 						$qo=
 						"
-						SELECT        W_EResep.Noreg, W_EResep_R.Jenis, W_EResep_R.KodeR, W_EResep_R.Jumlah, W_EResep_R.AturanPakai, W_EResep_R.CaraPakai, W_EResep_R.WaktuPakai, W_EResep_Racikan.Nama, W_EResep_R.Keterangan, 
-						AFarm_MstObat.NAMABARANG, W_EResep.Id, W_EResep_Racikan.Dosis
+						SELECT        W_EResep.Noreg, W_EResep_R.Jenis, W_EResep_R.KodeR, W_EResep_R.Jumlah, W_EResep_R.AturanPakai, W_EResep_R.CaraPakai, W_EResep_R.WaktuPakai, W_EResep_Racikan.Nama, W_EResep_R.Keterangan, W_EResep_R.DeletedBy,
+						AFarm_MstObat.NAMABARANG, W_EResep.Id, W_EResep_Racikan.Dosis,W_EResep_R.Id as idr
 						FROM            W_EResep INNER JOIN
 						W_EResep_R ON W_EResep.Id = W_EResep_R.IdResep LEFT OUTER JOIN
 						W_EResep_Racikan ON W_EResep_R.Id = W_EResep_Racikan.IdR LEFT OUTER JOIN
@@ -470,7 +470,7 @@ $resume22= $de['resume22'];
 						$noo=1;
 						echo "<table border='1'>";
 						echo "
-						<tr><td>no</td><td>nama</td><td>jumlah</td><td>aturan_pakai</td><td>instruksi_khusus</td><td>edit</td></tr>
+						<tr><td>no</td><td>nama</td><td>jumlah</td><td>aturan_pakai</td><td>instruksi_khusus</td><td>DeletedBy</td><td>edit</td></tr>
 						";
 
 						while   ($datao = sqlsrv_fetch_array($hasilo,SQLSRV_FETCH_ASSOC)){ 
@@ -482,6 +482,7 @@ $resume22= $de['resume22'];
 							$jumlah=$datao['Jumlah'];
 							$aturan_pakai=$datao['AturanPakai'];
 							$instruksi_khusus=$datao['Keterangan'];
+							$DeletedBy=$datao['DeletedBy'];
 
 							echo "
 							<tr>
@@ -490,6 +491,7 @@ $resume22= $de['resume22'];
 							<td>$jumlah</td>
 							<td>$aturan_pakai</td>
 							<td>$instruksi_khusus</td>
+							<td>$DeletedBy</td>
 							<td><a href='obat_resep_edit.php?id=$id|$user|$datao[idr]'>edit</a></td>
 							</tr>
 							";

@@ -236,6 +236,12 @@ if(empty($regcek)){
 					<?php echo 'L/P : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
 				</div>
 			</div>
+
+
+			<div class="row">
+				<?php include('menu_dokter.php');?>
+			</div>
+			
 			<hr>
 
 			<div class="row">

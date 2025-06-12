@@ -506,6 +506,44 @@ if(empty($regcek)){
             });
 		});
 	</script> 
+
+	<style>
+		@media print {
+			input, textarea {
+				border: none !important;
+				background: none !important;
+				box-shadow: none !important;
+				outline: none !important;
+				color: black !important;
+				font: inherit !important;
+				padding: 0 !important;
+				margin: 0 !important;
+			}
+
+			input, textarea {
+				pointer-events: none;
+			}
+
+			input::placeholder,
+			textarea::placeholder {
+				color: transparent !important;
+			}
+
+			input, textarea {
+				-webkit-appearance: none;
+			}
+
+			/* Jika ingin input tampil full width sebagai teks */
+			input, textarea {
+				width: auto !important;
+			}
+
+			button {
+				display: none; /* Sembunyikan tombol print saat mencetak */
+			}
+		}
+	</style>
+
 </head> 
 <div id="content"> 
 	<div class="container">
@@ -523,243 +561,240 @@ if(empty($regcek)){
 					&nbsp;&nbsp;
 					<br>
 					<br>
-<!-- 				<div class="row">
-					<div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
-				</div>
-			-->				
-			<div class="row">
-			</div>
+					<div class="row">
+					</div>
 
-			<div class="row">
-				<div class="col-6">
-					<h5><b><?php echo $nmrs; ?></b></h5>
-					<?php echo $alamat; ?>
-				</div>
-				<div class="col-6">
-					<?php echo 'NIK : '.$noktp.'<br>'; ?>					
-					<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
-					<?php echo 'JENIS KELAMIN : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
-				</div>
-			</div>
-			<hr>
+					<div class="row">
+						<div class="col-6">
+							<h5><b><?php echo $nmrs; ?></b></h5>
+							<?php echo $alamat; ?>
+						</div>
+						<div class="col-6">
+							<?php echo 'NIK : '.$noktp.'<br>'; ?>					
+							<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+							<?php echo 'JENIS KELAMIN : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
+						</div>
+					</div>
+					<hr>
 
-			<div class="row">
-				<div class="col-12 text-center">
-					<b>TRANSFER / RUJUK KE RUMAH SAKIT LAIN</b><br>
-				</div>
-			</div>
+					<div class="row">
+						<div class="col-12 text-center">
+							<b>TRANSFER / RUJUK KE RUMAH SAKIT LAIN</b><br>
+						</div>
+					</div>
 
-			<br>
-
-			<div class="row">
-				<div class="col-12 text-center">
-					RINGKASAN PASIEN YANG DILAKUKAN TRANSFER / RUJUKAN KE RUMAH SAKIT LAIN
-				</div>
-			</div>
-
-
-			<div class="row">
-				<div class="col-4">
-					Dari ruangan
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat1' value='<?php echo $surat1; ?>' size='30'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					Ke Rumah Sakit : <input type='text' name='surat2' value='<?php echo $surat2; ?>' size='23'>
-				</div>
-				<div class="col-4">
-					Staff yang Kontak
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat3' value='<?php echo $surat3; ?>' size='30'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					Tanggal dan pukul : <input type='text' name='surat4' value='<?php echo $surat4; ?>' size='20'>
-				</div>
-				<div class="col-4">
-					Staff yang menerima Kontak
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat5' value='<?php echo $surat5; ?>' size='30'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					No. Telp : <input type='text' name='surat6' value='<?php echo $surat6; ?>' size='30'>
-				</div>
-				<div class="col-4">
-					Ambulance Berangkat
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat7' value='<?php echo $surat7; ?>' size='30'>
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					Tiba ditempat : <input type='text' name='surat8' value='<?php echo $surat8; ?>' size='25'>
-				</div>
-				<div class="col-4">
-					Alasan Merujuk
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat9' value='<?php echo $surat9; ?>' size='80'>
-				</div>
-				<div class="col-4">
-					Diagnosa Medik
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat10' value='<?php echo $surat10; ?>' size='80'>
-				</div>
-				<div class="col-4">
-					Dokter yang merujuk
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat11' value='<?php echo $surat11; ?>' size='80'>
-				</div>
-
-
-			</div>
-			<br>
-
-			<div class="row">
-				<div class="col-12 bg-success text-white">
-					<b>Catatan Klinis</b><br>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-4">
-					1. Alergi
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat12' value='<?php echo $surat12; ?>' size='80'>
-				</div>	
-				<div class="col-4">
-					2. Pengobatan & Tindakan yang dilakukan
-				</div>
-				<div class="col-8">
-					: <textarea name= "surat13" id="" style="min-width:630px; min-height:90px;"><?php echo $surat13;?></textarea>
-				</div>	
-				<div class="col-4">
-					3. Riwayat Penyakit
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat14' value='<?php echo $surat14; ?>' size='80'>
-				</div>	
-				<div class="col-4">
-					4. Kapan Intake Oral terakhir
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat15' value='<?php echo $surat15; ?>' size='80'>
-				</div>	
-				<div class="col-4">
-					5. Tindakan yang telah dilakukan
-				</div>
-				<div class="col-8">
-					: <input type='text' name='surat16' value='<?php echo $surat16; ?>' size='80'>
-				</div>	
-
-			</div>
-
-			<div class="row">
-				<div class="col-12 bg-success text-white">
-					<b>Kondisi pasien saat ini</b><br>
-				</div>
-			</div>
-
-			<div class="row">
-				<div class="col-4">
-					1. Kesadaran
-				</div>
-				<div class="col-8">
-					: 
-					<?php 
-					if(empty($surat17)){
-						$surat17="Kesadaran : GCS : E ... V ... M ... \nPupil : ... \nReflek Cahaya : ... \nTD : ... \nNadi : ... \nSuhu : ... \nRR : ... \nSPO2 : ...";
-					}else{
-						$surat17=$surat17;
-					}
-					?> 
-					<textarea name= "surat18" id="" style="min-width:630px; min-height:220px;"><?php echo $surat17;?></textarea>
-				</div>	
-				<div class="col-4">
-					2. Pasien memakai peralatan medis
-				</div>
-				<div class="col-8">
-					: <textarea name= "surat18" id="" style="min-width:630px; min-height:50px;"><?php echo $surat18;?></textarea>
-				</div>	
-
-			</div>
-
-
-			<div class="row">
-				Perawatan pasien yang dibutuhkan :<br>
-				<textarea name= "surat19" id="" style="min-width:980px; min-height:50px;"><?php echo $surat19;?></textarea>
-			</div>
-
-			<div class="row">
-				Kejadian klinis selama dilakukan transfer :<br>
-				<textarea name= "surat20" id="" style="min-width:980px; min-height:50px;"><?php echo $surat20;?></textarea>
-			</div>
-
-			<div class="row">
-				Tanggal dan pukul serah terima pasien :<br>
-				<textarea name= "surat21" id="" style="min-width:980px; min-height:50px;"><?php echo $surat21;?></textarea>
-			</div>
-
-
-			<br>
-
-			<div class="row">					
-				<div class="col-8">
-					<table width="100%" border='1'>
-						<tr valign="top">
-							<td align="center">
-								Dokter yang merujuk
-								<br>	
-								<input class="" name="surat23" value="<?php echo $surat23;?>" id="dokter" type="text" size='50' placeholder="Isikan nama Dokter perujuk">
-								<?php 
-								if($surat23){
-									$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat23.'pada tanggal:'.$tglinput;
-									echo "<center><img alt='testing' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
-									echo $surat23;												
-								}
-								?>
-							</td>
-							<td align="center">Staf yang melakukan rujukan
-								<br>	
-								<input class="" name="surat24" value="<?php echo $surat24;?>" id="karyawan2" type="text" size='50' placeholder="Isikan nama petugas">				
-								<?php 
-								if($surat24){
-									$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat24.'pada tanggal:'.$tglinput;
-									echo "<center><img alt='testing' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
-									echo $surat24;												
-								}
-								?>							
-							</td>
-							<td align="center">Staf yang menerima pasien
-								<br>	
-								<input class="" name="surat25" value="<?php echo $surat25;?>" id="" type="text" size='50' placeholder="Isikan nama petugas">						<?php 
-								if($surat25){
-									$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat25.'pada tanggal:'.$tglinput;
-									echo "<center><img alt='testing' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
-									echo $surat25;												
-								}
-								?>					
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
-
-			<div class="row">				
-				<div class="col-8">
 					<br>
-					<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
-					<br><br>
+
+					<div class="row">
+						<div class="col-12 text-center">
+							RINGKASAN PASIEN YANG DILAKUKAN TRANSFER / RUJUKAN KE RUMAH SAKIT LAIN
+						</div>
+					</div>
+
+
+					<div class="row">
+						<div class="col-4">
+							Dari ruangan
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat1' value='<?php echo $surat1; ?>' size='30'>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							Ke Rumah Sakit : <input type='text' name='surat2' value='<?php echo $surat2; ?>' size='23'>
+						</div>
+						<div class="col-4">
+							Staff yang Kontak
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat3' value='<?php echo $surat3; ?>' size='30'>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							Tanggal dan pukul : <input type='text' name='surat4' value='<?php echo $surat4; ?>' size='20'>
+						</div>
+						<div class="col-4">
+							Staff yang menerima Kontak
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat5' value='<?php echo $surat5; ?>' size='30'>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							No. Telp : <input type='text' name='surat6' value='<?php echo $surat6; ?>' size='30'>
+						</div>
+						<div class="col-4">
+							Ambulance Berangkat
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat7' value='<?php echo $surat7; ?>' size='30'>
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							Tiba ditempat : <input type='text' name='surat8' value='<?php echo $surat8; ?>' size='25'>
+						</div>
+						<div class="col-4">
+							Alasan Merujuk
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat9' value='<?php echo $surat9; ?>' size='80'>
+						</div>
+						<div class="col-4">
+							Diagnosa Medik
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat10' value='<?php echo $surat10; ?>' size='80'>
+						</div>
+						<div class="col-4">
+							Dokter yang merujuk
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat11' value='<?php echo $surat11; ?>' size='80'>
+						</div>
+
+
+					</div>
+					<br>
+
+					<div class="row">
+						<div class="col-12 bg-success text-white">
+							<b>Catatan Klinis</b><br>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4">
+							1. Alergi
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat12' value='<?php echo $surat12; ?>' size='80'>
+						</div>	
+						<div class="col-4">
+							2. Pengobatan & Tindakan yang dilakukan
+						</div>
+						<div class="col-8">
+							: <textarea name= "surat13" id="" style="min-width:630px; min-height:90px;"><?php echo $surat13;?></textarea>
+						</div>	
+						<div class="col-4">
+							3. Riwayat Penyakit
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat14' value='<?php echo $surat14; ?>' size='80'>
+						</div>	
+						<div class="col-4">
+							4. Kapan Intake Oral terakhir
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat15' value='<?php echo $surat15; ?>' size='80'>
+						</div>	
+						<div class="col-4">
+							5. Tindakan yang telah dilakukan
+						</div>
+						<div class="col-8">
+							: <input type='text' name='surat16' value='<?php echo $surat16; ?>' size='80'>
+						</div>	
+
+					</div>
+
+					<div class="row">
+						<div class="col-12 bg-success text-white">
+							<b>Kondisi pasien saat ini</b><br>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-4">
+							1. Kesadaran
+						</div>
+						<div class="col-8">
+							: 
+							<?php 
+							if(empty($surat17)){
+								$surat17="Kesadaran : GCS : E ... V ... M ... \nPupil : ... \nReflek Cahaya : ... \nTD : ... \nNadi : ... \nSuhu : ... \nRR : ... \nSPO2 : ...";
+							}else{
+								$surat17=$surat17;
+							}
+							?> 
+							<textarea name= "surat17" id="" style="min-width:630px; min-height:220px;"><?php echo $surat17;?></textarea>
+						</div>	
+						<div class="col-4">
+							2. Pasien memakai peralatan medis
+						</div>
+						<div class="col-8">
+							: <textarea name= "surat18" id="" style="min-width:630px; min-height:50px;"><?php echo $surat18;?></textarea>
+						</div>	
+
+					</div>
+
+
+					<div class="row">
+						Perawatan pasien yang dibutuhkan :<br>
+						<textarea name= "surat19" id="" style="min-width:980px; min-height:50px;"><?php echo $surat19;?></textarea>
+					</div>
+
+					<div class="row">
+						Kejadian klinis selama dilakukan transfer :<br>
+						<textarea name= "surat20" id="" style="min-width:980px; min-height:50px;"><?php echo $surat20;?></textarea>
+					</div>
+
+					<div class="row">
+						Tanggal dan pukul serah terima pasien :<br>
+						<textarea name= "surat21" id="" style="min-width:980px; min-height:50px;"><?php echo $surat21;?></textarea>
+					</div>
+
+
+					<br>
+
+					<div class="row">					
+						<div class="col-8">
+							<table width="100%" border='1'>
+								<tr valign="top">
+									<td align="center">
+										Dokter yang merujuk<br>	
+										<input class="" name="surat23" value="<?php echo $surat23;?>" id="dokter" type="text" size='50' placeholder="Isikan nama Dokter perujuk">
+										<?php 
+										if($surat23){
+											$pernyataan = 'Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas: '.$surat23.' pada tanggal: '.$tglinput;
+											$qr = urlencode($pernyataan);
+											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$qr&choe=UTF-8'/></center>";
+											echo $surat23;												
+										}
+										?>
+									</td>
+
+									<td align="center">Staf yang melakukan rujukan
+										<br>	
+										<input class="" name="surat24" value="<?php echo $surat24;?>" id="karyawan2" type="text" size='50' placeholder="Isikan nama petugas">				
+										<?php 
+										if($surat24){
+											$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat24.'pada tanggal:'.$tglinput;
+											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
+											echo $surat24;												
+										}
+										?>							
+									</td>
+									<td align="center">Staf yang menerima pasien
+										<br>	
+										<input class="" name="surat25" value="<?php echo $surat25;?>" id="" type="text" size='50' placeholder="Isikan nama petugas">						<?php 
+										if($surat25){
+											$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat25.'pada tanggal:'.$tglinput;
+											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
+											echo $surat25;												
+										}
+										?>					
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+
+					<div class="row">				
+						<div class="col-8">
+							<br>
+							<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
+							<br><br>
+						</div>
+					</div>
+
 				</div>
-			</div>
-
-		</div>
 
 
-		<br>
-	</form>
-</font>
-</body>
+				<br>
+			</form>
+		</font>
+	</body>
 </div>
 </div>
 

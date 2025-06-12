@@ -55,76 +55,102 @@ $noreg = $d1u['noreg'];
 
 </head> 
 
-<div class="container-fluid">
+<div class="container py-4">
+	<body onload="document.myForm.pasien_mcu?.focus();">
+		<form method="POST" name="myForm" action="" enctype="multipart/form-data" class="p-4 bg-light shadow rounded">
+			
+			<!-- Header Actions -->
+			<div class="d-flex justify-content-start mb-3">
+				<a href="index.php?id=<?php echo $id.'|'.$user;?>" class="btn btn-warning btn-sm me-2">
+					<i class="bi bi-x-circle-fill me-1"></i> Close
+				</a>
+				<a href="" class="btn btn-success btn-sm">
+					<i class="bi bi-arrow-clockwise me-1"></i> Refresh
+				</a>
+			</div>
 
-	<body onload="document.myForm.pasien_mcu.focus();">
-		<font size='2px'>	
-
-			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
-				<br>
-				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
-				&nbsp;&nbsp;
-				<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i></a>
-				&nbsp;&nbsp;
-				<br><br>
-				<div class="row">
-					<div class="col-6">
-						<b>Input Diagnosa Keperawatan :</b>
-						<select name="asuan_diagnosa" style="width:500px;height:40px">
-							<option value=''>--Pilih Kode Diagnosis --</option>
-
-							<?php
-							$q="SELECT DISTINCT diagnosa_keperawatan,diagnosa_nama
-							FROM         ERM_MASTER_ASUHANKEPERAWATAN
-							WHERE     JENIS in('RENCANA ASUHAN KEPERAWATAN','RENCANA ASUHAN NEONATUS')  and implementasi is not null";
-							$hasil  = sqlsrv_query($conn, $q);			  
-							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){				  
-								if ($data[diagnosa_keperawatan]==$diagnosa_keperawatan){
-									echo "<option value='$data[diagnosa_keperawatan]' selected >$data[diagnosa_keperawatan] $data[diagnosa_nama] </option>\n";
-								}else{
-									echo "<option value='$data[diagnosa_keperawatan]'>$data[diagnosa_keperawatan] $data[diagnosa_nama]</option>\n";
-								};
-							}
-							?>
-						</select>
-						<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan</button>
-					</div>
+			<!-- Diagnosa Keperawatan Input -->
+			<div class="mb-4">
+				<label for="asuan_diagnosa" class="form-label fw-bold">
+					<i class="bi bi-file-earmark-medical-fill me-2"></i>Input Diagnosa Keperawatan
+				</label>
+				<div class="input-group" style="max-width: 600px;">
+					<select name="asuan_diagnosa" class="form-select">
+						<option value="">-- Pilih Kode Diagnosis --</option>
+						<?php
+						$q = "SELECT DISTINCT diagnosa_keperawatan, diagnosa_nama
+						FROM ERM_MASTER_ASUHANKEPERAWATAN
+						WHERE JENIS IN('RENCANA ASUHAN KEPERAWATAN','RENCANA ASUHAN NEONATUS')  
+						AND implementasi IS NOT NULL";
+						$hasil = sqlsrv_query($conn, $q);			  
+						while ($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)) {				  
+							$selected = ($data['diagnosa_keperawatan'] == $diagnosa_keperawatan) ? 'selected' : '';
+							echo "<option value='{$data['diagnosa_keperawatan']}' $selected>
+							{$data['diagnosa_keperawatan']} - {$data['diagnosa_nama']}
+							</option>";
+						}
+						?>
+					</select>
+					<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">
+						<i class="bi bi-save2-fill me-1"></i> Simpan
+					</button>
 				</div>
+			</div>
 
-				<br>
-				<table class="table" border="1">
-					<?php
-					$ql="
-					SELECT        distinct ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan, ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_nama
-					FROM            ERM_ASUHAN_KEPERAWATAN INNER JOIN
-					ERM_MASTER_ASUHANKEPERAWATAN ON ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan = ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_keperawatan
-					where noreg='$noreg'
-					";
-					$hl  = sqlsrv_query($conn, $ql);
-					$no=1;
-					echo 
-					"<tr bgcolor='#969392'>
-					<td>no</td><td>diagnosa_keperawatan</td><td>diagnosa_nama</td><td colspan='2'>action</td>
-					</tr>";
-					while   ($dl = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC)){         
-						$implementasi = $dl[implementasi];
-						$implementasi = html_entity_decode($implementasi);
-
-						echo "	<tr>
-						<td>$no</td>
-						<td>$dl[diagnosa_keperawatan]</td>
-						<td>$dl[diagnosa_nama]</td>
-						<td><a href='del_diagnosa_keperawatan.php?id=$id|$user|$noreg|$dl[diagnosa_keperawatan]'>hapus</a></td>
-
+			<!-- Tabel Diagnosa -->
+			<div class="table-responsive">
+				<table class="table table-bordered align-middle text-center">
+					<thead class="table-secondary">
+						<tr>
+							<th>No</th>
+							<th>Kode Diagnosa</th>
+							<th>Nama Diagnosa</th>
+							<th>Status Teratasi</th>
+							<th>Aksi</th>
+							<th>Ubah Status Teratasi</th>
 						</tr>
-						";
-						$no += 1;
-					}
-					?>
+					</thead>
+					<tbody>
+						<?php
+						$ql = "SELECT DISTINCT ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan, ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_nama,teratasi
+						FROM ERM_ASUHAN_KEPERAWATAN
+						INNER JOIN ERM_MASTER_ASUHANKEPERAWATAN
+						ON ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan = ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_keperawatan
+						WHERE noreg = '$noreg'";
+						$hl = sqlsrv_query($conn, $ql);
+						$no = 1;
+						while ($dl = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC)) {
+							echo "<tr>
+							<td>{$no}</td>
+							<td>{$dl['diagnosa_keperawatan']}</td>
+							<td>{$dl['diagnosa_nama']}</td>
+							<td>{$dl['teratasi']}</td>
+							<td>
+							<a href='del_diagnosa_keperawatan.php?id={$id}|{$user}|{$noreg}|{$dl['diagnosa_keperawatan']}'
+							class='btn btn-danger btn-sm'>
+							<i class='bi bi-trash-fill'></i> Hapus
+							</a>
+							</td>
+							<td>
+							<a href='teratasi_diagnosa_keperawatan.php?id={$id}|{$user}|{$noreg}|{$dl['diagnosa_keperawatan']}'
+							class='btn btn-warning btn-sm'>
+							<i class='bi bi-journal-check'></i> Teratasi
+							</a>
+							<a href='bteratasi_diagnosa_keperawatan.php?id={$id}|{$user}|{$noreg}|{$dl['diagnosa_keperawatan']}'
+							class='btn btn-warning btn-sm'>
+							<i class='bi bi-journal-x'></i> Batalkan
+							</a>
+
+							</td>
+							</tr>";
+							$no++;
+						}
+						?>
+					</tbody>
 				</table>
-				<br>
-			</form>
-		</font>
+			</div>
+
+		</form>
 	</body>
 </div>
 

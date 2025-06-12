@@ -1,4 +1,5 @@
 <?php 
+error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 session_start();
 
 $serverName = "192.168.10.1"; //serverName\instanceName
@@ -28,6 +29,11 @@ $q3       = "select distinct top(1)id_rpo_header from ERM_RI_RPO where noreg='$n
 $hasil3  = sqlsrv_query($conn, $q3);  
 $data3    = sqlsrv_fetch_array($hasil3, SQLSRV_FETCH_ASSOC);                      
 $id_rpo_header = $data3['id_rpo_header'];
+
+if(empty($id_rpo_header)){
+  echo "<br>";echo "<br>";
+  echo "Data RPO masih Kosong";
+}
 
 $q="
 SELECT        id, nomor, noreg, userid, '' as tglentry, '' as tgl, nama_obat, jumlah, dosis, waktu_penggunaan, interval, dokter, apoteker, periksa, pemberi, keluarga, id_eresep, id_eresep_detail, id_rpo_header

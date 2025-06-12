@@ -20,6 +20,7 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
+$noreg_igd = substr($noreg, 1,12);
 
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
 FROM            ARM_REGISTER INNER JOIN
@@ -215,7 +216,7 @@ $tglkeluar = $data3[tglkeluar];
 				$q="
 				SELECT        HASIL, URAIAN, ID, CONVERT(VARCHAR, TANGGAL, 103) AS TANGGAL
 				FROM            HASILRAD_PEMERIKSAAN_RAD
-				WHERE        (NOREG = '$noreg')
+				WHERE        (NOREG like '%$noreg_igd%')
 				ORDER BY TANGGAL
 				";
 				$hasil  = sqlsrv_query($conn, $q);  
@@ -224,7 +225,7 @@ $tglkeluar = $data3[tglkeluar];
 
 					$q2 = " 
 					SELECT idrad from ERM_RI_RAD_TEMP
-					WHERE        noreg='$noreg' and (idrad = '$data[ID]')";
+					WHERE        noreg like '%$noreg_igd%' and (idrad = '$data[ID]')";
 					$h2  = sqlsrv_query($conn, $q2);
 					$dh2  = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
 					$idrad = trim($dh2['idrad']);

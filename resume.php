@@ -15,12 +15,25 @@ $id  = $row[0];
 $user = strtoupper($row[1]); 
 $jenis = $row[2]; 
 
-
 $qu="SELECT norm,noreg FROM ERM_ASSESMEN_HEADER where id='$id'";
 $h1u  = sqlsrv_query($conn, $qu);        
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
+
+$qur="SELECT noreg FROM ERM_RI_RESUME_APPROVEL where noreg='$noreg'";
+$h1ur  = sqlsrv_query($conn, $qur);        
+$d1ur  = sqlsrv_fetch_array($h1ur, SQLSRV_FETCH_ASSOC); 
+$ceknoreg = trim($d1ur['noreg']);
+
+if(!empty($ceknoreg)){
+	echo "
+	<script>
+	window.location.replace('resume_print.php?id=$id|$user');
+	</script>
+	";
+}
+
 
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
 FROM            ARM_REGISTER INNER JOIN
@@ -154,6 +167,10 @@ $regcek = $di['noreg'];
 if(empty($regcek)){
 	$q  = "insert into ERM_RI_RESUME(noreg,userid,tglentry) values ('$noreg','$user','$tglinput')";
 	$hs = sqlsrv_query($conn,$q);
+
+	$q  = "insert into ERM_RI_RESUME_PERAWAT(noreg,userid,tglentry) values ('$noreg','$user','$tglinput')";
+	$hs = sqlsrv_query($conn,$q);
+
 }else{
 
 	$qe="
@@ -408,16 +425,13 @@ if(empty($regcek)){
 
 }
 
-if (isset($_POST["Print"])) {
-
-	echo "
-	<script>
-	top.location='resume_print.php?id=$id|$user|$idrasuhan','_blank';
-	</script>
-	";    
-
-
-}
+// if (isset($_POST["Print"])) {
+// 	echo "
+// 	<script>
+// 	top.location='resume_print.php?id=$id|$user|$idrasuhan','_blank';
+// 	</script>
+// 	";    
+// }
 
 if (isset($_POST["Pdf"])) {
 
@@ -451,7 +465,9 @@ if($jenis=='add_diagnosa_sekunder'){
 	<title>Resume Medis</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"> -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
 	<script>
 		CKEDITOR.replace('editor1');
@@ -478,6 +494,41 @@ if($jenis=='add_diagnosa_sekunder'){
 			height: auto;
 		}
 	</style>
+
+	<style type="text/css">
+		@media print{
+			body {display:none;}
+		}
+	</style>
+	
+	<script>
+		$(function() {
+			$("#apoteker").autocomplete({
+                minLength:3, //minimum length of characters for type ahead to begin
+                source: function (request, response) {
+                	$.ajax({
+                		type: 'POST',
+                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
+                        url: 'find_apoteker.php', //your                         
+                        dataType: 'json',
+                        data: {
+                        	postcode: request.term
+                        },
+                        success: function (data) {
+                            //if multiple results are returned
+                            if(data.response instanceof Array)
+                            	response ($.map(data.response, function (item) {
+                            		return {
+                            			value: item.kodedokter + ' - ' + item.nama + ' - ' + item.keterangan
+                            		}
+                            	}));
+                            //if a single result is returned
+                        }           
+                    });
+                }
+            });
+		});
+	</script>  
 
 
 	<script>
@@ -1527,13 +1578,19 @@ if($jenis=='add_diagnosa_sekunder'){
 					&nbsp;&nbsp;
 					<a href='resume.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
+					<button type='submit' name='update_perawat' value='update_perawat' class="btn btn-info" type="button"><i class="bi bi-transparency"></i> Update</button>
+
+					&nbsp;&nbsp;
+
 					<!-- <a href='#' class='btn btn-danger'>Pdf</a> -->
 					<!-- <input type='submit' name='Pdf' value='Pdf' class='btn btn-danger'> -->
 					&nbsp;&nbsp;
-					<a href='resume_print.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a>
+					<!-- <a href='resume_print.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
 					<!-- <input type='submit' name='Print' value='Print' class='btn btn-info'> -->
 
 					&nbsp;&nbsp;
+					<br>
+					Keterangan : Tekan <b>update</b> apabila data resume perawat/bidan/gizi/apoteker <b>tidak muncul</b> setelah dokter mengisi resume
 					<br>
 					<br>
 <!-- 				<div class="row">
@@ -1557,7 +1614,7 @@ if($jenis=='add_diagnosa_sekunder'){
 			<hr>
 			<div class="row">
 				<div class="col-12 text-center">
-					<b>RINGKASAN PASIEN PULANG RAWAT INAP</b><br>
+					<b>FORM INPUT RESUME MEDIS RINGKASAN PASIEN PULANG RAWAT INAP</b><br>
 					INPATIENT DISCHARGE SUMMARY (MEDICAL RESUME)
 				</div>
 			</div>
@@ -2514,22 +2571,35 @@ if($jenis=='add_diagnosa_sekunder'){
 				// where noreg='$noreg' order by nama_obat asc
 				// ";
 				$q="
-				SELECT        W_EResep.Noreg, W_EResep_R.Jenis, W_EResep_R.KodeR, W_EResep_R.Jumlah as jumlah, W_EResep_R.AturanPakai as aturan_pakai, W_EResep_R.CaraPakai, W_EResep_R.WaktuPakai, W_EResep_Racikan.Nama, W_EResep.Kategori as instruksi_khusus,
-				AFarm_MstObat.NAMABARANG as nama_obat, W_EResep.Id, W_EResep_Racikan.Dosis
-				FROM            AFarm_MstObat INNER JOIN
-				W_EResep_R ON AFarm_MstObat.KODEBARANG = W_EResep_R.KodeR INNER JOIN
-				W_EResep ON W_EResep_R.IdResep = W_EResep.Id LEFT OUTER JOIN
-				W_EResep_Racikan ON W_EResep_R.Id = W_EResep_Racikan.IdR
-				WHERE        (W_EResep.Noreg = '$noreg') AND W_EResep.Kategori like '%KRS%'
+				SELECT        W_EResep.Noreg, W_EResep_R.Jenis, W_EResep_R.KodeR, convert(varchar(10),W_EResep_R.Jumlah) +'S' as jumlah, W_EResep_R.AturanPakai as aturan_pakai, W_EResep_R.CaraPakai,
+				W_EResep_R.WaktuPakai, 
+				CASE WHEN W_EResep_Racikan.Nama ='' THEN AFarm_MstObat.NAMABARANG ELSE W_EResep_Racikan.Nama END AS Nama,
+				W_EResep.Kategori as instruksi_khusus,W_EResep_R.Keterangan, AFarm_MstObat.NAMABARANG as nama_obat, W_EResep.Id, W_EResep_Racikan.Dosis
+				FROM            W_EResep INNER JOIN
+				W_EResep_R ON W_EResep.Id = W_EResep_R.IdResep LEFT OUTER JOIN
+				W_EResep_Racikan ON W_EResep_R.Id = W_EResep_Racikan.IdR LEFT OUTER JOIN
+				AFarm_MstObat ON W_EResep_R.KodeR = AFarm_MstObat.KODEBARANG
+				WHERE        (W_EResep.Noreg = '$noreg') AND (W_EResep.Kategori LIKE '%KRS%') and W_EResep_R.DeletedBy is NULL
+				union
+				SELECT Noreg,'' as Jenis,'' as KodeR, jumlah,aturan_pakai,'' as CaraPakai,'' as WaktuPakai, '' as Nama, instruksi_khusus, '' as Keterangan, nama_obat, Id, '' as Dosis
+				FROM ERM_RI_DISCHARGE where noreg='$noreg'
+				order by nama_obat
 				";
 				$hasil  = sqlsrv_query($conn, $q);  
 				$no=1;
 				while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
 					// echo $no.' - '.$data[nama_obat].' '.$data[jumlah].' '.$data[aturan_pakai].' '.$data[instruksi_khusus];echo "<br>";
+					
+					if($data['nama_obat'] == ''){
+						$nama_obat=$data['Nama'];
+					}else{
+						$nama_obat=$data['nama_obat'];
+					}
+
 					echo "
 					<tr>
 					<td>$no</td>
-					<td>$data[nama_obat]</td>
+					<td>$nama_obat</td>
 					<td>$data[jumlah]</td>
 					<td>$data[aturan_pakai]</td>
 					<td>$data[instruksi_khusus]</td>
@@ -2554,7 +2624,29 @@ if($jenis=='add_diagnosa_sekunder'){
 	</div>
 	<br>
 
-	<tr>
+	<div class="row">
+		<div class="col-4 bg-primary text-white">
+			Verifikasi Apoteker Pemberi Resume
+		</div>
+		<div class="col-8 bg-primary text-white">	
+			<input class="" name="resume133" value="<?php echo $resume133;?>" id="apoteker" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Apoteker">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-4">
+			&nbsp;
+		</div>
+		<div class="col-8">
+			<input type='text' name='user_sirs_apoteker' value='' size='20' placeholder="user sirs apoteker">			
+			<input type='text' name='pass_sirs_apoteker' value='' size='20' placeholder="password sirs apoteker">
+			<br>
+			&nbsp;<button type='submit' name='simpan_verif_apoteker' value='simpan_verif_apoteker' class="btn btn-warning" type="button" style="height: 40px;width: 250px;"><i class="bi bi-save-fill"></i> simpan verifikasi apoteker</button>
+		</div>
+	</div>
+
+	<br>
+
+<!-- 	<tr>
 		<td colspan="2">
 			<div class="row">
 				<div class="col-12">
@@ -2581,29 +2673,7 @@ if($jenis=='add_diagnosa_sekunder'){
 			</div>
 
 		</td>
-	</tr>
-
-	<br>
-	<div class="row">
-		<div class="col-4 bg-primary text-white">
-			Verifikasi Apoteker Pemberi Resume
-		</div>
-		<div class="col-8 bg-primary text-white">			
-			<input class="" name="resume133" value="<?php echo $resume133;?>" id="karyawan3" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Perawat atau Bidan">
-
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-4">
-			&nbsp;
-		</div>
-		<div class="col-8">
-			<!-- <input type='text' name='pass_apoteker' value='' size='10' placeholder="password"> -->
-			<!-- <input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;"> -->
-			<br>
-			&nbsp;<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 40px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-		</div>
-	</div>
+	</tr> -->
 
 	<hr>
 
@@ -2792,6 +2862,373 @@ if (isset($_POST["ttd"])) {
 
 
 
+if (isset($_POST["update_perawat"])) {
+	echo "update_perawat";
+
+	$qep="
+	SELECT *,CONVERT(VARCHAR, tglresume, 23) as tglresume
+	FROM ERM_RI_RESUME_PERAWAT
+	where noreg='$noreg'";
+	$hep  = sqlsrv_query($conn, $qep);        
+	$dep  = sqlsrv_fetch_array($hep, SQLSRV_FETCH_ASSOC); 
+	$tglresume = $dep['tglresume'];
+	$resume1 = $dep['resume1'];
+	$resume2= $dep['resume2'];
+	$resume3= $dep['resume3'];
+	$resume4= $dep['resume4'];
+	$resume5= $dep['resume5'];
+	$resume6= $dep['resume6'];
+	$resume7= $dep['resume7'];
+	$resume8= $dep['resume8'];
+	$resume9= $dep['resume9'];
+	$resume10= $dep['resume10'];
+	$resume11= $dep['resume11'];
+	$resume12= $dep['resume12'];
+	$resume13= $dep['resume13'];
+	$resume14= $dep['resume14'];
+	$resume15= $dep['resume15'];
+	$resume16= $dep['resume16'];
+	$resume17= $dep['resume17'];
+	$resume18= $dep['resume18'];
+	$resume19= $dep['resume19'];
+	$resume20= $dep['resume20'];
+	$resume21= $dep['resume21'];
+	$resume22= $dep['resume22'];
+	$resume23= $dep['resume23'];
+	$resume24= $dep['resume24'];
+	$resume25= $dep['resume25'];
+	$resume26= $dep['resume26'];
+	$resume27= $dep['resume27'];
+	$resume28= $dep['resume28'];
+	$resume29= $dep['resume29'];
+	$resume30= $dep['resume30'];
+	$resume31= $dep['resume31'];
+	$resume32= $dep['resume32'];
+	$resume33= $dep['resume33'];
+	$resume34= $dep['resume34'];
+	$resume35= $dep['resume35'];
+	$resume36= $dep['resume36'];
+	$resume37= $dep['resume37'];
+	$resume38= $dep['resume38'];
+	$resume39= $dep['resume39'];
+	$resume40= $dep['resume40'];
+	$resume41= $dep['resume41'];
+	$resume42= $dep['resume42'];
+	$resume43= $dep['resume43'];
+	$resume44= $dep['resume44'];
+	$resume45= $dep['resume45'];
+	$resume46= $dep['resume46'];
+	$resume47= $dep['resume47'];
+	$resume48= $dep['resume48'];
+	$resume49= $dep['resume49'];
+	$resume50= $dep['resume50'];
+	$resume51= $dep['resume51'];
+	$resume52= $dep['resume52'];
+	$resume53= $dep['resume53'];
+	$resume54= $dep['resume54'];
+	$resume55= $dep['resume55'];
+	$resume56= $dep['resume56'];
+	$resume57= $dep['resume57'];
+	$resume58= $dep['resume58'];
+	$resume59= $dep['resume59'];
+	$resume60= $dep['resume60'];
+	$resume61= $dep['resume61'];
+	$resume62= $dep['resume62'];
+	$resume63= $dep['resume63'];
+	$resume64= $dep['resume64'];
+	$resume65= $dep['resume65'];
+	$resume66= $dep['resume66'];
+	$resume67= $dep['resume67'];
+	$resume68= $dep['resume68'];
+	$resume69= $dep['resume69'];
+	$resume70= $dep['resume70'];
+	$resume71= $dep['resume71'];
+	$resume72= $dep['resume72'];
+	$resume73= $dep['resume73'];
+	$resume74= $dep['resume74'];
+	$resume75= $dep['resume75'];
+	$resume76= $dep['resume76'];
+	$resume77= $dep['resume77'];
+	$resume78= $dep['resume78'];
+	$resume79= $dep['resume79'];
+	$resume80= $dep['resume80'];
+	$resume81= $dep['resume81'];
+	$resume82= $dep['resume82'];
+	$resume83= $dep['resume83'];
+	$resume84= $dep['resume84'];
+	$resume85= $dep['resume85'];
+	$resume86= $dep['resume86'];
+	$resume87= $dep['resume87'];
+	$resume88= $dep['resume88'];
+	$resume89= $dep['resume89'];
+	$resume90= $dep['resume90'];
+	$resume91= $dep['resume91'];
+	$resume92= $dep['resume92'];
+	$resume93= $dep['resume93'];
+	$resume94= $dep['resume94'];
+	$resume95= $dep['resume95'];
+	$resume96= $dep['resume96'];
+	$resume97= $dep['resume97'];
+	$resume98= $dep['resume98'];
+	$resume99= $dep['resume99'];
+	$resume100= $dep['resume100'];
+	$resume101= $dep['resume101'];
+	$resume102= $dep['resume102'];
+	$resume103= $dep['resume103'];
+	$resume104= $dep['resume104'];
+	$resume105= $dep['resume105'];
+	$resume106= $dep['resume106'];
+	$resume107= $dep['resume107'];
+	$resume108= $dep['resume108'];
+	$resume109= $dep['resume109'];
+	$resume110= $dep['resume110'];
+	$resume111= $dep['resume111'];
+	$resume112= $dep['resume112'];
+	$resume113= $dep['resume113'];
+	$resume114= $dep['resume114'];
+	$resume115= $dep['resume115'];
+	$resume116= $dep['resume116'];
+	$resume117= $dep['resume117'];
+	$resume118= $dep['resume118'];
+	$resume119= $dep['resume119'];
+	$resume120= $dep['resume120'];
+	$resume121= $dep['resume121'];
+	$resume122= $dep['resume122'];
+	$resume123= $dep['resume123'];
+	$resume124= $dep['resume124'];
+	$resume125= $dep['resume125'];
+	$resume126= $dep['resume126'];
+	$resume127= $dep['resume127'];
+	$resume128= $dep['resume128'];
+	$resume129= $dep['resume129'];
+	$resume130= $dep['resume130'];
+	$resume131= $dep['resume131'];
+	$resume132= $dep['resume132'];
+	$resume133= $dep['resume133'];
+	$resume134= $dep['resume134'];
+	$resume135= $dep['resume135'];
+	$resume136= $dep['resume136'];
+	$resume137= $dep['resume137'];
+	$resume138= $dep['resume138'];
+	$resume139= $dep['resume139'];
+	$resume140= $dep['resume140'];
+	$resume141= $dep['resume141'];
+	$resume142= $dep['resume142'];
+	$resume143= $dep['resume143'];
+	$resume144= $dep['resume144'];
+	$resume145= $dep['resume145'];
+	$resume146= $dep['resume146'];
+	$resume147= $dep['resume147'];
+	$resume148= $dep['resume148'];
+	$resume149= $dep['resume149'];
+	$resume150= $dep['resume150'];
+
+	if($resume1){
+		$q  = "update ERM_RI_RESUME set
+		resume1	='$resume1',
+		resume2	='$resume2',
+		resume3	='$resume3',
+		resume4	='$resume4',
+		resume5	='$resume5',
+		resume6	='$resume6',
+		resume7	='$resume7',	
+		resume24	='$resume24',
+		resume25	='$resume25',
+		resume26	='$resume26',
+		resume27	='$resume27',
+		resume28	='$resume28',
+		resume29	='$resume29',
+		resume30	='$resume30',
+		resume31	='$resume31',
+		resume32	='$resume32',
+		resume33	='$resume33',
+		resume34	='$resume34',
+		resume39	='$resume39',
+		resume40	='$resume40',
+		resume41	='$resume41',
+		resume42	='$resume42',
+		resume43	='$resume43',
+		resume44	='$resume44',
+		resume45	='$resume45',
+		resume46	='$resume46',
+		resume47	='$resume47',
+		resume48	='$resume48',
+		resume49	='$resume49',
+		resume50	='$resume50',
+		resume51	='$resume51',
+		resume52	='$resume52',
+		resume53	='$resume53',
+		resume54	='$resume54',
+		resume55	='$resume55',
+		resume56	='$resume56',
+		resume57	='$resume57',
+		resume58	='$resume58',
+		resume59	='$resume59',
+		resume60	='$resume60',
+		resume61	='$resume61',
+		resume62	='$resume62',
+		resume63	='$resume63',
+		resume64	='$resume64',
+		resume65	='$resume65',
+		resume66	='$resume66',
+		resume67	='$resume67',
+		resume68	='$resume68',
+		resume69	='$resume69',
+		resume70	='$resume70',
+		resume71	='$resume71',
+		resume72	='$resume72',
+		resume73	='$resume73',
+		resume74	='$resume74',
+		resume75	='$resume75',
+		resume76	='$resume76',
+		resume77	='$resume77',
+		resume78	='$resume78',
+		resume79	='$resume79',
+		resume80	='$resume80',
+		resume81	='$resume81',
+		resume82	='$resume82',
+		resume83	='$resume83',
+		resume84	='$resume84',
+		resume85	='$resume85',
+		resume86	='$resume86',
+		resume87	='$resume87',
+		resume88	='$resume88',
+		resume89	='$resume89',
+		resume90	='$resume90',
+		resume91	='$resume91',
+		resume92	='$resume92',
+		resume93	='$resume93',
+		resume94	='$resume94',
+		resume95	='$resume95',
+		resume96	='$resume96',
+		resume97	='$resume97',
+		resume98	='$resume98',
+		resume99	='$resume99',
+		resume100	='$resume100',
+		resume101	='$resume101',
+		resume102	='$resume102',
+		resume103	='$resume103',
+		resume104	='$resume104',
+		resume105	='$resume105',
+		resume106	='$resume106',
+		resume107	='$resume107',
+		resume108	='$resume108',
+		resume109	='$resume109',
+		resume110	='$resume110',
+		resume111	='$resume111',
+		resume112	='$resume112',
+		resume113	='$resume113',
+		resume114	='$resume114',
+		resume115	='$resume115',
+		resume116	='$resume116',
+		resume117	='$resume117',
+		resume118	='$resume118',
+		resume119	='$resume119',
+		resume120	='$resume120',
+		resume121	='$resume121',
+		resume122	='$resume122',
+		resume123	='$resume123',
+		resume124	='$resume124',
+		resume125	='$resume125',
+		resume126	='$resume126',
+		resume127	='$resume127',
+		resume128	='$resume128',
+		resume129	='$resume129',
+		resume130	='$resume130',
+		resume131	='$resume131',
+		resume132	='$resume132',
+		resume135	='$resume135',
+		resume136	='$resume136',
+		resume137	='$resume137',
+		resume138	='$resume138',
+		resume139	='$resume139',
+		resume140	='$resume140',
+		resume141	='$resume141',
+		resume142	='$resume142',
+		resume143	='$resume143',
+		resume144	='$resume144',
+		resume145	='$resume145',
+		resume146	='$resume146',
+		resume147	='$resume147',
+		resume148	='$resume148',
+		resume149	='$resume149',
+		resume150	='$resume150'
+		where noreg='$noreg'
+		";
+		$hs = sqlsrv_query($conn,$q);
+	}
+
+	if($hs){
+		$eror = "Update Success";
+	}else{
+		$eror = "Update Gagal";
+	}
+
+	echo "
+	<script>
+	alert('".$eror."');
+	history.go(-1);
+	</script>
+	";
+
+
+
+}
+
+if (isset($_POST["simpan_verif_apoteker"])) {
+
+	$lanjut='Y';
+
+	$resume133	= $_POST["resume133"];
+	$user_sirs_apoteker 	= $_POST["user_sirs_apoteker"];
+	$pass_sirs_apoteker 	= $_POST["pass_sirs_apoteker"];
+
+	//cek user
+	$query = "select * from ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$user_sirs_apoteker'";		
+	$result = sqlsrv_query($conn, $query);
+	$data  = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);          
+
+	$grpuser = $data['grpuser'];
+    // cek pass
+	if (trim($pass_sirs_apoteker)<>strtolower(trim($data['PASS2']))) {	
+		if (trim($pass_sirs_apoteker)<>strtoupper(trim($data['PASS2']))) {	
+			$eror='Password Salah !!!';
+			$lanjut = 'T';
+		}
+	}
+
+	$grpuser = trim($grpuser);
+
+	if(preg_match("/FARMASI/i", $grpuser))
+	{
+		$lanjut = 'Y';
+	}else{
+		$eror='Akses Failed !!!';
+		$lanjut = 'T';		 	
+	}
+
+
+	if($lanjut=='Y'){
+		$q  = "update ERM_RI_RESUME set resume133='$resume133' where noreg='$noreg'";
+		$hs = sqlsrv_query($conn,$q);
+
+		if($hs){
+			$eror='Verifikasi Berhasil';
+		}else{
+			$eror='Verifikasi Gagal';
+		}
+	}
+
+	echo "
+	<script>
+	alert('".$eror."');
+	window.location.replace('resume.php?id=$id|$user');
+	</script>
+	";
+
+
+}
+
 if (isset($_POST["simpan"])) {
 
 	$resume1	= $_POST["resume1"];
@@ -2926,7 +3363,7 @@ if (isset($_POST["simpan"])) {
 	$resume130	= $_POST["resume130"];
 	$resume131	= $_POST["resume131"];
 	$resume132	= $_POST["resume132"];
-	$resume133	= $_POST["resume133"];
+	// $resume133	= $_POST["resume133"];
 	// $resume134	= $_POST["resume134"];
 	$resume135	= $_POST["resume135"];
 	$resume136	= $_POST["resume136"];
@@ -2944,6 +3381,18 @@ if (isset($_POST["simpan"])) {
 	$resume148	= $_POST["resume148"];
 	$resume149	= $_POST["resume149"];
 	$resume150	= $_POST["resume150"];
+
+	$resume39 = str_replace("'","`",$resume39);
+	$resume40 = str_replace("'","`",$resume40);
+	$resume41 = str_replace("'","`",$resume41);
+	$resume42 = str_replace("'","`",$resume42);
+	$resume43 = str_replace("'","`",$resume43);
+	$resume44 = str_replace("'","`",$resume44);
+	$resume45 = str_replace("'","`",$resume45);
+	$resume46 = str_replace("'","`",$resume46);
+	$resume47 = str_replace("'","`",$resume47);
+	$resume48 = str_replace("'","`",$resume48);
+
 
 	$q  = "update ERM_RI_RESUME set
 	userid = '$user',tglentry='$tglinput',
@@ -3079,8 +3528,6 @@ if (isset($_POST["simpan"])) {
 	resume130	='$resume130',
 	resume131	='$resume131',
 	resume132	='$resume132',
-	resume133	='$resume133',
-	resume134	='$resume134',
 	resume135	='$resume135',
 	resume136	='$resume136',
 	resume137	='$resume137',
@@ -3100,7 +3547,275 @@ if (isset($_POST["simpan"])) {
 	where noreg='$noreg'
 	";
 
+	// $q  = "update ERM_RI_RESUME set
+	// userid = '$user',tglentry='$tglinput',
+	// resume1	='$resume1',
+	// resume2	='$resume2',
+	// resume3	='$resume3',
+	// resume4	='$resume4',
+	// resume5	='$resume5',
+	// resume6	='$resume6',
+	// resume7	='$resume7',	
+	// resume24	='$resume24',
+	// resume25	='$resume25',
+	// resume26	='$resume26',
+	// resume27	='$resume27',
+	// resume28	='$resume28',
+	// resume29	='$resume29',
+	// resume30	='$resume30',
+	// resume31	='$resume31',
+	// resume32	='$resume32',
+	// resume33	='$resume33',
+	// resume34	='$resume34',
+	// resume39	='$resume39',
+	// resume40	='$resume40',
+	// resume41	='$resume41',
+	// resume42	='$resume42',
+	// resume43	='$resume43',
+	// resume44	='$resume44',
+	// resume45	='$resume45',
+	// resume46	='$resume46',
+	// resume47	='$resume47',
+	// resume48	='$resume48',
+	// resume49	='$resume49',
+	// resume50	='$resume50',
+	// resume51	='$resume51',
+	// resume52	='$resume52',
+	// resume53	='$resume53',
+	// resume54	='$resume54',
+	// resume55	='$resume55',
+	// resume56	='$resume56',
+	// resume57	='$resume57',
+	// resume58	='$resume58',
+	// resume59	='$resume59',
+	// resume60	='$resume60',
+	// resume61	='$resume61',
+	// resume62	='$resume62',
+	// resume63	='$resume63',
+	// resume64	='$resume64',
+	// resume65	='$resume65',
+	// resume66	='$resume66',
+	// resume67	='$resume67',
+	// resume68	='$resume68',
+	// resume69	='$resume69',
+	// resume70	='$resume70',
+	// resume71	='$resume71',
+	// resume72	='$resume72',
+	// resume73	='$resume73',
+	// resume74	='$resume74',
+	// resume75	='$resume75',
+	// resume76	='$resume76',
+	// resume77	='$resume77',
+	// resume78	='$resume78',
+	// resume79	='$resume79',
+	// resume80	='$resume80',
+	// resume81	='$resume81',
+	// resume82	='$resume82',
+	// resume83	='$resume83',
+	// resume84	='$resume84',
+	// resume85	='$resume85',
+	// resume86	='$resume86',
+	// resume87	='$resume87',
+	// resume88	='$resume88',
+	// resume89	='$resume89',
+	// resume90	='$resume90',
+	// resume91	='$resume91',
+	// resume92	='$resume92',
+	// resume93	='$resume93',
+	// resume94	='$resume94',
+	// resume95	='$resume95',
+	// resume96	='$resume96',
+	// resume97	='$resume97',
+	// resume98	='$resume98',
+	// resume99	='$resume99',
+	// resume100	='$resume100',
+	// resume101	='$resume101',
+	// resume102	='$resume102',
+	// resume103	='$resume103',
+	// resume104	='$resume104',
+	// resume105	='$resume105',
+	// resume106	='$resume106',
+	// resume107	='$resume107',
+	// resume108	='$resume108',
+	// resume109	='$resume109',
+	// resume110	='$resume110',
+	// resume111	='$resume111',
+	// resume112	='$resume112',
+	// resume113	='$resume113',
+	// resume114	='$resume114',
+	// resume115	='$resume115',
+	// resume116	='$resume116',
+	// resume117	='$resume117',
+	// resume118	='$resume118',
+	// resume119	='$resume119',
+	// resume120	='$resume120',
+	// resume121	='$resume121',
+	// resume122	='$resume122',
+	// resume123	='$resume123',
+	// resume124	='$resume124',
+	// resume125	='$resume125',
+	// resume126	='$resume126',
+	// resume127	='$resume127',
+	// resume128	='$resume128',
+	// resume129	='$resume129',
+	// resume130	='$resume130',
+	// resume131	='$resume131',
+	// resume132	='$resume132',
+	// resume135	='$resume135',
+	// resume136	='$resume136',
+	// resume137	='$resume137',
+	// resume138	='$resume138',
+	// resume139	='$resume139',
+	// resume140	='$resume140',
+	// resume141	='$resume141',
+	// resume142	='$resume142',
+	// resume143	='$resume143',
+	// resume144	='$resume144',
+	// resume145	='$resume145',
+	// resume146	='$resume146',
+	// resume147	='$resume147',
+	// resume148	='$resume148',
+	// resume149	='$resume149',
+	// resume150	='$resume150'
+	// where noreg='$noreg'
+	// ";
 	$hs = sqlsrv_query($conn,$q);
+
+
+	$q2  = "update ERM_RI_RESUME_PERAWAT set
+	userid = '$user',tglentry='$tglinput',
+	resume1	='$resume1',
+	resume2	='$resume2',
+	resume3	='$resume3',
+	resume4	='$resume4',
+	resume5	='$resume5',
+	resume6	='$resume6',
+	resume7	='$resume7',	
+	resume24	='$resume24',
+	resume25	='$resume25',
+	resume26	='$resume26',
+	resume27	='$resume27',
+	resume28	='$resume28',
+	resume29	='$resume29',
+	resume30	='$resume30',
+	resume31	='$resume31',
+	resume32	='$resume32',
+	resume33	='$resume33',
+	resume34	='$resume34',
+	resume39	='$resume39',
+	resume40	='$resume40',
+	resume41	='$resume41',
+	resume42	='$resume42',
+	resume43	='$resume43',
+	resume44	='$resume44',
+	resume45	='$resume45',
+	resume46	='$resume46',
+	resume47	='$resume47',
+	resume48	='$resume48',
+	resume49	='$resume49',
+	resume50	='$resume50',
+	resume51	='$resume51',
+	resume52	='$resume52',
+	resume53	='$resume53',
+	resume54	='$resume54',
+	resume55	='$resume55',
+	resume56	='$resume56',
+	resume57	='$resume57',
+	resume58	='$resume58',
+	resume59	='$resume59',
+	resume60	='$resume60',
+	resume61	='$resume61',
+	resume62	='$resume62',
+	resume63	='$resume63',
+	resume64	='$resume64',
+	resume65	='$resume65',
+	resume66	='$resume66',
+	resume67	='$resume67',
+	resume68	='$resume68',
+	resume69	='$resume69',
+	resume70	='$resume70',
+	resume71	='$resume71',
+	resume72	='$resume72',
+	resume73	='$resume73',
+	resume74	='$resume74',
+	resume75	='$resume75',
+	resume76	='$resume76',
+	resume77	='$resume77',
+	resume78	='$resume78',
+	resume79	='$resume79',
+	resume80	='$resume80',
+	resume81	='$resume81',
+	resume82	='$resume82',
+	resume83	='$resume83',
+	resume84	='$resume84',
+	resume85	='$resume85',
+	resume86	='$resume86',
+	resume87	='$resume87',
+	resume88	='$resume88',
+	resume89	='$resume89',
+	resume90	='$resume90',
+	resume91	='$resume91',
+	resume92	='$resume92',
+	resume93	='$resume93',
+	resume94	='$resume94',
+	resume95	='$resume95',
+	resume96	='$resume96',
+	resume97	='$resume97',
+	resume98	='$resume98',
+	resume99	='$resume99',
+	resume100	='$resume100',
+	resume101	='$resume101',
+	resume102	='$resume102',
+	resume103	='$resume103',
+	resume104	='$resume104',
+	resume105	='$resume105',
+	resume106	='$resume106',
+	resume107	='$resume107',
+	resume108	='$resume108',
+	resume109	='$resume109',
+	resume110	='$resume110',
+	resume111	='$resume111',
+	resume112	='$resume112',
+	resume113	='$resume113',
+	resume114	='$resume114',
+	resume115	='$resume115',
+	resume116	='$resume116',
+	resume117	='$resume117',
+	resume118	='$resume118',
+	resume119	='$resume119',
+	resume120	='$resume120',
+	resume121	='$resume121',
+	resume122	='$resume122',
+	resume123	='$resume123',
+	resume124	='$resume124',
+	resume125	='$resume125',
+	resume126	='$resume126',
+	resume127	='$resume127',
+	resume128	='$resume128',
+	resume129	='$resume129',
+	resume130	='$resume130',
+	resume131	='$resume131',
+	resume132	='$resume132',
+	resume135	='$resume135',
+	resume136	='$resume136',
+	resume137	='$resume137',
+	resume138	='$resume138',
+	resume139	='$resume139',
+	resume140	='$resume140',
+	resume141	='$resume141',
+	resume142	='$resume142',
+	resume143	='$resume143',
+	resume144	='$resume144',
+	resume145	='$resume145',
+	resume146	='$resume146',
+	resume147	='$resume147',
+	resume148	='$resume148',
+	resume149	='$resume149',
+	resume150	='$resume150'
+	where noreg='$noreg'
+	";
+	$hs2 = sqlsrv_query($conn,$q2);
+
 
 	if($hs){
 		$eror = "Success";

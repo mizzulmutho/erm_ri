@@ -347,7 +347,7 @@ $tb = $d1u['tb'];
 
 <div class="container-fluid">
 
-	<body onload="document.myForm.ku.focus();">
+	<body onload="document.myForm.ku.focus();" style="background-color: #FFEDFA;">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 				<br>
@@ -462,9 +462,7 @@ $tb = $d1u['tb'];
 						<hr>
 
 						<i>Instruksi PPA</i>
-						<textarea class="form-control" name="instruksi" style="min-width:600px; min-height:200px;" onfocus="nextfield ='dpjp';">
-							<?php echo $instruksi;?>
-						</textarea>
+						<textarea class="form-control" name="instruksi" style="min-width:600px; min-height:200px;"><?php echo $instruksi;?></textarea>
 
 
 <!-- 					<i>Penunjang </i></br>			

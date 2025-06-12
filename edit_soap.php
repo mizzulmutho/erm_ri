@@ -7,6 +7,7 @@ $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd"
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
 $tgl		= gmdate("Y-m-d H:i:s", time()+60*60*7);
+$tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
 $id = $_GET["id"];
 $row = explode('|',$id);
@@ -160,134 +161,138 @@ $monitoring = $d1g['monitoring'];
 			<div class="row">
 				<br />
 				<b>Edit Data CPPT</b>
+				&nbsp;
+				<a href='' class='btn btn-success'>refresh</a>
 				<br>
 				<hr>
 				<?php 
 				if (empty($antropometri)){
 
 					?>
+					
 					<div class="col-12">
-						<input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='pass';" placeholder="Isikan Nama Dokter atau Perawat">
-						<!-- <input class="form-control" name="pass" value="<?php echo $pass;?>" id="" type="text" size='50' onfocus="nextfield ='subjektif';" placeholder="Konfirmasi Password !!!"> -->
+						Tgl Input : 
+						<input class="form-control" name="tglinput" value="<?php echo $tglinput;?>" type="text" >
+					</div>
+
+					<div class="col-12">
+						Kode PPA : <input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' placeholder="Isikan Nama Dokter atau Perawat">
 					</div>
 					<div class="col-6">
 						Subjektif : 
-						<textarea class="form-control" name="subjektif" cols="100%" onfocus="nextfield ='objektif';"  style="min-height:200px;"><?php echo $subjektif;?></textarea>
+						<textarea class="form-control" name="subjektif" cols="100%" style="min-height:200px;"><?php echo $subjektif;?></textarea>
 					</div>
 					<div class="col-6">
 						Objektif : 
-						<textarea class="form-control" name="objektif" cols="100%" onfocus="nextfield ='assesment';" style="min-height:200px;"><?php echo $objektif;?></textarea>				
+						<textarea class="form-control" name="objektif" cols="100%" style="min-height:200px;"><?php echo $objektif;?></textarea>				
 					</div>
 					<div class="col-6">
 						Assesment : 
-						<textarea class="form-control" name="assesment" cols="100%" onfocus="nextfield ='planning';" style="min-height:200px;"><?php echo $assesment;?></textarea>								
+						<textarea class="form-control" name="assesment" cols="100%" style="min-height:200px;"><?php echo $assesment;?></textarea>								
 					</div>
 					<div class="col-6">
 						Planning : 
-						<textarea class="form-control" name="planning" cols="100%" onfocus="nextfield ='penunjang';" style="min-height:200px;"><?php echo $planning;?></textarea>
+						<textarea class="form-control" name="planning" cols="100%" style="min-height:200px;"><?php echo $planning;?></textarea>
 					</div>
-<!-- 					<div class="col-6">
-						Penunjang : 			
-						<textarea class="form-control" name="penunjang" cols="100%" onfocus="nextfield ='Instruksi';" style="min-height:200px;"><?php echo $penunjang;?></textarea>																
-					</div>
- --><!-- 					<div class="col-6">
-						Instruksi : 			
-						<textarea class="form-control" name="instruksi" cols="100%" onfocus="nextfield ='dpjp';" style="min-height:200px;"><?php echo $instruksi;?></textarea>
-					</div>			
-				-->					<div class="col-12">
-					DPJP:
-					<input class="form-control" name="dpjp" value="<?php echo $dpjp;?>" id="dpjp" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter DPJP">
-				</div>			
-				<?php 
-			}else{
-
-				?>
-
-				<div class="row">
 					<div class="col-6">
-						<div class="row">
-							<div class="col-12">
-								<b>A (ASSESMEN)</b>
-								<br>
-								<label for="" class="">Antropometri : </label>
-								<textarea class="form-control" name="antropometri" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $antropometri;?></textarea>																
-								<label for="" class="">Biokimia : </label>
-								<textarea class="form-control" name="biokimia" cols="100%" onfocus="nextfield ='';"><?php echo $biokimia;?></textarea>																
-								<label for="" class="">Fisik/Klinis : </label>
-								<textarea class="form-control" name="fisik_klinis" cols="100%" onfocus="nextfield ='';"><?php echo $fisik_klinis;?></textarea>	
-								<label for="" class="">Recall Asupan Makan : </label>
-								<textarea class="form-control" name="asupan_makan" cols="100%" onfocus="nextfield ='';"><?php echo $asupan_makan;?></textarea>	
-							</div>
+						Instruksi PPA : 
+						<textarea class="form-control" name="instruksi" cols="100%" style="min-height:200px;"><?php echo $instruksi;?></textarea>
+					</div>
+					<div class="col-12">
+						DPJP:
+						<input class="form-control" name="dpjp" value="<?php echo $dpjp;?>" id="dpjp" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter DPJP">
+					</div>			
+					<?php 
+				}else{
+
+					?>
+
+					<div class="row">
+						<div class="col-6">
+							<div class="row">
+								<div class="col-12">
+									<b>A (ASSESMEN)</b>
+									<br>
+									<label for="" class="">Antropometri : </label>
+									<textarea class="form-control" name="antropometri" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $antropometri;?></textarea>																
+									<label for="" class="">Biokimia : </label>
+									<textarea class="form-control" name="biokimia" cols="100%" onfocus="nextfield ='';"><?php echo $biokimia;?></textarea>																
+									<label for="" class="">Fisik/Klinis : </label>
+									<textarea class="form-control" name="fisik_klinis" cols="100%" onfocus="nextfield ='';"><?php echo $fisik_klinis;?></textarea>	
+									<label for="" class="">Recall Asupan Makan : </label>
+									<textarea class="form-control" name="asupan_makan" cols="100%" onfocus="nextfield ='';"><?php echo $asupan_makan;?></textarea>	
+								</div>
 
 
-							<div class="col-12">
-								<b>I (INTERVENSI)</b>
-								<br>
-								<label for="" class="">Intervensi : </label>
-								<?php 
-								if(empty($intervensi)){
-									$intervensi = "Kebutuhan Energi : …… kkal \nKebutuhan Protein : ….. gram \nKebutuhan Lemak : ……. gram \nKebutuhan KH : ….. gram \nDiet : ………………………………….. \n
-									";
-								}
-								?>
-								<textarea class="form-control" name="intervensi" cols="100%" onfocus="nextfield ='';" style="min-height:150px;"><?php echo $intervensi;?></textarea>
-								<br>
+								<div class="col-12">
+									<b>I (INTERVENSI)</b>
+									<br>
+									<label for="" class="">Intervensi : </label>
+									<?php 
+									if(empty($intervensi)){
+										$intervensi = "Kebutuhan Energi : …… kkal \nKebutuhan Protein : ….. gram \nKebutuhan Lemak : ……. gram \nKebutuhan KH : ….. gram \nDiet : ………………………………….. \n
+										";
+									}
+									?>
+									<textarea class="form-control" name="intervensi" cols="100%" onfocus="nextfield ='';" style="min-height:150px;"><?php echo $intervensi;?></textarea>
+									<br>
+								</div>
 							</div>
 						</div>
+						<div class="col-6">
+							<div class="row">
+								<div class="col-12">
+									<b>D (DIAGNOSA GIZI)</b>
+									<br>
+									<textarea class="form-control" name="diagnosa_gizi" cols="100%" onfocus="nextfield ='';" style="min-height:150px;"><?php echo $diagnosa_gizi;?></textarea>
+									<br>
+								</div>
+
+								<div class="col-12">
+									<b>M-E (MONITORING-EVALUASI)</b>
+									<br>
+									<label for="" class="">monitoring : </label>
+									<textarea class="form-control" name="monitoring" cols="100%" onfocus="nextfield ='';"><?php echo $monitoring;?></textarea>	
+									<br>					
+								</div>	
+
+							</div>						
+						</div>
+
+						<div class="col-6">
+							<i>DPJP</i></br>
+							<input class="form-control" name="dpjp" value="<?php echo $dpjp;?>" id="dpjp" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter DPJP">
+						</div>
+						<div class="col-6">
+							<i>Petugas Entry SOAP</i></br>
+							<input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='pass';" placeholder="Isikan Nama Dokter atau Perawat yang Entry SOAP">
+						</div>
+
+
+
 					</div>
-					<div class="col-6">
-						<div class="row">
-							<div class="col-12">
-								<b>D (DIAGNOSA GIZI)</b>
-								<br>
-								<textarea class="form-control" name="diagnosa_gizi" cols="100%" onfocus="nextfield ='';" style="min-height:150px;"><?php echo $diagnosa_gizi;?></textarea>
-								<br>
-							</div>
 
-							<div class="col-12">
-								<b>M-E (MONITORING-EVALUASI)</b>
-								<br>
-								<label for="" class="">monitoring : </label>
-								<textarea class="form-control" name="monitoring" cols="100%" onfocus="nextfield ='';"><?php echo $monitoring;?></textarea>	
-								<br>					
-							</div>	
+					<?php 
+				}
+				?>
+			</div>
+			<br>
+			<div class="row">
+				&nbsp;&nbsp;&nbsp;
+				<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan</button> 
+				&nbsp;
+				<a href='list_soap.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>close</a>				
+			</div>
+			<br>
 
-						</div>						
-					</div>
-
-					<div class="col-6">
-						<i>DPJP</i></br>
-						<input class="form-control" name="dpjp" value="<?php echo $dpjp;?>" id="dpjp" type="text" size='50' onfocus="nextfield ='simpan';" placeholder="Isikan Nama Dokter DPJP">
-					</div>
-					<div class="col-6">
-						<i>Petugas Entry SOAP</i></br>
-						<input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='pass';" placeholder="Isikan Nama Dokter atau Perawat yang Entry SOAP">
-					</div>
-
-
-
-				</div>
-
-				<?php 
-			}
-			?>
-		</div>
-		<br>
-		<div class="row">
-			&nbsp;&nbsp;&nbsp;
-			<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';">simpan</button> 
-			&nbsp;
-			<a href='list_soap.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>close</a>
-		</div>
-		<br>
-
-	</form>
-</body>
+		</form>
+	</body>
 </div>
 
 <?php
 
 if (isset($_POST["simpan"])) {
+	$tglinput = trim($_POST["tglinput"]);
 	$kodedokter = trim($_POST["kodedokter"]);
 	$row = explode('-',$kodedokter);
 	$kodedokter  = trim($row[0]);
@@ -330,17 +335,24 @@ if (isset($_POST["simpan"])) {
 	if($lanjut == 'Y'){
 
 		if(empty($antropometri)){
-			$q  = "insert into ERM_SOAP
-			(norm, noreg, tanggal, sbu, kodeunit, kodedokter, subjektif, objektif, assesment, planning, userid, tglentry,instruksi,dpjp) 
-			values 
-			('$norm','$noreg','$tgl','$sbu','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tgl','$instruksi','$dpjp')";
+
+			// $q  = "insert into ERM_SOAP
+			// (norm, noreg, tanggal, sbu, kodeunit, kodedokter, subjektif, objektif, assesment, planning, userid, tglentry,instruksi,dpjp) 
+			// values 
+			// ('$norm','$noreg','$tgl','$sbu','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tgl','$instruksi','$dpjp')";
+			// $hs = sqlsrv_query($conn,$q);
+
+			// $q  = "insert into ERM_SOAP_EDIT
+			// (idsoap, noreg, tanggal, userid, tgledit) 
+			// values 
+			// ('$idsoap','$noreg','$tgl','$user','$tgl')";
+			// $hs = sqlsrv_query($conn,$q);
+
+
+			echo $q  = "update ERM_SOAP set subjektif='$subjektif', objektif='$objektif', assesment='$assesment', planning='$planning',tanggal='$tglinput',tglentry='$tglinput',instruksi='$instruksi' where id=$idsoap";
 			$hs = sqlsrv_query($conn,$q);
 
-			$q  = "insert into ERM_SOAP_EDIT
-			(idsoap, noreg, tanggal, userid, tgledit) 
-			values 
-			('$idsoap','$noreg','$tgl','$user','$tgl')";
-			$hs = sqlsrv_query($conn,$q);
+
 		}else{
 
 			$antropometri	= trim($_POST["antropometri"]);

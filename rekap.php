@@ -87,15 +87,15 @@ if ($login) {
 }
 
 if (isset($_POST["cari"])) {
- $textcari = $_POST["textcari"];
+   $textcari = $_POST["textcari"];
 
- $row = explode('-',$textcari);
- $noreg  = trim($row[0]);
+   $row = explode('-',$textcari);
+   $noreg  = trim($row[0]);
 
 
- if($noreg){
-  header("Location: cekidheader.php?id=$user|$noreg");
-}
+   if($noreg){
+      header("Location: cekidheader.php?id=$user|$noreg");
+  }
 
 }
 
@@ -159,31 +159,31 @@ if (isset($_POST["cari"])) {
 
 <script>
   $(function() {
-     $("#pasien").autocomplete({
+   $("#pasien").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
                     $.ajax({
-                       type: 'POST',
+                     type: 'POST',
                         // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
                         url: 'find_pasien.php', //your                         
                         dataType: 'json',
                         data: {
-                           postcode: request.term
-                       },
-                       success: function (data) {
+                         postcode: request.term
+                     },
+                     success: function (data) {
                             //if multiple results are returned
                             if(data.response instanceof Array)
                               response ($.map(data.response, function (item) {
-                                 return {
-                                    value: item.noreg + ' - ' + item.nama_pasien + ' - ' +  item.tgl_periksa
-                                }
-                            }));
+                               return {
+                                value: item.noreg + ' - ' + item.nama_pasien + ' - ' +  item.tgl_periksa
+                            }
+                        }));
                             //if a single result is returned
                         }           
                     });
                 }
             });
- });
+});
 </script>    
 
 </head>
@@ -214,6 +214,7 @@ if (isset($_POST["cari"])) {
                 <!-- <option value='Encontered' <?php if($jenis=='Encontered'){ echo "selected";}?> >Encontered</option> -->
                 <option value='Condition' <?php if($jenis=='Condition'){ echo "selected";}?> >Condition</option>
                 <option value='Pasien Pulang' <?php if($jenis=='Pasien Pulang'){ echo "selected";}?> >Pasien Pulang</option>
+                <option value='Resume Medis' <?php if($jenis=='Resume Medis'){ echo "selected";}?> >Resume Medis</option>
             </select>
             <input name="tgl1" type="date" size="15" value="<?php echo $tgl1; ?>" style="width:150px;height:40px">
             s/d
@@ -251,36 +252,36 @@ if (isset($_POST["tampil"])) {
             $q="
             SELECT        dbo.Afarm_Unitlayanan.KET, a.REGTUJUAN, dbo.Afarm_Unitlayanan.NAMAUNIT, COUNT(*) AS jumlah, ISNULL(SUM(b.dokter), 0) AS dokter, ISNULL(SUM(b.perawat), 0) AS perawat,
             (SELECT        COUNT(ERM_RI_RESUME.noreg) AS Expr1
-             FROM             ERM_RI_RESUME INNER JOIN
-             ARM_RegisterTujuan ON  ERM_RI_RESUME.noreg = ARM_RegisterTujuan.NOREG
-             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR,  ERM_RI_RESUME.tglentry, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_RegisterTujuan.REGTUJUAN = a.REGTUJUAN) AND (resume38 IS NOT NULL) AND (resume38 <> '')) AS resume_medis,
+               FROM             ERM_RI_RESUME INNER JOIN
+               ARM_RegisterTujuan ON  ERM_RI_RESUME.noreg = ARM_RegisterTujuan.NOREG
+               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR,  ERM_RI_RESUME.tglentry, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_RegisterTujuan.REGTUJUAN = a.REGTUJUAN) AND (resume38 IS NOT NULL) AND (resume38 <> '')) AS resume_medis,
             (SELECT COUNT(ERM_RI_GENERALCONSENT.noreg) AS Expr1
                 FROM            ERM_RI_GENERALCONSENT INNER JOIN
                 ARM_RegisterTujuan ON ERM_RI_GENERALCONSENT.noreg = ARM_RegisterTujuan.NOREG
                 WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, tgl, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (REGTUJUAN = a.REGTUJUAN)) AS gc_tppri,
             (SELECT        COUNT(noreg) AS Expr1
-               FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
-               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'dokter') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_DOKTER,
+             FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
+             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'dokter') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_DOKTER,
             (SELECT        COUNT(noreg) AS Expr1
-               FROM            dbo.V_ERM_RI_CPPT
-               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'perawat') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_PERAWAT,
+             FROM            dbo.V_ERM_RI_CPPT
+             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'perawat') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_PERAWAT,
             (SELECT        COUNT(noreg) AS Expr1
-               FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
-               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'gizi') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_GIZI,
+             FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
+             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'gizi') AND (REGTUJUAN = a.REGTUJUAN)) AS CPPT_GIZI,
             (SELECT        COUNT(noreg) AS Expr1
-               FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
-               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'farmasi') AND (REGTUJUAN = a.REGTUJUAN)) 
+             FROM            dbo.V_ERM_RI_CPPT AS V_ERM_RI_CPPT_1
+             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (profesi = 'farmasi') AND (REGTUJUAN = a.REGTUJUAN)) 
             AS CPPT_APOTEKER,
             (SELECT        COUNT(noreg) AS Expr1
-               FROM            dbo.V_ERM_RI_OBSERVASI
-               WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (REGTUJUAN = a.REGTUJUAN)) AS OBSERVASI
+             FROM            dbo.V_ERM_RI_OBSERVASI
+             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (REGTUJUAN = a.REGTUJUAN)) AS OBSERVASI
             FROM            dbo.ARM_RegisterTujuan AS a INNER JOIN
             dbo.Afarm_Unitlayanan ON a.REGTUJUAN = dbo.Afarm_Unitlayanan.KODEUNIT LEFT OUTER JOIN
             (SELECT        dbo.V_ERM_RI_HEADER.noreg, SUM(CASE WHEN ERM_RI_ANAMNESIS_MEDIS.noreg IS NULL THEN 0 ELSE 1 END) AS dokter, COUNT(*) AS perawat
-               FROM            dbo.ERM_RI_ANAMNESIS_MEDIS RIGHT OUTER JOIN
-               dbo.V_ERM_RI_HEADER ON dbo.ERM_RI_ANAMNESIS_MEDIS.noreg = dbo.V_ERM_RI_HEADER.noreg
-               WHERE        (dbo.V_ERM_RI_HEADER.userid IS NOT NULL)
-               GROUP BY dbo.V_ERM_RI_HEADER.noreg) AS b ON a.NOREG = b.noreg
+             FROM            dbo.ERM_RI_ANAMNESIS_MEDIS RIGHT OUTER JOIN
+             dbo.V_ERM_RI_HEADER ON dbo.ERM_RI_ANAMNESIS_MEDIS.noreg = dbo.V_ERM_RI_HEADER.noreg
+             WHERE        (dbo.V_ERM_RI_HEADER.userid IS NOT NULL)
+             GROUP BY dbo.V_ERM_RI_HEADER.noreg) AS b ON a.NOREG = b.noreg
             WHERE        (CONVERT(DATETIME, CONVERT(VARCHAR, a.TANGGAL, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (a.NOREG LIKE 'R%') AND (dbo.Afarm_Unitlayanan.JENIS = 'RI') and ket='$sbu'
             GROUP BY a.REGTUJUAN, dbo.Afarm_Unitlayanan.KET, dbo.Afarm_Unitlayanan.NAMAUNIT
             ";
@@ -300,22 +301,22 @@ if (isset($_POST["tampil"])) {
             ";
         }
         if($jenis=='GENERAL CONSENT'){
-           $q="           
-           SELECT        TOP (200) ERM_RI_GENERALCONSENT.noreg, CONVERT(VARCHAR, ERM_RI_GENERALCONSENT.tgl, 25) AS tglmasuk, AFarm_MstPasien.NAMA, ERM_RI_GENERALCONSENT.userid, Afarm_Unitlayanan.KET, 
-           ERM_ASSESMEN_HEADER.kodedokter, Afarm_DOKTER.NAMA AS NAMADOKTER
-           FROM            Afarm_DOKTER INNER JOIN
-           ERM_ASSESMEN_HEADER ON Afarm_DOKTER.KODEDOKTER = ERM_ASSESMEN_HEADER.kodedokter RIGHT OUTER JOIN
-           ERM_RI_GENERALCONSENT INNER JOIN
-           ARM_REGISTER ON ERM_RI_GENERALCONSENT.noreg = ARM_REGISTER.NOREG INNER JOIN
-           AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM INNER JOIN
-           Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT ON ERM_ASSESMEN_HEADER.id = ERM_RI_GENERALCONSENT.id
-           WHERE       
-           (CONVERT(DATETIME, CONVERT(VARCHAR, ERM_RI_GENERALCONSENT.tgl, 101), 101) BETWEEN '$periode1' AND '$periode2') and ERM_RI_GENERALCONSENT.noreg like 'R%' and 
-           KET like '%$sbu%'
-           ORDER BY ERM_RI_GENERALCONSENT.id desc
-           ";
-       }
-       if($jenis=='Encontered'){
+         $q="           
+         SELECT        TOP (200) ERM_RI_GENERALCONSENT.noreg, CONVERT(VARCHAR, ERM_RI_GENERALCONSENT.tgl, 25) AS tglmasuk, AFarm_MstPasien.NAMA, ERM_RI_GENERALCONSENT.userid, Afarm_Unitlayanan.KET, 
+         ERM_ASSESMEN_HEADER.kodedokter, Afarm_DOKTER.NAMA AS NAMADOKTER
+         FROM            Afarm_DOKTER INNER JOIN
+         ERM_ASSESMEN_HEADER ON Afarm_DOKTER.KODEDOKTER = ERM_ASSESMEN_HEADER.kodedokter RIGHT OUTER JOIN
+         ERM_RI_GENERALCONSENT INNER JOIN
+         ARM_REGISTER ON ERM_RI_GENERALCONSENT.noreg = ARM_REGISTER.NOREG INNER JOIN
+         AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM INNER JOIN
+         Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT ON ERM_ASSESMEN_HEADER.id = ERM_RI_GENERALCONSENT.id
+         WHERE       
+         (CONVERT(DATETIME, CONVERT(VARCHAR, ERM_RI_GENERALCONSENT.tgl, 101), 101) BETWEEN '$periode1' AND '$periode2') and ERM_RI_GENERALCONSENT.noreg like 'R%' and 
+         KET like '%$sbu%'
+         ORDER BY ERM_RI_GENERALCONSENT.id desc
+         ";
+     }
+     if($jenis=='Encontered'){
         $q="
         SELECT     RTRIM(ARM_REGISTER.NOREG) noreg, Afarm_Unitlayanan.NAMAUNIT, AFarm_MstPasien.NAMA, ISNULL(AFarm_MstPasien.NOKTP,'') NOKTP, Afarm_DOKTER.NAMA AS NAMADOKTER, ISNULL(Afarm_DOKTER.NOKTP,'') AS KTPDOKTER, Afarm_Unitlayanan.KET AS SBU, 0 KIRIM,CONVERT(VARCHAR, ARM_REGISTER.tanggal, 25) AS tglmasuk,ARM_REGISTER.USERID as userid
         FROM            ARM_REGISTER INNER JOIN
@@ -324,10 +325,10 @@ if (isset($_POST["tampil"])) {
         Afarm_DOKTER ON ARM_PERIKSA.KODEDOKTER = Afarm_DOKTER.KODEDOKTER INNER JOIN
         AFarm_MstPasien ON ARM_PERIKSA.NORM = AFarm_MstPasien.NORM
         WHERE       ARM_REGISTER.IDENCOUNTERSS is null AND  (ARM_PERIKSA.KODEDOKTER <> '') AND Afarm_Unitlayanan.KET = '$sbu' AND (ARM_PERIKSA.NOREG NOT IN
-           (SELECT        C.NOREG
-               FROM            ARM_REGISTER AS C INNER JOIN
-               Afarm_Unitlayanan AS D ON C.TUJUAN = D.KODEUNIT
-               WHERE        (D.JENIS3 = 'MCU'))) AND (CONVERT(DATETIME, CONVERT(VARCHAR, ARM_PERIKSA.TGLMASUK, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_PERIKSA.KODEUNIT NOT IN ('P03', 'D12', 'P48'))
+         (SELECT        C.NOREG
+             FROM            ARM_REGISTER AS C INNER JOIN
+             Afarm_Unitlayanan AS D ON C.TUJUAN = D.KODEUNIT
+             WHERE        (D.JENIS3 = 'MCU'))) AND (CONVERT(DATETIME, CONVERT(VARCHAR, ARM_PERIKSA.TGLMASUK, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_PERIKSA.KODEUNIT NOT IN ('P03', 'D12', 'P48'))
         ";   
     }
 
@@ -359,96 +360,112 @@ if (isset($_POST["tampil"])) {
     }
 
     if($jenis=='Pasien Pulang'){
-     $q="
-     SELECT     DISTINCT RTRIM(ARM_REGISTER.NOREG) noreg, Afarm_Unitlayanan.NAMAUNIT, AFarm_MstPasien.NAMA, ISNULL(AFarm_MstPasien.NOKTP,'') NOKTP, Afarm_DOKTER.NAMA AS NAMADOKTER, ISNULL(Afarm_DOKTER.NOKTP,'') AS KTPDOKTER, Afarm_Unitlayanan.KET AS SBU, 0 KIRIM,CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 25) AS tglmasuk,ARM_REGISTER.USERID as userid, Afarm_DOKTER.kodedokter
-     FROM            ARM_REGISTER INNER JOIN
-     ARM_PERIKSA ON ARM_REGISTER.NOREG = ARM_PERIKSA.NOREG INNER JOIN
-     Afarm_Unitlayanan ON ARM_PERIKSA.KODEUNIT = Afarm_Unitlayanan.KODEUNIT INNER JOIN
-     Afarm_DOKTER ON ARM_PERIKSA.KODEDOKTER = Afarm_DOKTER.KODEDOKTER INNER JOIN
-     AFarm_MstPasien ON ARM_PERIKSA.NORM = AFarm_MstPasien.NORM
-     WHERE      Afarm_Unitlayanan.KET = '$sbu' AND ARM_REGISTER.NOREG like '%R%' AND (CONVERT(DATETIME, CONVERT(VARCHAR, ARM_PERIKSA.TGLMASUK, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_PERIKSA.TGLKELUAR IS NOT NULL OR ARM_PERIKSA.TGLKELUAR <> '') and year(TGLKELUAR)<>'1900' order by CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 25) desc
-     ";   
- }
+       $q="
+       SELECT     DISTINCT RTRIM(ARM_REGISTER.NOREG) noreg, Afarm_Unitlayanan.NAMAUNIT, AFarm_MstPasien.NAMA, ISNULL(AFarm_MstPasien.NOKTP,'') NOKTP, Afarm_DOKTER.NAMA AS NAMADOKTER, ISNULL(Afarm_DOKTER.NOKTP,'') AS KTPDOKTER, Afarm_Unitlayanan.KET AS SBU, 0 KIRIM,CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 25) AS tglmasuk,ARM_REGISTER.USERID as userid, Afarm_DOKTER.kodedokter
+       FROM            ARM_REGISTER INNER JOIN
+       ARM_PERIKSA ON ARM_REGISTER.NOREG = ARM_PERIKSA.NOREG INNER JOIN
+       Afarm_Unitlayanan ON ARM_PERIKSA.KODEUNIT = Afarm_Unitlayanan.KODEUNIT INNER JOIN
+       Afarm_DOKTER ON ARM_PERIKSA.KODEDOKTER = Afarm_DOKTER.KODEDOKTER INNER JOIN
+       AFarm_MstPasien ON ARM_PERIKSA.NORM = AFarm_MstPasien.NORM
+       WHERE      Afarm_Unitlayanan.KET = '$sbu' AND ARM_REGISTER.NOREG like '%R%' AND (CONVERT(DATETIME, CONVERT(VARCHAR, ARM_PERIKSA.TGLMASUK, 101), 101) BETWEEN '$periode1' AND '$periode2') AND (ARM_PERIKSA.TGLKELUAR IS NOT NULL OR ARM_PERIKSA.TGLKELUAR <> '') and year(TGLKELUAR)<>'1900' order by CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 25) desc
+       ";   
+   }
 
- $hasil1  = sqlsrv_query($conn, $q);
+   if($jenis=='Resume Medis'){
+       $q="
 
- $nox=1;  
- if($jenis=='REKAP'){
+       SELECT DISTINCT 
+       RTRIM(ARM_REGISTER.NOREG) AS noreg, Afarm_Unitlayanan.NAMAUNIT, AFarm_MstPasien.NAMA, ISNULL(AFarm_MstPasien.NOKTP, '') AS NOKTP, '' AS KTPDOKTER, Afarm_Unitlayanan.KET AS SBU, 0 AS KIRIM, CONVERT(VARCHAR, ARM_REGISTER.TANGGAL, 25) AS tglmasuk,AFarm_MstPasien.NORM,
+       ARM_REGISTER.USERID AS userid, '' AS KODEDOKTER
+       FROM            ARM_REGISTER INNER JOIN
+       ERM_RI_RESUME_APPROVEL ON ARM_REGISTER.NOREG = ERM_RI_RESUME_APPROVEL.noreg INNER JOIN
+       Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT INNER JOIN
+       AFarm_MstPasien ON ARM_REGISTER.NORM = AFarm_MstPasien.NORM
+       WHERE        (Afarm_Unitlayanan.KET = '$sbu') AND (ARM_REGISTER.NOREG LIKE '%R%') AND (CONVERT(DATETIME, CONVERT(VARCHAR, ERM_RI_RESUME_APPROVEL.tgl_approve
+        , 101), 101) BETWEEN '$periode1' AND '$periode2') 
+       ";   
+   }
 
-   echo "
-   <div ='card'>
-   <table class='table'>
-   <tr valign='middle'>
-   <td rowspan='2'>no</td>
-   <td rowspan='2'>ket</td>
-   <td rowspan='2'>regtujuan</td>
-   <td rowspan='2'>namaunit</td>
-   <td rowspan='2'>detail</td>
-   <td rowspan='2'>jumlah</td>
-   <td rowspan='2'>resume medis<br>(dokter)</td>
-   <td rowspan='2'>general consent<br> (tppri)</td>
-   <td colspan='2'>ASSESMEN AWAL</td>
-   <td colspan='4'>ASSESMEN ULANG</td>
-   </tr>
-   <tr>
-   <td>assesmen dokter</td>
-   <td>assesmen perawat</td>
-   <td>cppt dokter</td>
-   <td>cppt perawat</td>
-   <td>cppt gizi</td>
-   <td>cppt apoteker</td>
-   </tr>
-   ";      
 
-   while    ($data = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
+   $hasil1  = sqlsrv_query($conn, $q);
+
+   $nox=1;  
+   if($jenis=='REKAP'){
+
+     echo "
+     <div ='card'>
+     <table class='table'>
+     <tr valign='middle'>
+     <td rowspan='2'>no</td>
+     <td rowspan='2'>ket</td>
+     <td rowspan='2'>regtujuan</td>
+     <td rowspan='2'>namaunit</td>
+     <td rowspan='2'>detail</td>
+     <td rowspan='2'>jumlah</td>
+     <td rowspan='2'>resume medis<br>(dokter)</td>
+     <td rowspan='2'>general consent<br> (tppri)</td>
+     <td colspan='2'>ASSESMEN AWAL</td>
+     <td colspan='4'>ASSESMEN ULANG</td>
+     </tr>
+     <tr>
+     <td>assesmen dokter</td>
+     <td>assesmen perawat</td>
+     <td>cppt dokter</td>
+     <td>cppt perawat</td>
+     <td>cppt gizi</td>
+     <td>cppt apoteker</td>
+     </tr>
+     ";      
+
+     while    ($data = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
+
+        echo "
+        <tr>
+        <td>$nox</td>
+        <td>$data[KET]</td>
+        <td>$data[REGTUJUAN]</td>
+        <td>$data[NAMAUNIT]</td>
+        <td><a href='rekap_detail.php?id=$user|$sbu|$data[REGTUJUAN]|$tgl1|$tgl2|$jenis'><i class='bi bi-arrow-right-square-fill'></i></a></td>
+        <td>$data[jumlah]</td>
+        <td>$data[resume_medis]</td>
+        <td>$data[gc_tppri]</td>
+        <td>$data[dokter]</td>
+        <td>$data[perawat]</td>
+        <td>$data[CPPT_DOKTER]</td>
+        <td>$data[CPPT_PERAWAT]</td>
+        <td>$data[CPPT_GIZI]</td>
+        <td>$data[CPPT_APOTEKER]</td>
+        </tr>
+        ";
+        $nox+=1;
+        $t_jumlah += $data[jumlah];
+        $t_resume_medis += $data[resume_medis];
+        $t_ASSESMEN_AWAL_DOKTER += $data[dokter];
+        $t_ASSESMEN_AWAL_PERAWAT += $data[perawat];
+        $t_CPPT_DOKTER += $data[CPPT_DOKTER];
+        $t_CPPT_PERAWAT += $data[CPPT_PERAWAT];
+        $t_CPPT_GIZI += $data[CPPT_GIZI];
+        $t_CPPT_APOTEKER += $data[CPPT_APOTEKER];
+        $t_gc_tppri += $data[gc_tppri];
+    }
 
     echo "
     <tr>
-    <td>$nox</td>
-    <td>$data[KET]</td>
-    <td>$data[REGTUJUAN]</td>
-    <td>$data[NAMAUNIT]</td>
-    <td><a href='rekap_detail.php?id=$user|$sbu|$data[REGTUJUAN]|$tgl1|$tgl2|$jenis'><i class='bi bi-arrow-right-square-fill'></i></a></td>
-    <td>$data[jumlah]</td>
-    <td>$data[resume_medis]</td>
-    <td>$data[gc_tppri]</td>
-    <td>$data[dokter]</td>
-    <td>$data[perawat]</td>
-    <td>$data[CPPT_DOKTER]</td>
-    <td>$data[CPPT_PERAWAT]</td>
-    <td>$data[CPPT_GIZI]</td>
-    <td>$data[CPPT_APOTEKER]</td>
+    <td colspan='5' align='center'>TOTAL</td>
+    <td>$t_jumlah</td>
+    <td>$t_resume_medis</td>
+    <td>$t_gc_tppri</td>
+    <td>$t_ASSESMEN_AWAL_DOKTER</td>
+    <td>$t_ASSESMEN_AWAL_PERAWAT</td>
+    <td>$t_CPPT_DOKTER</td>
+    <td>$t_CPPT_PERAWAT</td>
+    <td>$t_CPPT_GIZI</td>
+    <td>$t_CPPT_APOTEKER</td>
     </tr>
     ";
-    $nox+=1;
-    $t_jumlah += $data[jumlah];
-    $t_resume_medis += $data[resume_medis];
-    $t_ASSESMEN_AWAL_DOKTER += $data[dokter];
-    $t_ASSESMEN_AWAL_PERAWAT += $data[perawat];
-    $t_CPPT_DOKTER += $data[CPPT_DOKTER];
-    $t_CPPT_PERAWAT += $data[CPPT_PERAWAT];
-    $t_CPPT_GIZI += $data[CPPT_GIZI];
-    $t_CPPT_APOTEKER += $data[CPPT_APOTEKER];
-    $t_gc_tppri += $data[gc_tppri];
-}
 
-echo "
-<tr>
-<td colspan='5' align='center'>TOTAL</td>
-<td>$t_jumlah</td>
-<td>$t_resume_medis</td>
-<td>$t_gc_tppri</td>
-<td>$t_ASSESMEN_AWAL_DOKTER</td>
-<td>$t_ASSESMEN_AWAL_PERAWAT</td>
-<td>$t_CPPT_DOKTER</td>
-<td>$t_CPPT_PERAWAT</td>
-<td>$t_CPPT_GIZI</td>
-<td>$t_CPPT_APOTEKER</td>
-</tr>
-";
-
-echo "</table>";
-echo "</card>";
+    echo "</table>";
+    echo "</card>";
 
 }  else{
 
@@ -470,21 +487,41 @@ echo "</card>";
 
     }
 
+    if($jenis<>'Resume Medis'){
+        echo "
+        <div ='card'>
+        <table class='table'>
+        <tr>
+        <td>no</td>
+        <td>noreg</td>
+        <td>tanggal</td>
+        <td>pasien</td>
+        <td>profesi pemberi asuhan</td>
+        <td>$kolom</td>
+        <td>userid</td>
+        <td>satu sehat</td>
+        </tr>"; 
+    }else if($jenis=='Resume Medis'){
+        echo "
+        <div ='card'>
+        <table class='table'>
+        <tr>
+        <td>no</td>
+        <td>noreg</td>
+        <td>tgl masuk</td>
+        <td>tgl pulang</td>
+        <td>pasien</td>
+        <td>userid</td>
+        <td align='center'>resume edit</td>
+        <td align='center'>resume print</td>
+        <td align='center'>history cppt</td>
+        <td align='center'>assesmen igd</td>
+        <td align='center'>laporan operasi</td>
+        <td align='center'>sep</td>
+        </tr>"; 
+    }else{
 
-    echo "
-    <div ='card'>
-    <table class='table'>
-    <tr>
-    <td>no</td>
-    <td>noreg</td>
-    <td>tanggal</td>
-    <td>pasien</td>
-    <td>profesi pemberi asuhan</td>
-    <td>$kolom</td>
-    <td>userid</td>
-    <td>satu sehat</td>
-    </tr>"; 
-
+    }
 
     while    ($data = sqlsrv_fetch_array($hasil1, SQLSRV_FETCH_ASSOC)){   
 
@@ -494,39 +531,104 @@ echo "</card>";
         $encontered = trim($datae[IDENCOUNTERSS]);
 
         if($jenis=='Condition'){
-         $qe       = "SELECT      IDDIAGNOSA from   SS_DIAGNOSA where noreg='$data[noreg]'";
-         $hasile  = sqlsrv_query($conn, $qe);                
-         $datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);                      
-         $encontered = trim($datae[IDDIAGNOSA]);
-     }
+           $qe       = "SELECT      IDDIAGNOSA from   SS_DIAGNOSA where noreg='$data[noreg]'";
+           $hasile  = sqlsrv_query($conn, $qe);                
+           $datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);                      
+           $encontered = trim($datae[IDDIAGNOSA]);
+       }
 
-     if($jenis=='Pasien Pulang'){
+       if($jenis=='Pasien Pulang'){
                    // $qe       = "SELECT      IDENCOUNTER from   SS_RESUME_RI where noreg='$data[noreg]'";
-      $qe       = "SELECT      IDENCOUNTERSS from  ARM_REGISTER where noreg='$data[noreg]'";
-      $hasile  = sqlsrv_query($conn, $qe);                
-      $datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);   
+          $qe       = "SELECT      IDENCOUNTERSS from  ARM_REGISTER where noreg='$data[noreg]'";
+          $hasile  = sqlsrv_query($conn, $qe);                
+          $datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);   
 
-      $qe2       = "SELECT      IDKELUHAN_UTAMA from  SS_RI_RESUME where noreg='$data[noreg]'";
-      $hasile2  = sqlsrv_query($conn, $qe2);                
-      $datae2    = sqlsrv_fetch_array($hasile2, SQLSRV_FETCH_ASSOC);   
+          $qe2       = "SELECT      IDKELUHAN_UTAMA from  SS_RI_RESUME where noreg='$data[noreg]'";
+          $hasile2  = sqlsrv_query($conn, $qe2);                
+          $datae2    = sqlsrv_fetch_array($hasile2, SQLSRV_FETCH_ASSOC);   
 
-      $encontered = 'Encounter :'.trim($datae[IDENCOUNTERSS]).'<br>Resume :'.trim($datae2[IDKELUHAN_UTAMA]);
+          $encontered = 'Encounter :'.trim($datae[IDENCOUNTERSS]).'<br>Resume :'.trim($datae2[IDKELUHAN_UTAMA]);
 
-  }
+      }
 
-  echo "
-  <tr>
-  <td>$nox</td>
-  <td>$data[noreg]</td>
-  <td>$data[tglmasuk]</td>
-  <td>$data[NAMA]</td>
-  <td>$data[NAMADOKTER]</td>
-  <td>$encontered</td>
-  <td>$data[userid]</td>
-  <td><a href='$link?id=$data[noreg]|$data[kodedokter]|$sbu|$data[tglmasuk]|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle-fill'></i></a></td>
-  </tr>
-  ";
-  $nox+=1;
+      if($jenis<>'Resume Medis'){
+
+        $noreg = trim($data[noreg]);
+
+        $qtp="
+        SELECT CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 25) AS tgl_pulang from ARM_PERIKSA
+        WHERE noreg='$noreg'
+        ";
+        $hqtp  = sqlsrv_query($conn, $qtp);                
+        $dhqtp    = sqlsrv_fetch_array($hqtp, SQLSRV_FETCH_ASSOC);   
+
+        $tgl_pulang = $dhqtp[tgl_pulang];
+
+        echo "
+        <tr>
+        <td>$nox</td>
+        <td>$data[noreg]</td>
+        <td>$data[tglmasuk]</td>
+        <td>$data[NAMA]</td>
+        <td>$data[NAMADOKTER]</td>
+        <td>$encontered</td>
+        <td>$data[userid]</td>
+        <td><a href='$link?id=$data[noreg]|$data[kodedokter]|$sbu|$data[tglmasuk]|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle-fill'></i></a></td>
+        </tr>
+        ";
+    }else if($jenis=='Resume Medis'){
+
+        $noreg = trim($data[noreg]);
+
+        $qtp="
+        SELECT CONVERT(VARCHAR, ARM_PERIKSA.TGLKELUAR, 103) AS tgl_pulang from ARM_PERIKSA
+        WHERE noreg='$noreg' and TGLKELUAR is not null
+        ";
+        $hqtp  = sqlsrv_query($conn, $qtp);                
+        $dhqtp    = sqlsrv_fetch_array($hqtp, SQLSRV_FETCH_ASSOC);   
+
+        $tgl_pulang = $dhqtp[tgl_pulang];
+
+        $noreg = trim($data[noreg]);        
+        $qu="SELECT norm,id FROM ERM_ASSESMEN_HEADER where noreg='$noreg'";
+        $h1u  = sqlsrv_query($conn, $qu);        
+        $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+        $id_header = trim($d1u['id']);
+
+        //upload berkas 
+        $qub="select noreg,doc from document_erm where noreg='$noreg'";
+        $hqub  = sqlsrv_query($conn, $qub);        
+        $dhqub  = sqlsrv_fetch_array($hqub, SQLSRV_FETCH_ASSOC); 
+        $cqnoreg = trim($dhqub['noreg']);
+        $cqdoc = trim($dhqub['doc']);
+
+        if($cqnoreg){
+            $uploadberkas=" <br><font color='red'><a href='http://192.168.10.109/dok_erm/$cqdoc' target='_blank'>upload berkas manual</a></font>";
+        }else{
+            $uploadberkas='';
+        }
+
+        echo "
+        <tr>
+        <td>$nox</td>
+        <td>$data[noreg]</td>
+        <td>$data[tglmasuk]</td>
+        <td>$tgl_pulang</td>
+        <td>$data[NAMA]-$data[NORM]$uploadberkas</td>
+        <td>$data[userid]</td>
+        <td align='center'><a href='resume_edit.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-pencil-square'></i></a></td>
+        <td align='center'><a href='resume_print.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle-fill'></i></a></td>
+        <td align='center'><a href='r_soap_preview.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle'></i></a></td>
+        <td align='center'><a href='r_transfer_pasien_igd_preview.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle'></i></a></td>
+        <td align='center'><a href='jadwaloperasi.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-arrow-up-right-circle'></i></a></td>
+        <td align='center'><a href='sep.php?id=$id_header|$user' target='_blank' class='$class'><i class='bi bi-file-earmark-zip-fill'></i></a></td>
+        </tr>
+        ";
+    }else{
+
+    }
+
+    $nox+=1;
 
 }
 

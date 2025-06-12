@@ -102,6 +102,8 @@ if(empty($regcek)){
 	$riwayat_penyakit_sekarang = $de['riwayat_penyakit_sekarang'];
 
 	$tglrawat = $de['tglrawat'];
+	$jamrawat = $de['jamrawat'];
+
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -444,7 +446,45 @@ if(empty($regcek)){
 		});
 	</script> 
 
-	
+	<style>
+		.mst-table {
+			width: 100%;
+			border-collapse: collapse;
+			background-color: #f9f9f9;
+			font-family: Arial, sans-serif;
+		}
+		.mst-table th, .mst-table td {
+			border: 1px solid #ccc;
+			padding: 8px 12px;
+			text-align: left;
+		}
+		.mst-table th {
+			background-color: #66CDAA;
+			color: white;
+		}
+		.mst-table tr:nth-child(even) {
+			background-color: #f2f2f2;
+		}
+		.mst-table input[type="checkbox"] {
+			margin-left: 10px;
+		}
+		.mst-table h1 {
+			font-size: 24px;
+			color: #2E8B57;
+			margin: 0;
+		}
+		.submit-btn {
+			margin-top: 20px;
+			padding: 10px 20px;
+			background-color: #66CDAA;
+			border: none;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+	</style>
+
 </head> 
 
 <div class="container-fluid">
@@ -462,46 +502,46 @@ if(empty($regcek)){
 						<!-- <a href='#' class='btn btn-info btn-sm'><i class="bi bi-printer-fill"></i></a> -->
 						<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
 						<a href='form_assesmen_anak_print.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a>		
-						&nbsp;&nbsp;
-						<i class="bi bi-window-plus"> &nbsp; <b>ASESMEN AWAL KEPERAWATAN ANAK</b></i>
-
 					</div>
 				</div>
 
-				<br>
-<!-- 				<div class="row">
-					<div class="col-12">
-						<table class="table table-bordered">
-							<tr>
-								<td>Nama</td><td>: <?php echo $nama;?></td><td>No. RM</td><td>: <?php echo $norm;?></td>
-							</tr>
-							<tr>
-								<td>Tanggal Lahir</td><td>: <?php echo $tgllahir;?></td><td>NIK</td><td>: <?php echo $noktp;?></td>
-							</tr>
-							<tr>
-								<td>Umur</td><td>: <?php echo $umur;?></td><td>Jenis Kelamin</td><td>: <?php echo $kelamin;?></td>
-							</tr>
-							<tr>
-								<td>Riwayat Alergi</td><td>: <?php echo $alergi;?></td><td>Diet</td><td>: <?php echo $diet;?></td>
-							</tr>
-						</table>
+
+				<!-- Title -->
+				<div class="text-center mb-4">
+					<h5><i class="bi bi-window-plus"></i> ASESMEN AWAL KEPERAWATAN ANAK</h5>
+				</div>
+
+				<!-- Input DPJP -->
+				<div class="card shadow-sm mb-4">
+					<div class="card-body">
+						<h6 class="card-title text-primary"><i class="bi bi-person-lines-fill"></i>DIISI OLEH PERAWAT</h6>
+						<div class="row g-3">
+							<div class="col-md-4">
+								<label for="tglinput" class="form-label">Tanggal Input</label>
+								<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput; ?>">
+							</div>
+							<div class="col-md-8">
+								<label for="dpjp" class="form-label">DPJP (Dokter Penanggung Jawab)</label>
+								<input type="text" class="form-control" id="dokter" name="dpjp" value="<?php echo $dpjp;?>" placeholder="Nama atau Kode Dokter" required>
+							</div>
+						</div>
 					</div>
-				</div> -->
+				</div>
 
 				
 				<div class="col-12">
 					<table  class="table table-bordered">
 						<tr>
-							<td colspan='2'>
-								<b>DIISI OLEH PERAWAT</b> 
-								&nbsp;&nbsp;&nbsp;<input class="" name="tglinput" value="<?php echo $tglinput;?>" type="text" >
-								<b>DPJP</b> : <input class="" name="dpjp" value="<?php echo $dpjp;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter" required>&nbsp;&nbsp;&nbsp;
-							</td>
-						</tr>
-						<tr>
 							<td width="70%">
 								Masuk di Ruang Rawat Tanggal : <input type='date' name='tglrawat' value='<?php echo $tglrawat;?>'>
-								<input type='submit' name='simpan' value='simpan'>
+								<?php 
+								$waktusekarang		= gmdate("H:i:s", time()+60*60*7);
+								if(empty($jamrawat)){
+									$jamrawat=$waktusekarang;
+								}
+								?>
+								Jam : <input type='text' name='jamrawat' value='<?php echo $jamrawat;?>'>
+								<input class="submit-btn" type='submit' name='simpan' value='simpan'>
 							</td>
 							<td>
 								Fungsional
@@ -1015,13 +1055,13 @@ if(empty($regcek)){
 							<br>
 							Lakukan skrining nutrisi dengan Strong Kids<br>
 
-							<table>
+							<table class="mst-table">
 								<tr>
-									<td style="border: 1px solid;">No</td>
-									<td style="border: 1px solid;">Pertanyaan</td>
-									<td style="border: 1px solid;">Jawaban</td>
-									<td style="border: 1px solid;">poin</td>
-									<td style="border: 1px solid;">Skor</td>
+									<th>No</th>
+									<th>Pertanyaan</th>
+									<th>Jawaban</th>
+									<th>poin</th>
+									<th>Skor</th>
 								</tr>
 
 								<tr>
@@ -1137,7 +1177,10 @@ if(empty($regcek)){
 								</tr>
 
 							</table>
-							<input type='submit' name='simpan' value='simpan'>&nbsp;
+							<!-- <input type='submit' name='simpan' value='simpan'>&nbsp; -->
+
+							<input class="submit-btn" type='submit' name='simpan' value='Simpan'>
+
 							<br>
 							Keterangan : []Skor 4-5 : Risiko Tinggi, []Skor 1-3 : Risiko Sedang []Skor 0 : Risko rendah<br>
 
@@ -1261,13 +1304,13 @@ if(empty($regcek)){
 								<input type='radio' name='asanak105' value='Tidur/istirahat' <?php if ($asanak105=="Tidur/istirahat"){echo "checked";}?>>Tidur/istirahat   
 								<input type='radio' name='asanak105' value='Tidak ada keluhan' <?php if ($asanak105=="Tidak ada keluhan"){echo "checked";}?>>Tidak ada keluhan<br> 
 
-								<table>
+								<table class="mst-table">
 									<tr>
-										<td style="border: 1px solid;">No</td>
-										<td style="border: 1px solid;">Fungsi</td>
-										<td style="border: 1px solid;">Nilai</td>
-										<td style="border: 1px solid;">Keterangan</td>
-										<td style="border: 1px solid;">Skor</td>
+										<th>No</th>
+										<th>Fungsi</th>
+										<th>Nilai</th>
+										<th>Keterangan</th>
+										<th>Skor</th>
 									</tr>
 
 									<tr>
@@ -1793,16 +1836,16 @@ if(empty($regcek)){
 						<br>
 						<input type='submit' name='simpan' value='simpan'><br>
 						Pemeriksaan Nyeri – FLACC PAIN SCALE<br>
-						<table class="">
+						<table class="mst-table">
 							<tr>
-								<td style="border: 1px solid;" rowspan='2'>Katagori</td>
-								<td style="border: 1px solid;" colspan='3'>Skor</td>
-								<td style="border: 1px solid;" rowspan='2'>Total</td>
+								<th rowspan="2">Katagori</th>
+								<th colspan="3">Skor</th>
+								<th rowspan="2">Total</th>
 							</tr>
 							<tr>
-								<td style="border: 1px solid;">0</td>
-								<td style="border: 1px solid;">1</td>
-								<td style="border: 1px solid;">2</td>
+								<th>0</th>
+								<th>1</th>
+								<th>2</th>
 							</tr>
 							<tr>
 								<td style="border: 1px solid;">FACE  (WAJAH)</td>
@@ -1943,12 +1986,12 @@ if(empty($regcek)){
 					1. Risiko Jatuh<br>
 					(dewasa dengan skala humpty dumpty)<br>
 
-					<table>
+					<table class="mst-table">
 						<tr>
-							<td style="border: 1px solid;">Faktor Risiko</td>
-							<td style="border: 1px solid;">skala</td>
-							<td style="border: 1px solid;">poin</td>
-							<td style="border: 1px solid;">Skor pasien</td>
+							<th>Faktor Risiko</th>
+							<th>skala</th>
+							<th>poin</th>
+							<th>Skor pasien</th>
 						</tr>
 
 						<tr>
@@ -2390,12 +2433,12 @@ if(empty($regcek)){
 <tr>
 	<td>
 		J. DISCHARGE PLANNING<br>
-		<table>
+		<table class="mst-table">
 			<tr>
-				<td style="border: 1px solid;">No</td>
-				<td style="border: 1px solid;">Keterangan</td>
-				<td style="border: 1px solid;">Ya</td>
-				<td style="border: 1px solid;">Tidak</td>
+				<th>No</th>
+				<th>Keterangan</th>
+				<th>Ya</th>
+				<th>Tidak</th>
 			</tr>
 
 			<tr>
@@ -3056,6 +3099,7 @@ if (isset($_POST["simpan"])) {
 		$riwayat_penyakit_sekarang= $_POST["riwayat_penyakit_sekarang"];
 		$dpjp	= $_POST["dpjp"];
 		$tglrawat	= $_POST["tglrawat"];
+		$jamrawat	= $_POST["jamrawat"];
 		$asanak1= $_POST['asanak1'];
 		$asanak2= $_POST['asanak2'];
 		$asanak3= $_POST['asanak3'];
@@ -3318,7 +3362,7 @@ if (isset($_POST["simpan"])) {
 		echo	$q  = "update ERM_RI_ASSESMEN_AWAL_ANAK set
 		keluhan_pasien='$keluhan_pasien',
 		riwayat_penyakit_sekarang='$riwayat_penyakit_sekarang',
-		tglrawat='$tglrawat',
+		tglrawat='$tglrawat',jamrawat='$jamrawat',
 		asanak1= '$asanak1',
 		asanak2= '$asanak2',
 		asanak3= '$asanak3',

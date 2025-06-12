@@ -130,7 +130,6 @@ if($role=='DOKTER'){
 					<?php 
 					if (empty($norm)){
 						?>
-						<!-- <input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' onfocus="nextfield ='periode';" placeholder="Isikan Nama Dokter atau Kode Dokter" required> -->
 
 						<?php 
 						if($role=='DOKTER'){
@@ -146,22 +145,11 @@ if($role=='DOKTER'){
 						<?php
 					}else{
 
-					// echo "
-					// <script>
-					// top.location='index.php?id='$id|$user';
-					// header('Location: index.php?id=$id|$user');
-					// </script>
-					// ";
-
-
-
 						if($role=='DOKTER'){
-							header("Location: index.php?id=$id|$user|$sbu");
+							header("Location: info_pasien.php?id=$id|$user|$sbu");
 						}else{
-							header("Location: index.php?id=$id|$user|$sbu");						
+							header("Location: info_pasien.php?id=$id|$user|$sbu");						
 						}
-
-
 
 					}
 					?>
@@ -225,7 +213,7 @@ if (isset($_POST["create_assesmen"])) {
 		
 		if($hs){
 
-			header("Location: index.php?id=$id|$user");
+			header("Location: info_pasien.php?id=$id|$user");
 
 
 		}else{

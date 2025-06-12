@@ -250,7 +250,7 @@ $objective = $objective."\nHasil Lab : \n";
 
 <div class="container-fluid">
 
-	<body onload="document.myForm.ku.focus();">
+	<body onload="document.myForm.ku.focus();" style="background-color: #F5EFFF;">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 				<br>

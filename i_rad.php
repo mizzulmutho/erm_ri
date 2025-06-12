@@ -18,7 +18,7 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
-
+$noreg_igd = substr($noreg, 1,12);
 
 $q = " 
 DELETE from ERM_RI_RAD_TEMP             
@@ -29,7 +29,7 @@ $h1  = sqlsrv_query($conn, $q);
 $q2 = " 
 SELECT        HASIL, URAIAN, ID, CONVERT(VARCHAR, TANGGAL, 23) AS TANGGAL
 FROM            HASILRAD_PEMERIKSAAN_RAD
-WHERE        (NOREG = '$noreg')
+WHERE        (NOREG = '$noreg_igd')
 ORDER BY TANGGAL
 ";
 $h2  = sqlsrv_query($conn, $q2);

@@ -161,6 +161,9 @@ if(empty($regcek)){
 	$userid = $de['userid'];
 
 	$tgl = $de['tgl'];
+	$jamrawat = $de['jamrawat'];
+	$tglrawat = $de['tglrawat'];
+
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -266,7 +269,8 @@ if(empty($regcek)){
 	$kl_rpenyakit= trim($de['kl_rpenyakit']);
 	$al_rpenyakit= trim($de['al_rpenyakit']);
 	$ob_rpenyakit= trim($de['ob_rpenyakit']);
-
+	$diagnosa_planning= trim($de['diagnosa_planning']);
+	$spo2= trim($de['spo2']);
 
 	$qe="
 	SELECT resume20,resume21,resume22
@@ -317,6 +321,33 @@ if($skala_nyeri){
 }
 
 $berat_badan = $d1u['bb'];
+
+$noreg_igd = substr($noreg, 1,12);
+
+$qd="
+SELECT        'IGD' AS unit, ERM_IGD_ADVIS.ADVIS, Afarm_DOKTER.NAMA, CONVERT(VARCHAR, ERM_IGD_ADVIS.TGLENTRY, 103) AS tgl, CONVERT(VARCHAR, ERM_IGD_ADVIS.TGLENTRY, 8) AS jam
+FROM            ERM_IGD_ADVIS INNER JOIN
+Afarm_DOKTER ON ERM_IGD_ADVIS.KODEDOKTER = Afarm_DOKTER.KODEDOKTER
+WHERE        (ERM_IGD_ADVIS.NOREG = '$noreg_igd')
+";
+$hasild  = sqlsrv_query($conn, $qd);  
+$no=1;
+while   ($datad = sqlsrv_fetch_array($hasild,SQLSRV_FETCH_ASSOC)){ 
+
+	$advis = trim($datad[ADVIS]);
+	$dokter_advis = trim($datad[NAMA]);
+	$tgl_advis = trim($datad[tgl]);
+	$jam_advis = trim($datad[jam]);
+	$detail = $no.'. '.$dokter_advis.'. '.$tgl_advis.'-'.$jam_advis.'. '."\nAdvis : ".$advis."\n\n";
+	$terapi_igd = $terapi_igd.$detail;
+	$no += 1;
+}
+
+//echo nl2br($terapi_igd);
+
+if(empty($am77)){
+	$am77 = $terapi_igd;
+}
 
 ?>
 
@@ -421,6 +452,7 @@ $berat_badan = $d1u['bb'];
 
 </head> 
 
+
 <div class="container-fluid">
 
 	<body onload="document.myForm.ku.focus();">
@@ -433,8 +465,7 @@ $berat_badan = $d1u['bb'];
 				&nbsp;&nbsp;
 				<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
 				<button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
-				&nbsp;&nbsp;
-
+				&nbsp;&nbsp;			
 				<br><br>
 				<div class="row">
 
@@ -458,343 +489,364 @@ $berat_badan = $d1u['bb'];
 				</div>
 
 				<div class="row">
+					<?php include('menu_dokter.php');?>
+				</div>
+
+				<div class="row">
 					<div class="col-12 text-center">
 						<b>INPUT ANAMNESIS MEDIS </b><br>
 					</div>
 				</div>
 
 				<hr>
-
-<!-- 				<div class="row">
-					<div class="col-6"><?php echo 'NORM : '.$norm.'<br> NAMA : '.$nama.'<br> TGL LAHIR : '.$tgllahir; ?></div>
-					<div class="col-6"><?php echo 'L/P : '.$kelamin.'<br> UMUR : '.$umur.'<br> ALAMAT : '.$alamatpasien; ?></div>
+				<div class="row">
+					<div class="col-12 text-center">
+						<font color='blue'><b>Rencana Terapi </b> : <?php echo $am77;?></font>
+						<br>
+					</div>
 				</div>
-			-->
+				<br>
 
-			<div class="row">
-				<div class="col-6">
-					<b>Diagnosa</b>
-					<br>
-					<?php echo $diagnosa;?>
-					<br>
-					<br>
-					<b>Anamnesis</b>
-					<br>
-					&bull; Keluhan Utama
-					<?php 
-					if(empty($am1)){
-						$am1=$keluhan_utama;
-					}
-					?>
-					<input type='text' class="form-control" name='am1' value='<?php echo $am1; ?>' size='80'>
-					&bull; Lama Keluhan
-					<input type='text' class="form-control" name='am78' value='<?php echo $am78; ?>' size='80'>
-					&bull; Keluhan Lain
-					<!-- <input type='text' class="form-control" name='am79' value='<?php echo $am79; ?>' size='80'> -->
-					<textarea class="form-control" name="am79" cols="100%" onfocus="nextfield ='';" style="min-height:80px;"><?php echo $am79;?></textarea>
-					<br>
-					<!-- <input class="form-control form-control-sm" name="am1" value="<?php echo $am1;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder=""> -->
-					<!-- <textarea class="form-control" name="am1" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am1;?></textarea> -->
+				<div class="row">
+					<div class="col-6">
+						<b>Diagnosa</b>
+						<br>
+						<?php echo $diagnosa;?>
+						<br>
+						<br>
+						<b>Anamnesis</b>
+						<br>
+						&bull; Keluhan Utama
+						<?php 
+						if(empty($am1)){
+							$am1=$keluhan_utama;
+						}
+						?>
+						<input type='text' class="form-control" name='am1' value='<?php echo $am1; ?>' size='80'>
+						&bull; Lama Keluhan
+						<input type='text' class="form-control" name='am78' value='<?php echo $am78; ?>' size='80'>
+						&bull; Keluhan Lain
+						<!-- <input type='text' class="form-control" name='am79' value='<?php echo $am79; ?>' size='80'> -->
+						<textarea class="form-control" name="am79" cols="100%" onfocus="nextfield ='';" style="min-height:200px;"><?php echo $am79;?></textarea>
+						<br>
+						<!-- <input class="form-control form-control-sm" name="am1" value="<?php echo $am1;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder=""> -->
+						<!-- <textarea class="form-control" name="am1" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am1;?></textarea> -->
 
 
-					<b>Riwayat Penyakit : </b>
-					<!-- <input class="form-control form-control-sm" name="am2" value="<?php echo $am2;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
-					<!-- <textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am2;?></textarea> -->
-					<br>
-					&bull; Nama Penyakit
-					&nbsp;
-					<input type='radio' name='nm_rpenyakit' value='Tidak Ada' <?php if ($nm_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
-					<input type='radio' name='nm_rpenyakit' value='Ada' <?php if ($nm_rpenyakit=="Ada"){echo "checked";}?>>Ada
-					<?php 
-					if(empty($am2)){
-						$am2=$riwayat_penyakit;
-						$am3=$alergi;
-					}
-					?>
-					<textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:80px;"><?php echo $am2;?></textarea>
-					&bull; Lama Penyakit
-					&nbsp;
-					<input type='radio' name='lm_rpenyakit' value='Tidak Ada' <?php if ($lm_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
-					<input type='radio' name='lm_rpenyakit' value='Ada' <?php if ($lm_rpenyakit=="Ada"){echo "checked";}?>>Ada
-					<input type='text' class="form-control" name='am80' value='<?php echo $am80; ?>' size='80'>
+						<b>Riwayat Penyakit : </b>
+						<!-- <input class="form-control form-control-sm" name="am2" value="<?php echo $am2;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
+						<!-- <textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am2;?></textarea> -->
+						<br>
+						&bull; Nama Penyakit
+						&nbsp;
+						<input type='radio' name='nm_rpenyakit' value='Tidak Ada' <?php if ($nm_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
+						<input type='radio' name='nm_rpenyakit' value='Ada' <?php if ($nm_rpenyakit=="Ada"){echo "checked";}?>>Ada
+						<?php 
+						if(empty($am2)){
+							// $am2=$riwayat_penyakit;
+							// $am3=$alergi;
+						}
+						?>
+						<textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:80px;"><?php echo $am2;?></textarea>
+						&bull; Lama Penyakit
+						&nbsp;
+						<input type='radio' name='lm_rpenyakit' value='Tidak Ada' <?php if ($lm_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
+						<input type='radio' name='lm_rpenyakit' value='Ada' <?php if ($lm_rpenyakit=="Ada"){echo "checked";}?>>Ada
+						<input type='text' class="form-control" name='am80' value='<?php echo $am80; ?>' size='80'>
 
-					&bull; Riwayat Keluarga
-					&nbsp;
-					<input type='radio' name='kl_rpenyakit' value='Tidak Ada' <?php if ($kl_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
-					<input type='radio' name='kl_rpenyakit' value='Ada' <?php if ($kl_rpenyakit=="Ada"){echo "checked";}?>>Ada
-					<input type='text' class="form-control" name='am81' value='<?php echo $am81; ?>' size='80'>
+						&bull; Riwayat Keluarga
+						&nbsp;
+						<input type='radio' name='kl_rpenyakit' value='Tidak Ada' <?php if ($kl_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
+						<input type='radio' name='kl_rpenyakit' value='Ada' <?php if ($kl_rpenyakit=="Ada"){echo "checked";}?>>Ada
+						<input type='text' class="form-control" name='am81' value='<?php echo $am81; ?>' size='80'>
 
-					&bull; Riwayat Alergi
-					&nbsp;
-					<input type='radio' name='al_rpenyakit' value='Tidak Ada' <?php if ($al_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
-					<input type='radio' name='al_rpenyakit' value='Ada' <?php if ($al_rpenyakit=="Ada"){echo "checked";}?>>Ada
-					<textarea class="form-control" name="am3" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am3;?></textarea>
-					
-					&bull; Riwayat Pengobatan
-					&nbsp;
-					<input type='radio' name='ob_rpenyakit' value='Tidak Ada' <?php if ($ob_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
-					<input type='radio' name='ob_rpenyakit' value='Ada' <?php if ($ob_rpenyakit=="Ada"){echo "checked";}?>>Ada
-					<textarea class="form-control" name="am4" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am4;?></textarea>					
+						&bull; Riwayat Alergi
+						&nbsp;
+						<input type='radio' name='al_rpenyakit' value='Tidak Ada' <?php if ($al_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
+						<input type='radio' name='al_rpenyakit' value='Ada' <?php if ($al_rpenyakit=="Ada"){echo "checked";}?>>Ada
+						<textarea class="form-control" name="am3" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am3;?></textarea>
 
-					<hr>
-					<b>Keadaan Umum</b><br>
-					<!-- <input class="form-control form-control-sm" name="am5" value="<?php echo $am5;?>" id="" type="text" size='' onfocus="nextfield ='kesadaran';" placeholder=""> -->
-					<?php 
-					if(empty($am5)){
-						$am5='kesadaran : '.$kesadaran;
-					}
-					?>
-					<textarea class="form-control" name="am5" cols="100%" onfocus="nextfield ='';" style="min-height:30px;"><?php echo $am5;?></textarea>
-					<br>
+						&bull; Riwayat Pengobatan
+						&nbsp;
+						<input type='radio' name='ob_rpenyakit' value='Tidak Ada' <?php if ($ob_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
+						<input type='radio' name='ob_rpenyakit' value='Ada' <?php if ($ob_rpenyakit=="Ada"){echo "checked";}?>>Ada
+						<textarea class="form-control" name="am4" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am4;?></textarea>					
 
-					<div class="card">
-						<div class="card-header">
-							Vital Sign
-						</div>
-						<div class="card-body">
-							<div class="card">
-								<div class="card-header">
-									Glassow Comma Scale (GCS)
-								</div>
-								<div class="card-body">
-									<?php 
-									if(empty($am6)){
-										$am6=$e;$am7=$v;$am8=$m;
-										$am9=$tensi;$am10=$nadi;
-										$am11=$ket_nadi;
-										$am12=$suhu;$am13=$nafas;
-										$am14=$skala_nyeri;$am15=$berat_badan;
-									}
-									?>
-									<label for="" class="col-3">Eye : </label>
-									<input class="form-control-sm" name="am6" value="<?php echo $am6;?>" id="" type="text" size='' onfocus="nextfield ='verbal';" placeholder="" style="min-width:50px; min-height:50px;">
-									<br>
-									<label for="" class="col-3">Verbal : </label>
-									<input class="form-control-sm" name="am7" value="<?php echo $am7;?>" id="" type="text" size='' onfocus="nextfield ='movement';" placeholder="" style="min-width:50px; min-height:50px;">
-									<br>
-									<label for="" class="col-3">Movement : </label>
-									<input class="form-control-sm" name="am8" value="<?php echo $am8;?>" id="" type="text" size='' onfocus="nextfield ='tekanan_darah';" placeholder="" style="min-width:50px; min-height:50px;">
-								</div>
+						<hr>
+						<b>Keadaan Umum</b><br>
+						<!-- <input class="form-control form-control-sm" name="am5" value="<?php echo $am5;?>" id="" type="text" size='' onfocus="nextfield ='kesadaran';" placeholder=""> -->
+						<?php 
+						if(empty($am5)){
+							$am5='kesadaran : '.$kesadaran;
+						}
+						?>
+						<textarea class="form-control" name="am5" cols="100%" onfocus="nextfield ='';" style="min-height:30px;"><?php echo $am5;?></textarea>
+						<br>
+
+						<div class="card">
+							<div class="card-header">
+								Vital Sign
 							</div>
-							<br>
-							<label for="" class="col-3">Tekanan Darah : </label>
-							<input class="form-control-sm" name="am9" value="<?php echo $am9;?>" id="" type="text" size='' onfocus="nextfield ='nadi';" placeholder="" style="min-width:50px; min-height:50px;">mmHg<br>
-							<label for="" class="col-3">Nadi : </label>
-							<input class="form-control-sm" name="am10" value="<?php echo $am10;?>" id="" type="text" size='' onfocus="nextfield ='suhu';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
-							<label for="" class="col-3">&nbsp;</label>
-							<input type='radio' name='am11' value='Teratur' <?php if ($am11=="Teratur"){echo "checked";}?>>Teratur
-							<input type='radio' name='am11' value='Tidak Teratur' <?php if ($am11=="Abnormal"){echo "checked";}?>>Tidak Teratur
-							<br>
-							<label for="" class="col-3">Suhu : </label>
-							<input class="form-control-sm" name="am12" value="<?php echo $am12;?>" id="" type="text" size='' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="" style="min-width:50px; min-height:50px;">C<br>								
-							<label for="" class="col-3">Frekuensi Pernafasan : </label>
-							<input class="form-control-sm" name="am13" value="<?php echo $am13;?>" id="" type="text" size='' onfocus="nextfield ='skala_nyeri';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
-							<label for="" class="col-3">Skala Nyeri : </label>
-							<input class="form-control-sm" name="am14" value="<?php echo $am14;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;"><br>
-							<label for="" class="col-3">Berat Badan : </label>
-							<input class="form-control-sm" name="am15" value="<?php echo $am15;?>" id="" type="text" size='' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:50px; min-height:50px;">Kg<br>							
+							<div class="card-body">
+								<div class="card">
+									<div class="card-header">
+										Glassow Comma Scale (GCS)
+									</div>
+									<div class="card-body">
+										<?php 
+										if(empty($am6)){
+											$am6=$e;$am7=$v;$am8=$m;
+											$am9=$tensi;$am10=$nadi;
+											$am11=$ket_nadi;
+											$am12=$suhu;$am13=$nafas;
+											$am14=$skala_nyeri;$am15=$berat_badan;
+										}
+										?>
+										<label for="" class="col-3">Eye : </label>
+										<input class="form-control-sm" name="am6" value="<?php echo $am6;?>" id="" type="text" size='' onfocus="nextfield ='verbal';" placeholder="" style="min-width:50px; min-height:50px;">
+										<br>
+										<label for="" class="col-3">Verbal : </label>
+										<input class="form-control-sm" name="am7" value="<?php echo $am7;?>" id="" type="text" size='' onfocus="nextfield ='movement';" placeholder="" style="min-width:50px; min-height:50px;">
+										<br>
+										<label for="" class="col-3">Movement : </label>
+										<input class="form-control-sm" name="am8" value="<?php echo $am8;?>" id="" type="text" size='' onfocus="nextfield ='tekanan_darah';" placeholder="" style="min-width:50px; min-height:50px;">
+									</div>
+								</div>
+								<br>
+								<label for="" class="col-3">Tekanan Darah : </label>
+								<input class="form-control-sm" name="am9" value="<?php echo $am9;?>" id="" type="text" size='' onfocus="nextfield ='nadi';" placeholder="" style="min-width:50px; min-height:50px;">mmHg<br>
+								<label for="" class="col-3">Nadi : </label>
+								<input class="form-control-sm" name="am10" value="<?php echo $am10;?>" id="" type="text" size='' onfocus="nextfield ='suhu';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
+								<label for="" class="col-3">&nbsp;</label>
+								<input type='radio' name='am11' value='Teratur' <?php if ($am11=="Teratur"){echo "checked";}?>>Teratur
+								<input type='radio' name='am11' value='Tidak Teratur' <?php if ($am11=="Abnormal"){echo "checked";}?>>Tidak Teratur
+								<br>
+								<label for="" class="col-3">Suhu : </label>
+								<input class="form-control-sm" name="am12" value="<?php echo $am12;?>" id="" type="text" size='' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="" style="min-width:50px; min-height:50px;">C<br>								
+								<label for="" class="col-3">Frekuensi Pernafasan : </label>
+								<input class="form-control-sm" name="am13" value="<?php echo $am13;?>" id="" type="text" size='' onfocus="nextfield ='skala_nyeri';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
+								<label for="" class="col-3">SPO2 : </label>
+								<input class="form-control-sm" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;"><br>
+								<label for="" class="col-3">Skala Nyeri : </label>
+								<input class="form-control-sm" name="am14" value="<?php echo $am14;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;"><br>
+								<label for="" class="col-3">Berat Badan : </label>
+								<input class="form-control-sm" name="am15" value="<?php echo $am15;?>" id="" type="text" size='' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:50px; min-height:50px;">Kg<br>							
 
+							</div>
 						</div>
-					</div>
 
-					<br>
-					<div class="card">
-						<div class="card-header">
-							Anamnesa Psikologi/Sosial/Ekonomi : 
+						<br>
+						<div class="card">
+							<div class="card-header">
+								Anamnesa Psikologi/Sosial/Ekonomi : 
+							</div>
+							<div class="card-body">
+								<label for="" class="col-3">Kondisi Kejiwaan : </label>												
+								<!-- 								<input class="form-control form-control-sm" name="anamnesa" value="<?php echo $anamnesa;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder="Isikan Tenang/Gelisah/Takut/Bingung/Stres">  -->
+								<input type='radio' name='am16' value='Tenang' <?php if ($am16=="Tenang"){echo "checked";}?>>Tenang
+								<input type='radio' name='am16' value='Gelisah/Takut' <?php if ($am16=="Gelisah/Takut"){echo "checked";}?>>Gelisah/Takut
+								<input type='radio' name='am16' value='Bingung' <?php if ($am16=="Bingung"){echo "checked";}?>>Bingung
+								<input type='radio' name='am16' value='Stres' <?php if ($am16=="Stres"){echo "checked";}?>>Stres
+								<br>
+								<label for="" class="col-3">Sosial Ekonomi : </label>
+								<input class="form-control-sm" name="am17" value="<?php echo $am17 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
+								<label for="" class="col-3">Spiritual : </label>
+								<input class="form-control-sm" name="am18" value="<?php echo $am18 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
+							</div>
 						</div>
-						<div class="card-body">
-							<label for="" class="col-3">Kondisi Kejiwaan : </label>												
-							<!-- 								<input class="form-control form-control-sm" name="anamnesa" value="<?php echo $anamnesa;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder="Isikan Tenang/Gelisah/Takut/Bingung/Stres">  -->
-							<input type='radio' name='am16' value='Tenang' <?php if ($am16=="Tenang"){echo "checked";}?>>Tenang
-							<input type='radio' name='am16' value='Gelisah/Takut' <?php if ($am16=="Gelisah/Takut"){echo "checked";}?>>Gelisah/Takut
-							<input type='radio' name='am16' value='Bingung' <?php if ($am16=="Bingung"){echo "checked";}?>>Bingung
-							<input type='radio' name='am16' value='Stres' <?php if ($am16=="Stres"){echo "checked";}?>>Stres
-							<br>
-							<label for="" class="col-3">Sosial Ekonomi : </label>
-							<input class="form-control-sm" name="am17" value="<?php echo $am17 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
-							<label for="" class="col-3">Spiritual : </label>
-							<input class="form-control-sm" name="am18" value="<?php echo $am18 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
-						</div>
-					</div>
 
-					<div class="card">
-						<div class="card-body">						
+						<div class="card">
+							<div class="card-body">						
 
-							<label for="" class="col-3">Verifikasi Dokter Pemeriksa : </label>							
-							<input class="form-control-sm" name="am75" value="<?php echo $am75;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter">
+								<label for="" class="col-3">Verifikasi Dokter Pemeriksa : </label>							
+								<input class="form-control-sm" name="am75" value="<?php echo $am75;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter">
 
-							<br>
+								<br>
+								<?php 
+								$tglsekarang		= gmdate("Y-m-d", time()+60*60*7);
+								$waktusekarang		= gmdate("H:i:s", time()+60*60*7);
+								if(empty($jamrawat)){
+									$jamrawat=$waktusekarang;
+									$tglrawat=$tglsekarang;
+								}
+								?>
+								<label for="" class="col-3">Masuk di Ruang Rawat Tanggal : </label>
+								<input type='date' name='tglrawat' value='<?php echo $tglrawat;?>'>
+								Jam : <input type='text' name='jamrawat' value='<?php echo $jamrawat;?>'>								
+								<br>
 
-							<?php 
-							if($am75){
-								$verif_dokter="Resume medis ini telah diVerifikasi Oleh : ".$am75."Pada Tanggal : ".$tgl; 
+								<?php 
+								if($am75){
+									$verif_dokter="Resume medis ini telah diVerifikasi Oleh : ".$am75."Pada Tanggal : ".$tgl; 
 								// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_dokter&choe=UTF-8'/></center>";
 								// echo "<br>";
 
-								QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
-								echo "<center><img src='image.png'></center>";
+									QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
+									echo "<center><img src='image.png'></center>";
 
 
-								$verif_dokter;
-							}
-							?>
+									$verif_dokter;
+								}
+								?>
 
-							<br>
+								<br>
 
-							<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> simpan</button> 
-							<br><br>
+								<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> simpan</button> 
+								<br><br>
+							</div>
 						</div>
+
 					</div>
-
-				</div>
-				<div class="col-6">					
-					<div class="card">
-						<div class="card-header">
-							Pemeriksaan Fisik
-						</div>
-						<div class="card-body">						
-							<div class="card">
-								<div class="card-body">
-									<label for="" class="col-3">Kepala : </label>
-									<input type='radio' name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>
-									<label for="" class="col-3">Mata : </label>
-									<input type='radio' name='am21' value='Normal' <?php if ($am21=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am21' value='Abnormal' <?php if ($am21=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am22" value="<?php echo $am22;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Telinga : </label>
-									<input type='radio' name='am23' value='Normal' <?php if ($am23=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am23' value='Abnormal' <?php if ($am23=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am24" value="<?php echo $am24;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>								
-									<label for="" class="col-3">Hidung : </label>
-									<input type='radio' name='am25' value='Normal' <?php if ($am25=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am25' value='Abnormal' <?php if ($am25=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am26" value="<?php echo $am26;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>							
-									<label for="" class="col-3">Rambut : </label>
-									<input type='radio' name='am27' value='Normal' <?php if ($am27=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am27' value='Abnormal' <?php if ($am27=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am28" value="<?php echo $am28;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Bibir : </label>
-									<input type='radio' name='am29' value='Normal' <?php if ($am29=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am29' value='Abnormal' <?php if ($am29=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am30" value="<?php echo $am30;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Gigi Geligi : </label>
-									<input type='radio' name='am31' value='Normal' <?php if ($am31=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am31' value='Abnormal' <?php if ($am31=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am32" value="<?php echo $am32;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Lidah : </label>
-									<input type='radio' name='am33' value='Normal' <?php if ($am33=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am33' value='Abnormal' <?php if ($am33=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am34" value="<?php echo $am34;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Langit-langit : </label>
-									<input type='radio' name='am35' value='Normal' <?php if ($am35=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am35' value='Abnormal' <?php if ($am35=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am36" value="<?php echo $am36;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Leher : </label>
-									<input type='radio' name='am37' value='Normal' <?php if ($am37=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am37' value='Abnormal' <?php if ($am37=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am38" value="<?php echo $am38;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Tenggorokan : </label>
-									<input type='radio' name='am39' value='Normal' <?php if ($am39=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am39' value='Abnormal' <?php if ($am39=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am40" value="<?php echo $am40;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Tonsil : </label>
-									<input type='radio' name='am41' value='Normal' <?php if ($am41=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am41' value='Abnormal' <?php if ($am41=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am42" value="<?php echo $am42;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Dada : </label>
-									<input type='radio' name='am43' value='Normal' <?php if ($am43=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am43' value='Abnormal' <?php if ($am43=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am44" value="<?php echo $am44;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Payudara : </label>
-									<input type='radio' name='am45' value='Normal' <?php if ($am45=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am45' value='Abnormal' <?php if ($am45=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am46" value="<?php echo $am46;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Punggung : </label>
-									<input type='radio' name='am47' value='Normal' <?php if ($am47=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am47' value='Abnormal' <?php if ($am47=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am48" value="<?php echo $am48;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Perut : </label>
-									<input type='radio' name='am49' value='Normal' <?php if ($am49=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am49' value='Abnormal' <?php if ($am49=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am50" value="<?php echo $am50;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Genital : </label>
-									<input type='radio' name='am51' value='Normal' <?php if ($am51=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am51' value='Abnormal' <?php if ($am51=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am52" value="<?php echo $am52;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Anus/Dubur : </label>
-									<input type='radio' name='am53' value='Normal' <?php if ($am53=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am53' value='Abnormal' <?php if ($am53=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am54" value="<?php echo $am54;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Lengan Atas : </label>
-									<input type='radio' name='am55' value='Normal' <?php if ($am55=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am55' value='Abnormal' <?php if ($am55=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am56" value="<?php echo $am56;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Lengan Bawah : </label>
-									<input type='radio' name='am57' value='Normal' <?php if ($am57=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am57' value='Abnormal' <?php if ($am57=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am58" value="<?php echo $am58;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Jari Tangan : </label>
-									<input type='radio' name='am59' value='Normal' <?php if ($am59=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am59' value='Abnormal' <?php if ($am59=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am60" value="<?php echo $am60;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Kuku Tangan : </label>
-									<input type='radio' name='am61' value='Normal' <?php if ($am61=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am61' value='Abnormal' <?php if ($am61=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am62" value="<?php echo $am62;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Persendian Tangan : </label>
-									<input type='radio' name='am63' value='Normal' <?php if ($am63=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am63' value='Abnormal' <?php if ($am63=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am64" value="<?php echo $am64;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Tungkai Atas : </label>
-									<input type='radio' name='am65' value='Normal' <?php if ($am65=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am65' value='Abnormal' <?php if ($am65=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am66" value="<?php echo $am66;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Tungkai Bawah : </label>
-									<input type='radio' name='am67' value='Normal' <?php if ($am67=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am67' value='Abnormal' <?php if ($am67=="fisik49"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am68" value="<?php echo $am68;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Jari Kaki : </label>
-									<input type='radio' name='am69' value='Normal' <?php if ($am69=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am69' value='Abnormal' <?php if ($am69=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am70" value="<?php echo $am70;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Kuku Kaki : </label>
-									<input type='radio' name='am71' value='Normal' <?php if ($am71=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am71' value='Abnormal' <?php if ($am71=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am72" value="<?php echo $am72;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>	
-									<label for="" class="col-3">Persendian Kaki : </label>
-									<input type='radio' name='am73' value='Normal' <?php if ($am73=="Normal"){echo "checked";}?>>Normal
-									<input type='radio' name='am73' value='Abnormal' <?php if ($am73=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am74" value="<?php echo $am74;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-									<br>
+					<div class="col-6">					
+						<div class="card">
+							<div class="card-header">
+								<b>Pemeriksaan Fisik</b>
+								<br>
+								<i>Isikan pada bagian bagian yang diperiksa!</i>
+							</div>
+							<div class="card-body">						
+								<div class="card">
+									<div class="card-body">
+										<label for="" class="col-3">Kepala : </label>
+										<input type='radio' name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>
+										<label for="" class="col-3">Mata : </label>
+										<input type='radio' name='am21' value='Normal' <?php if ($am21=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am21' value='Abnormal' <?php if ($am21=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am22" value="<?php echo $am22;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Telinga : </label>
+										<input type='radio' name='am23' value='Normal' <?php if ($am23=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am23' value='Abnormal' <?php if ($am23=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am24" value="<?php echo $am24;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>								
+										<label for="" class="col-3">Hidung : </label>
+										<input type='radio' name='am25' value='Normal' <?php if ($am25=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am25' value='Abnormal' <?php if ($am25=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am26" value="<?php echo $am26;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>							
+										<label for="" class="col-3">Rambut : </label>
+										<input type='radio' name='am27' value='Normal' <?php if ($am27=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am27' value='Abnormal' <?php if ($am27=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am28" value="<?php echo $am28;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Bibir : </label>
+										<input type='radio' name='am29' value='Normal' <?php if ($am29=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am29' value='Abnormal' <?php if ($am29=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am30" value="<?php echo $am30;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Gigi Geligi : </label>
+										<input type='radio' name='am31' value='Normal' <?php if ($am31=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am31' value='Abnormal' <?php if ($am31=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am32" value="<?php echo $am32;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Lidah : </label>
+										<input type='radio' name='am33' value='Normal' <?php if ($am33=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am33' value='Abnormal' <?php if ($am33=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am34" value="<?php echo $am34;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Langit-langit : </label>
+										<input type='radio' name='am35' value='Normal' <?php if ($am35=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am35' value='Abnormal' <?php if ($am35=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am36" value="<?php echo $am36;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Leher : </label>
+										<input type='radio' name='am37' value='Normal' <?php if ($am37=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am37' value='Abnormal' <?php if ($am37=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am38" value="<?php echo $am38;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Tenggorokan : </label>
+										<input type='radio' name='am39' value='Normal' <?php if ($am39=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am39' value='Abnormal' <?php if ($am39=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am40" value="<?php echo $am40;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Tonsil : </label>
+										<input type='radio' name='am41' value='Normal' <?php if ($am41=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am41' value='Abnormal' <?php if ($am41=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am42" value="<?php echo $am42;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Dada : </label>
+										<input type='radio' name='am43' value='Normal' <?php if ($am43=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am43' value='Abnormal' <?php if ($am43=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am44" value="<?php echo $am44;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Payudara : </label>
+										<input type='radio' name='am45' value='Normal' <?php if ($am45=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am45' value='Abnormal' <?php if ($am45=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am46" value="<?php echo $am46;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Punggung : </label>
+										<input type='radio' name='am47' value='Normal' <?php if ($am47=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am47' value='Abnormal' <?php if ($am47=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am48" value="<?php echo $am48;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Perut : </label>
+										<input type='radio' name='am49' value='Normal' <?php if ($am49=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am49' value='Abnormal' <?php if ($am49=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am50" value="<?php echo $am50;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Genital : </label>
+										<input type='radio' name='am51' value='Normal' <?php if ($am51=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am51' value='Abnormal' <?php if ($am51=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am52" value="<?php echo $am52;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Anus/Dubur : </label>
+										<input type='radio' name='am53' value='Normal' <?php if ($am53=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am53' value='Abnormal' <?php if ($am53=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am54" value="<?php echo $am54;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Lengan Atas : </label>
+										<input type='radio' name='am55' value='Normal' <?php if ($am55=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am55' value='Abnormal' <?php if ($am55=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am56" value="<?php echo $am56;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Lengan Bawah : </label>
+										<input type='radio' name='am57' value='Normal' <?php if ($am57=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am57' value='Abnormal' <?php if ($am57=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am58" value="<?php echo $am58;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Jari Tangan : </label>
+										<input type='radio' name='am59' value='Normal' <?php if ($am59=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am59' value='Abnormal' <?php if ($am59=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am60" value="<?php echo $am60;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Kuku Tangan : </label>
+										<input type='radio' name='am61' value='Normal' <?php if ($am61=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am61' value='Abnormal' <?php if ($am61=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am62" value="<?php echo $am62;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Persendian Tangan : </label>
+										<input type='radio' name='am63' value='Normal' <?php if ($am63=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am63' value='Abnormal' <?php if ($am63=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am64" value="<?php echo $am64;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Tungkai Atas : </label>
+										<input type='radio' name='am65' value='Normal' <?php if ($am65=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am65' value='Abnormal' <?php if ($am65=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am66" value="<?php echo $am66;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Tungkai Bawah : </label>
+										<input type='radio' name='am67' value='Normal' <?php if ($am67=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am67' value='Abnormal' <?php if ($am67=="fisik49"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am68" value="<?php echo $am68;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Jari Kaki : </label>
+										<input type='radio' name='am69' value='Normal' <?php if ($am69=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am69' value='Abnormal' <?php if ($am69=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am70" value="<?php echo $am70;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Kuku Kaki : </label>
+										<input type='radio' name='am71' value='Normal' <?php if ($am71=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am71' value='Abnormal' <?php if ($am71=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am72" value="<?php echo $am72;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>	
+										<label for="" class="col-3">Persendian Kaki : </label>
+										<input type='radio' name='am73' value='Normal' <?php if ($am73=="Normal"){echo "checked";}?>>Normal
+										<input type='radio' name='am73' value='Abnormal' <?php if ($am73=="Abnormal"){echo "checked";}?>>Abnormal
+										<input class="form-control-sm" name="am74" value="<?php echo $am74;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+										<br>
 
 									<!-- <label for="" class="col-3">THT : </label>
 									<input class="" name="fisik_tht" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
@@ -834,12 +886,15 @@ $berat_badan = $d1u['bb'];
 							<br>
 							<div class="card">
 								<div class="card-body">
-									<label for="" class="col-3">Penunjang : </label>							
+									<label for="" class="col-3">Penunjang</label>							
 									<!-- <input class="form-control-sm" name="am76" value="<?php echo $am76;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Pemeriksaan Peunjang"> -->
 									<textarea class="form-control" name="am76" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am76;?></textarea>
 									<br>
-									<label for="" class="col-3">Rencana Terapi : </label>							
-									<!-- <input class="form-control-sm" name="am77" value="<?php echo $am77;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Rencana Terapi"> -->
+									<label for="" class="col-3">Diagnosa Planning</label>							
+									<!-- <input class="form-control-sm" name="am76" value="<?php echo $am76;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Pemeriksaan Peunjang"> -->
+									<textarea class="form-control" name="diagnosa_planning" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $diagnosa_planning;?></textarea>
+									<br>
+									<label for="" class="col-3">Rencana Terapi</label>							
 									<textarea class="form-control" name="am77" cols="100%" onfocus="nextfield ='';" style="min-height:320px;"><?php echo $am77;?></textarea>
 									<br>
 
@@ -863,7 +918,10 @@ $berat_badan = $d1u['bb'];
 <?php
 if (isset($_POST["simpan"])) {
 
+	$lanjut='Y';
+
 	// $tgl	= $_POST["tgl"];
+	$jamrawat	= $_POST["jamrawat"];$tglrawat	= $_POST["tglrawat"];
 	$am1 = $_POST["am1"];
 	$am2 = $_POST['am2'];
 	$am3 = $_POST['am3'];
@@ -941,6 +999,13 @@ if (isset($_POST["simpan"])) {
 	$am75 = $_POST['am75'];
 	$am76 = $_POST['am76'];
 	$am77 = $_POST['am77'];
+	$am77 = str_replace("'","`",$am77);	
+	
+	$diagnosa_planning = $_POST['diagnosa_planning'];
+	$diagnosa_planning = str_replace("'","`",$diagnosa_planning);	
+
+	$spo2 = $_POST['spo2'];
+
 	$am78 = $_POST['am78'];
 	$am79 = $_POST['am79'];
 	$am80 = $_POST['am80'];
@@ -976,113 +1041,166 @@ if (isset($_POST["simpan"])) {
 		$am4='Tidak Ada';	
 	}
 
-	$q  = "update ERM_RI_ANAMNESIS_MEDIS set
-	tgl='$tgl',
-	am1 = '$am1',
-	am2 = '$am2',
-	am3 = '$am3',
-	am4 = '$am4',
-	am5 = '$am5',
-	am6 = '$am6',
-	am7 = '$am7',
-	am8 = '$am8',
-	am9 = '$am9',
-	am10 = '$am10',
-	am11 = '$am11',
-	am12 = '$am12',
-	am13 = '$am13',
-	am14 = '$am14',
-	am15 = '$am15',
-	am16 = '$am16',
-	am17 = '$am17',
-	am18 = '$am18',
-	am19 = '$am19',
-	am20 = '$am20',
-	am21 = '$am21',
-	am22 = '$am22',
-	am23 = '$am23',
-	am24 = '$am24',
-	am25 = '$am25',
-	am26 = '$am26',
-	am27 = '$am27',
-	am28 = '$am28',
-	am29 = '$am29',
-	am30 = '$am30',
-	am31 = '$am31',
-	am32 = '$am32',
-	am33 = '$am33',
-	am34 = '$am34',
-	am35 = '$am35',
-	am36 = '$am36',
-	am37 = '$am37',
-	am38 = '$am38',
-	am39 = '$am39',
-	am40 = '$am40',
-	am41 = '$am41',
-	am42 = '$am42',
-	am43 = '$am43',
-	am44 = '$am44',
-	am45 = '$am45',
-	am46 = '$am46',
-	am47 = '$am47',
-	am48 = '$am48',
-	am49 = '$am49',
-	am50 = '$am50',
-	am51 = '$am51',
-	am52 = '$am52',
-	am53 = '$am53',
-	am54 = '$am54',
-	am55 = '$am55',
-	am56 = '$am56',
-	am57 = '$am57',
-	am58 = '$am58',
-	am59 = '$am59',
-	am60 = '$am60',
-	am61 = '$am61',
-	am62 = '$am62',
-	am63 = '$am63',
-	am64 = '$am64',
-	am65 = '$am65',
-	am66 = '$am66',
-	am67 = '$am67',
-	am68 = '$am68',
-	am69 = '$am69',
-	am70 = '$am70',
-	am71 = '$am71',
-	am72 = '$am72',
-	am73 = '$am73',
-	am74 = '$am74',
-	am75 = '$am75',
-	am76 = '$am76',
-	am77 = '$am77',
-	am78 = '$am78',
-	am79 = '$am79',
-	am80 = '$am80',
-	am81 = '$am81',
-	am82 = '$am82',
-	am83 = '$am83',
-	am84 = '$am84',
-	am85 = '$am85',
-	am86 = '$am86',
-	am87 = '$am87',
-	am88 = '$am88',
-	am89 = '$am89',
-	am90 = '$am90',
-	nm_rpenyakit = '$nm_rpenyakit',
-	lm_rpenyakit = '$lm_rpenyakit',
-	kl_rpenyakit = '$kl_rpenyakit',
-	al_rpenyakit = '$al_rpenyakit',
-	ob_rpenyakit = '$ob_rpenyakit'
-	where noreg='$noreg'
-	";
-	$hs = sqlsrv_query($conn,$q);
+	$am20 = str_replace("'","`",$am20);
+	$am22 = str_replace("'","`",$am22);
+	$am24 = str_replace("'","`",$am24);
+	$am26 = str_replace("'","`",$am26);
+	$am28 = str_replace("'","`",$am28);
+	$am30 = str_replace("'","`",$am30);
+	$am34 = str_replace("'","`",$am34);
+	$am36 = str_replace("'","`",$am36);
+	$am38 = str_replace("'","`",$am38);
+	$am40 = str_replace("'","`",$am40);
+	$am42 = str_replace("'","`",$am42);
+	$am44 = str_replace("'","`",$am44);
+	$am46 = str_replace("'","`",$am46);
+	$am48 = str_replace("'","`",$am48);
+	$am50 = str_replace("'","`",$am50);
+	$am54 = str_replace("'","`",$am54);
+	$am56 = str_replace("'","`",$am56);
+	$am58 = str_replace("'","`",$am58);
+	$am60 = str_replace("'","`",$am60);
+	$am62 = str_replace("'","`",$am62);
+	$am64 = str_replace("'","`",$am64);
+	$am66 = str_replace("'","`",$am66);
+	$am68 = str_replace("'","`",$am68);
+	$am70 = str_replace("'","`",$am70);
+	$am72 = str_replace("'","`",$am72);
+	$am74 = str_replace("'","`",$am74);
 
-	if($hs){
-		$eror = "Success";
+
+	if(empty($am77)){
+		$eror='Rencana Terapi Tidak Boleh Kosong !!!';
+		$lanjut='T';
+	}
+
+	if(empty($spo2)){
+		$eror='SPO2 Tidak Boleh Kosong !!!';
+		$lanjut='T';
+	}
+
+	if($lanjut == 'Y'){
+
+		$q  = "update ERM_RI_ANAMNESIS_MEDIS set
+		tgl='$tgl',jamrawat='$jamrawat',tglrawat='$tglrawat',
+		am1 = '$am1',
+		am2 = '$am2',
+		am3 = '$am3',
+		am4 = '$am4',
+		am5 = '$am5',
+		am6 = '$am6',
+		am7 = '$am7',
+		am8 = '$am8',
+		am9 = '$am9',
+		am10 = '$am10',
+		am11 = '$am11',
+		am12 = '$am12',
+		am13 = '$am13',
+		am14 = '$am14',
+		am15 = '$am15',
+		am16 = '$am16',
+		am17 = '$am17',
+		am18 = '$am18',
+		am19 = '$am19',
+		am20 = '$am20',
+		am21 = '$am21',
+		am22 = '$am22',
+		am23 = '$am23',
+		am24 = '$am24',
+		am25 = '$am25',
+		am26 = '$am26',
+		am27 = '$am27',
+		am28 = '$am28',
+		am29 = '$am29',
+		am30 = '$am30',
+		am31 = '$am31',
+		am32 = '$am32',
+		am33 = '$am33',
+		am34 = '$am34',
+		am35 = '$am35',
+		am36 = '$am36',
+		am37 = '$am37',
+		am38 = '$am38',
+		am39 = '$am39',
+		am40 = '$am40',
+		am41 = '$am41',
+		am42 = '$am42',
+		am43 = '$am43',
+		am44 = '$am44',
+		am45 = '$am45',
+		am46 = '$am46',
+		am47 = '$am47',
+		am48 = '$am48',
+		am49 = '$am49',
+		am50 = '$am50',
+		am51 = '$am51',
+		am52 = '$am52',
+		am53 = '$am53',
+		am54 = '$am54',
+		am55 = '$am55',
+		am56 = '$am56',
+		am57 = '$am57',
+		am58 = '$am58',
+		am59 = '$am59',
+		am60 = '$am60',
+		am61 = '$am61',
+		am62 = '$am62',
+		am63 = '$am63',
+		am64 = '$am64',
+		am65 = '$am65',
+		am66 = '$am66',
+		am67 = '$am67',
+		am68 = '$am68',
+		am69 = '$am69',
+		am70 = '$am70',
+		am71 = '$am71',
+		am72 = '$am72',
+		am73 = '$am73',
+		am74 = '$am74',
+		am75 = '$am75',
+		am76 = '$am76',
+		am77 = '$am77',
+		am78 = '$am78',
+		am79 = '$am79',
+		am80 = '$am80',
+		am81 = '$am81',
+		am82 = '$am82',
+		am83 = '$am83',
+		am84 = '$am84',
+		am85 = '$am85',
+		am86 = '$am86',
+		am87 = '$am87',
+		am88 = '$am88',
+		am89 = '$am89',
+		am90 = '$am90',
+		nm_rpenyakit = '$nm_rpenyakit',
+		lm_rpenyakit = '$lm_rpenyakit',
+		kl_rpenyakit = '$kl_rpenyakit',
+		al_rpenyakit = '$al_rpenyakit',
+		ob_rpenyakit = '$ob_rpenyakit',
+		diagnosa_planning = '$diagnosa_planning',
+		spo2 = '$spo2'
+		where noreg='$noreg'
+		";
+		$hs = sqlsrv_query($conn,$q);
+
+		if($hs){
+			$eror = "Success - Review lagi data yang telah tersimpan";
+		}else{
+			$eror = "Gagal Insert";
+
+		}
+
 	}else{
-		$eror = "Gagal Insert";
 
 	}
+
+	// echo "
+	// <script>
+	// alert('".$eror."');
+	// window.location.replace('anamnesis_medis.php?id=$id|$user');
+	// </script>
+	// ";
 
 	echo "
 	<script>
@@ -1090,6 +1208,7 @@ if (isset($_POST["simpan"])) {
 	history.go(-1);
 	</script>
 	";
+
 }
 
 

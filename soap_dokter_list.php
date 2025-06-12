@@ -99,6 +99,7 @@ $umur =  $data2[UMUR];
 							$userid = trim($dl[userid]);
 							$dpjp = trim($dl[dpjp]);
 							$periode = trim($dl[tgl2]);
+							$instruksi = nl2br($dl[instruksi]);
 
 							$q2		= "select nama from afarm_dokter where kodedokter='$kodedokter'";
 							$hasil2  = sqlsrv_query($conn, $q2);			  					
@@ -192,6 +193,7 @@ $umur =  $data2[UMUR];
 							$jam   = floor($selisih / (60 * 60));
 
 							if($antropometri){
+								
 
 								if($jam < 24){
 									echo "	<tr>
@@ -199,7 +201,7 @@ $umur =  $data2[UMUR];
 									<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 									<td>$hasilassesment</td>
-									<td>$dl[instruksi]</td>
+									<td>$instruksi</td>
 									<td>$userverif<br>$tanggal</td>
 									<td align='center'>
 									$keterangan
@@ -214,7 +216,7 @@ $umur =  $data2[UMUR];
 									<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 									<td>$hasilassesment</td>
-									<td>$dl[instruksi]</td>
+									<td>$instruksi</td>
 									<td>$userverif<br>$tanggal</td>
 									<td align='center'>
 									sudah 1x24 jam
@@ -234,12 +236,21 @@ $umur =  $data2[UMUR];
 										<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 										<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 										<td>$hasilassesment</td>
-										<td>$dl[instruksi]</td>
+										<td>$instruksi</td>
 										<td>$userverif<br>$tanggal</td>
 										<td align='center'>
 										$keterangan
+										<a href='tulbakon_dokter.php?id=$id|$user|$dl[id]'><font size='5'><i class='bi bi-clipboard-check'></i></font></a>
+										<br>
+										Tulbakon
+										<hr>
 										<a href='edit_soap_dokter.php?id=$id|$user|$dl[id]'><font size='5'><i class='bi bi-file-earmark-text'></i></font></a>
+										<br>
+										Edit
+										<hr>
 										<a href='del_cppt.php?id=$id|$user|$dl[id]'><font size='5'><i class='bi bi-trash'></i></font></a>
+										<br>
+										Hapus
 										</td>			
 										</tr>
 										";
@@ -249,7 +260,7 @@ $umur =  $data2[UMUR];
 										<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 										<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 										<td>$hasilassesment</td>
-										<td>$dl[instruksi]</td>
+										<td>$instruksi</td>
 										<td>$userverif<br>$tanggal</td>
 										<td align='center'>
 										sudah 1x24 jam
@@ -264,7 +275,7 @@ $umur =  $data2[UMUR];
 									<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 									<td>$hasilassesment</td>
-									<td>$dl[instruksi]</td>
+									<td>$instruksi</td>
 									<td>$userverif<br>$tanggal</td>
 									<td align='center'></td>							
 									<td align='center'>$keterangan</td>												

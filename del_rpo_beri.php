@@ -21,7 +21,7 @@ WHERE id='$idrpo_beri'
 $h1  = sqlsrv_query($conn, $q);        
 
 if ($h1){
-  header("Location: rpo2.php?id=$id|$user|$idrpo");
+  header("Location: rpo2.php?id=$id|$user");
   exit; 
 }
 

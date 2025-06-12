@@ -14,6 +14,12 @@ $user = $row[1];
 $idresep = $row[2]; 
 $edit = $row[2]; 
 
+$qu="SELECT  [user],role FROM ROLERSPGENTRY.dbo.user_roleERM where [user] like '%$user%'";
+$h1u  = sqlsrv_query($conn, $qu);        
+$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+$role = trim($d1u['role']);
+
+
 $rand = rand(1, 9);
 // $rand2 = rand(1, 9);
 $nomor = trim($rand.'-'.$tgl);
@@ -286,6 +292,10 @@ if($edit){
 			<font size='2px'>
 				<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 					<br>
+					<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+					&nbsp;&nbsp;
+					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+					&nbsp;&nbsp;
 					<input type='submit' name='print' value='print' class='btn btn-info'>
 					<br>
 
@@ -307,6 +317,14 @@ if($edit){
 					<hr>
 
 					<div class="row">
+						<?php 
+						if($role=='DOKTER'){
+							include('menu_dokter.php');
+						}
+						?>
+					</div>
+
+					<div class="row">
 						<div class="col-12 text-center">
 							<b>REKAM PEMBERIAN OBAT</b><br>
 						</div>
@@ -321,6 +339,7 @@ if($edit){
 							<tr>
 								<td align="center" style="border: 1px solid;" bgcolor='#708090'><font color='white'>NO</font></td>
 								<td align="center" style="border: 1px solid;" bgcolor='#708090'><font color='white'>NAMA OBAT</font></td>		
+								<td align="center" style="border: 1px solid;" bgcolor='#708090'><font color='white'>DOSIS</font></td>		
 								<td align="center" style="border: 1px solid;" bgcolor='#708090'><font color='white'>WAKTU PEMBERIAN</font></td>
 							</tr>
 							<?php 
@@ -335,17 +354,18 @@ if($edit){
 								?>
 
 								<tr>
-									<td><?php echo $no; ?></td>
+									<td align="center"><?php echo $no; ?></td>
 									<td>
 										<?php 
 										echo $data[nama_obat]; 
-										$qo="SELECT top(1)interval,id_rpo_header FROM ERM_RI_RPO where noreg='$noreg' and nama_obat='$data[nama_obat]'";
+										$qo="SELECT top(1)interval,id_rpo_header,dosis FROM ERM_RI_RPO where noreg='$noreg' and nama_obat='$data[nama_obat]'";
 										$hqo  = sqlsrv_query($conn, $qo);        
 										$dhqo  = sqlsrv_fetch_array($hqo, SQLSRV_FETCH_ASSOC); 
 										echo $aturanpakai = '<br>Aturan Pakai : '.trim($dhqo['interval']);
 										$id_rpo_header = $dhqo['id_rpo_header'];
 										?>
 									</td>
+									<td align="center"><?php echo $dhqo[dosis]; ?></td>
 									<td>									
 										<?php 
 										$q2="
@@ -353,8 +373,15 @@ if($edit){
 										CONVERT(VARCHAR, tglentry, 25) as tglentry,
 										CONVERT(VARCHAR, tgl, 103) as tgl,
 										CONVERT(VARCHAR, tgl, 8) as jam,
+
+										CONVERT(VARCHAR, tgl_diberi, 103) as tgl_diberi,
+										CONVERT(VARCHAR, tgl_diberi, 8) as jam_diberi,
+
+										CONVERT(VARCHAR, tgl_diperiksa, 103) as tgl_diperiksa,
+										CONVERT(VARCHAR, tgl_diperiksa, 8) as jam_diperiksa,
+
 										id, id_rpo_header,
-										dokter, apoteker, periksa, pemberi, keluarga
+										dokter, apoteker, periksa, pemberi, keluarga, ttd_keluarga
 										from ERM_RI_RPO_BERI
 										where noreg='$noreg' and nama_obat ='$data[nama_obat]' order by id desc
 										";
@@ -364,17 +391,19 @@ if($edit){
 										echo "
 										<tr>
 										<td width='3%' align='center' bgcolor='#708090'><font color='white'>no</font></td>
-										<td width='3%' align='center' bgcolor='#708090'><font color='white'>jumlah</font></td>								
 										<td width='5%' align='center' bgcolor='#708090'><font color='white'>tgl</font></td>
 										<td width='5%' align='center' bgcolor='#708090'><font color='white'>jam</font></td>
 										<td width='5%' align='center' bgcolor='#708090'><font color='white'>dokter</font></td>
 										<td width='5%' align='center' bgcolor='#708090'><font color='white'>apoteker</font></td>
-										<td width='17%' align='center' bgcolor='#708090'><font color='white'>periksa</font></td>
-										<td width='18%' align='center' bgcolor='#708090'><font color='white'>pemberi</font></td>
+										<td width='18%' align='center' bgcolor='#708090'><font color='white'>Perawat Pemberi</font></td>
+										<td width='17%' align='center' bgcolor='#708090'><font color='white'>Perawat Pemeriksa</font></td>
 										<td width='5%' align='center' bgcolor='#708090'><font color='white'>keluarga</font></td>
 										</tr>";
 
 										while   ($data2 = sqlsrv_fetch_array($hasil2,SQLSRV_FETCH_ASSOC)){
+
+											$ttd_keluarga = $data2[ttd_keluarga];
+
 											if($data2[keluarga]){ 
 										// $keluarga = substr($data2[keluarga], 0,10).'...';
 												$keluarga = '&radic;';
@@ -398,14 +427,13 @@ if($edit){
 											echo "
 											<tr>
 											<td align='center'>$no2</td>
-											<td align='center'>$data2[jumlah]</td>
 											<td align='center'>$data2[tgl]</td>
 											<td align='center'>$data2[jam]</td>
 											<td align='center'>$dokter</td>
 											<td align='center'>$apoteker</td>
-											<td align='center'>$data2[periksa]</td>
-											<td align='center'>$data2[pemberi]</td>
-											<td align='center'>$keluarga</td>
+											<td align='center'>$data2[pemberi]<br>$data2[tgl_diberi]-$data2[jam_diberi]</td>
+											<td align='center'>$data2[periksa]<br>$data2[tgl_diperiksa]-$data2[jam_diperiksa]</td>
+											<td align='center'><img src='$ttd_keluarga' width='60px'></td>
 											</tr>
 											";
 											$no2 += 1;

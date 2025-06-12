@@ -100,6 +100,8 @@ if(empty($regcek)){
 	$he  = sqlsrv_query($conn, $qe);        
 	$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
 	$tglrawat = $de['tglrawat'];
+	$jamrawat = $de['jamrawat'];
+
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -412,6 +414,11 @@ if(empty($regcek)){
 	$m1=$de['m1'];$m2=$de['m2'];$m3=$de['m3'];$m4=$de['m4'];$m5=$de['m5'];$m6=$de['m6'];$m7=$de['m7'];$m8=$de['m8'];$m9=$de['m9'];
 	$m10=$de['m10'];$m11=$de['m11'];$m12=$de['m12'];$m13=$de['m13'];
 
+	$ku_kesadaran= $de['ku_kesadaran'];
+	$ku_gcs_e= $de['ku_gcs_e'];
+	$ku_gcs_v= $de['ku_gcs_v'];
+	$ku_gcs_m= $de['ku_gcs_m'];
+	$total_gcs = $ku_gcs_e+$ku_gcs_v+$ku_gcs_m;
 }
 
 ?>
@@ -480,10 +487,10 @@ if(empty($regcek)){
                             		}
                             	}));
                             //if a single result is returned
-                        }           
-                    });
-                }
+                    }           
             });
+                }
+        });
 		});
 	</script> 
 
@@ -544,7 +551,14 @@ if(empty($regcek)){
 						<tr>
 							<td width="70%">
 								Masuk di Ruang Rawat Tanggal : <input type='date' name='tglrawat' value='<?php echo $tglrawat;?>'>
-								<input type='submit' name='simpan' value='simpan'>
+								<?php 
+								$waktusekarang		= gmdate("H:i:s", time()+60*60*7);
+								if(empty($jamrawat)){
+									$jamrawat=$waktusekarang;
+								}
+								?>
+								Jam : <input type='text' name='jamrawat' value='<?php echo $jamrawat;?>'>
+								<input class="submit-btn" type='submit' name='simpan' value='simpan'>
 							</td>
 							<td>
 								Fungsional
@@ -1267,7 +1281,11 @@ if(empty($regcek)){
 									</td>
 								</tr>
 							</table>
-							<input type='submit' name='simpan' value='simpan'><br>
+							<input type='submit' name='simpan' value='simpan'>
+							&nbsp;&nbsp;&nbsp;
+							<input type='submit' name='edit' value='edit'>
+
+							<br>
 							<br>
 						</td>
 						<td>
@@ -2104,7 +2122,10 @@ if(empty($regcek)){
 				Luka :  
 				<input type='checkbox' name='kulit5' value='Tidak' <?php if ($kulit5=="Tidak"){echo "checked";}?>>Tidak    
 				<input type='checkbox' name='kulit5' value='Ya' <?php if ($kulit6=="Ya"){echo "checked";}?>>Ya, 
-				lokasi : (lengkapi form assesmen luka)<br>
+				lokasi : (
+				lengkapi 
+				<a href='asesmen_luka.php?id=<?php echo $id.'|'.$user;?>'>form assesmen luka</a>
+				)<br>
 				<input type='submit' name='simpan' value='simpan'>
 				<br>
 				Asesmen Risiko Dekubitus (dengan skala norton)<br>
@@ -3680,6 +3701,40 @@ if (isset($_POST["update_mas"])) {
 
 }
 
+if (isset($_POST["edit"])) {
+
+	$ku_tnyeri1= '';
+	$ku_tnyeri2= '';
+	$ku_tnyeri3= '';
+	$ku_tnyeri4= '';
+	$ku_tnyeri5= '';
+
+	$q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
+	ku_tnyeri1= '$ku_tnyeri1',
+	ku_tnyeri2= '$ku_tnyeri2',
+	ku_tnyeri3= '$ku_tnyeri3',
+	ku_tnyeri4= '$ku_tnyeri4',
+	ku_tnyeri5= '$ku_tnyeri5'
+	where noreg='$noreg'
+	";
+	$hs = sqlsrv_query($conn,$q);
+
+	if($hs){
+		$eror = "Success";
+	}else{
+		$eror = "Gagal Insert";
+
+	}
+
+	echo "
+	<script>
+	alert('".$eror."');
+	</script>
+	";
+
+
+}
+
 
 if (isset($_POST["simpan"])) {
 	$lanjut='Y';
@@ -3705,6 +3760,7 @@ if (isset($_POST["simpan"])) {
 	if($lanjut=='Y'){
 		$dpjp	= $_POST["dpjp"];
 		$tglrawat	= $_POST["tglrawat"];
+		$jamrawat	= $_POST["jamrawat"];
 		$sumber_data_sendiri= $_POST["sumber_data_sendiri"];
 		$sumber_data_keluarga= $_POST["sumber_data_keluarga"];
 		$sumber_data_keluarga_nama= $_POST["sumber_data_keluarga_nama"];
@@ -3734,11 +3790,18 @@ if (isset($_POST["simpan"])) {
 		$riwayat_keluar_negri= $_POST["riwayat_keluar_negri"];
 
 
+		$ku_suhu= $_POST["ku_suhu"];
+
+
 		$ku_kesadaran= $_POST["ku_kesadaran"];
 		$ku_gcs_e= $_POST["ku_gcs_e"];
 		$ku_gcs_v= $_POST["ku_gcs_v"];
 		$ku_gcs_m= $_POST["ku_gcs_m"];
-		$ku_suhu= $_POST["ku_suhu"];
+		$total_gcs = $ku_gcs_e+$ku_gcs_v+$ku_gcs_m;
+		$ku_beratbadan= $_POST["ku_beratbadan"];
+		$ku_tinggibadan= $_POST["ku_tinggibadan"];
+
+
 		$ku_tensi= $_POST["ku_tensi"];
 		$ku_nadi= $_POST["ku_nadi"];
 		$ku_nadi_ket= $_POST["ku_nadi_ket"];
@@ -4007,7 +4070,7 @@ if (isset($_POST["simpan"])) {
 		$ket_3=$_POST['ket_3'];
 
 		echo $q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
-		tglrawat='$tglrawat',
+		tglrawat='$tglrawat',jamrawat='$jamrawat',
 		sumber_data_sendiri='$sumber_data_sendiri',
 		sumber_data_keluarga='$sumber_data_keluarga',
 		sumber_data_keluarga_nama='$sumber_data_keluarga_nama',
@@ -4039,6 +4102,7 @@ if (isset($_POST["simpan"])) {
 		ku_gcs_e='$ku_gcs_e',
 		ku_gcs_v='$ku_gcs_v',
 		ku_gcs_m='$ku_gcs_m',
+		total_gcs='$total_gcs',
 		ku_suhu='$ku_suhu',
 		ku_tensi='$ku_tensi',
 		ku_nadi='$ku_nadi',

@@ -182,65 +182,98 @@ $tglkeluar = $data3[tglkeluar];
 
 			<div class="row">
 				<div class="col-12 text-center">
-					<b>DETAIL IDENTITAS PASIEN</b><br>
+					<b>FORMULIR DATA SOSIAL PASIEN - RM01</b><br>
 				</div>
 			</div>
 
-			<br>
-			<?php 
-			echo '<table class=table><tr>';
-			echo '<td>NORM'.'</td><td>'.$data2[ NORM].'</td></tr><tr>';
-			echo '<td>KODEDEPT'.'</td><td>'.$data2[ KODEDEPT].'</td></tr><tr>';
-			echo '<td>NIK'.'</td><td>'.$data2[ NIK].'</td></tr><tr>';
-			echo '<td>NAMA'.'</td><td>'.$data2[ NAMA].'</td></tr><tr>';
-			echo '<td>KELAMIN'.'</td><td>'.$data2[ KELAMIN].'</td></tr><tr>';
-			echo '<td>ALAMATPASIEN'.'</td><td>'.$data2[ ALAMATPASIEN].'</td></tr><tr>';
-			echo '<td>KOTA'.'</td><td>'.$data2[ KOTA].'</td></tr><tr>';
-			echo '<td>KODEKEL'.'</td><td>'.$data2[ KODEKEL].'</td></tr><tr>';
-			echo '<td>TLP'.'</td><td>'.$data2[ TLP].'</td></tr><tr>';
-			echo '<td>TMPTLAHIR'.'</td><td>'.$data2[ TMPTLAHIR].'</td></tr><tr>';
-			echo '<td>UMUR'.'</td><td>'.$data2[ UMUR].'</td></tr><tr>';
-			echo '<td>TGLLAHIR'.'</td><td>'.$data2[ TGLLAHIR].'</td></tr><tr>';
-			echo '<td>JENIS PEKERJAAN'.'</td><td>'.$data2[ JENISPEKERJAAN].'</td></tr><tr>';
-			echo '<td>PENDIDIKAN'.'</td><td>'.$data2[ PENDIDIKAN].'</td></tr><tr>';
-			echo '<td>JABATAN'.'</td><td>'.$data2[ JABATAN].'</td></tr><tr>';
-			echo '<td>GOLDARAH'.'</td><td>'.$data2[ GOLDARAH].'</td></tr><tr>';
-			echo '<td>KELAS'.'</td><td>'.$data2[ KELAS].'</td></tr><tr>';
-			echo '<td>AGAMA'.'</td><td>'.$data2[ AGAMA].'</td></tr><tr>';
-			echo '<td>KELAS PLAFON'.'</td><td>'.$data2[ KELAS_PLAFON].'</td></tr><tr>';
-			echo '<td>PERUSH ASAL'.'</td><td>'.$data2[ PERUSH_ASAL].'</td></tr><tr>';
-			echo '<td>NOBPJS'.'</td><td>'.$data2[ NOBPJS].'</td></tr><tr>';
-			echo '<td>ALERGI'.'</td><td>'.$data2[ ALERGI].'</td></tr><tr>';
-			echo '<td>NOKTP / NOMOR PASPOR'.'</td><td>'.$data2[ NOKTPNOMOR_PASPOR].'</td></tr><tr>';
-			echo '<td>NAMA IBU KANDUNG'.'</td><td>'.$data2[ NAMA_IBU_KANDUNG].'</td></tr><tr>';
-			echo '<td>NOKTP IBU KANDUNG'.'</td><td>'.$data2[ NOKTP_IBU_KANDUNG].'</td></tr><tr>';
-			echo '<td>JENIS KELAMIN'.'</td><td>'.$data2[ JENISKELAMIN2].'</td></tr><tr>';
-			echo '<td>AGAMA'.'</td><td>'.$data2[ AGAMA2].'</td></tr><tr>';
-			echo '<td>SUKU'.'</td><td>'.$data2[ SUKU].'</td></tr><tr>';
-			echo '<td>BAHASA'.'</td><td>'.$data2[ BAHASA].'</td></tr><tr>';
-			echo '<td>RT'.'</td><td>'.$data2[ RT].'</td></tr><tr>';
-			echo '<td>RW'.'</td><td>'.$data2[ RW].'</td></tr><tr>';
-			echo '<td>KELURAHAN'.'</td><td>'.$data2[ KELURAHAN].'</td></tr><tr>';
-			echo '<td>KECAMATAN'.'</td><td>'.$data2[ KECAMATAN].'</td></tr><tr>';
-			echo '<td>KABUPATEN'.'</td><td>'.$data2[ KABUPATEN].'</td></tr><tr>';
-			echo '<td>KODEPOS'.'</td><td>'.$data2[ KODEPOS].'</td></tr><tr>';
-			echo '<td>PROVINSI'.'</td><td>'.$data2[ PROVINSI].'</td></tr><tr>';
-			echo '<td>NEGARA'.'</td><td>'.$data2[ NEGARA].'</td></tr><tr>';
-			echo '<td>ALAMAT DOMISILI'.'</td><td>'.$data2[ ALAMAT_DOMISILI].'</td></tr><tr>';
-			echo '<td>RT DOMISILI'.'</td><td>'.$data2[ RT_DOMISILI].'</td></tr><tr>';
-			echo '<td>RW DOMISILI'.'</td><td>'.$data2[ RW_DOMISILI].'</td></tr><tr>';
-			echo '<td>KELURAHAN DOMISILI'.'</td><td>'.$data2[ KELURAHAN_DOMISILI].'</td></tr><tr>';
-			echo '<td>KECAMATAN DOMISILI'.'</td><td>'.$data2[ KECAMATAN_DOMISILI].'</td></tr><tr>';
-			echo '<td>KABUPATEN DOMISILI'.'</td><td>'.$data2[ KABUPATEN_DOMISILI].'</td></tr><tr>';
-			echo '<td>KODEPOS DOMISILI'.'</td><td>'.$data2[ KODEPOS_DOMISILI].'</td></tr><tr>';
-			echo '<td>PROVINSI DOMISILI'.'</td><td>'.$data2[ PROVINSI_DOMISILI].'</td></tr><tr>';
-			echo '<td>NEGARA DOMISILI'.'</td><td>'.$data2[ NEGARA_DOMISILI].'</td></tr><tr>';
-			echo '<td>HP'.'</td><td>'.$data2[ HP].'</td></tr><tr>';
-			echo '<td>STATUS PERNIKAHAN'.'</td><td>'.$data2[ STATUS_PERNIKAHAN].'</td></tr><tr>';
-			echo '<td>PASPOR'.'</td><td>'.$data2[ PASPOR].'</td></tr><tr>';
-			echo '<td></tr></table>';
+			<div class="row">
+				<div class="col-12">
+					<i>Diisi oleh petugas LOBBY/administrasi IGD/TPPRI</i>
+				</div>
+			</div>
 
-			?>
+			<table border='1' width="90%">
+				<tr>
+					<td width="30%">Nama Lengkap</td>
+					<td><?php echo $data2[NAMA]; ?></td>
+				</tr>
+				<tr>
+					<td>Tempat & Tgl. Lahir</td>
+					<td><?php echo $data2[TMPTLAHIR].$data2[TGLLAHIR]; ?></td>
+				</tr>
+				<tr>
+					<td>No. Ktp/ Id Card Lain</td>
+					<td><?php echo $data2[NOKTP]; ?></td>
+				</tr>
+				<tr>
+					<td>Jenis Kelamin</td>
+					<td>
+						<?php if ($data2[KELAMIN]=='L'){ echo "Laki-Laki"; }else{ echo "Perempuan"; }; ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Status Perkawinan</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Alamat Lengkap</td>
+					<td><?php echo $data2[ALAMATPASIEN]; ?></td>
+				</tr>
+				<tr>
+					<td>No. Telp</td>
+					<td><?php echo $data2[TLP]; ?></td>
+				</tr>
+				<tr>
+					<td>Email</td>
+					<td><?php echo $data2[EMAIL]; ?></td>
+				</tr>
+				<tr>
+					<td>Agama</td>
+					<td><?php echo $data2[AGAMA]; ?></td>
+				</tr>
+				<tr>
+					<td>Bahasa</td>
+					<td>
+						<?php echo $data2[BAHASA]; ?>
+					</td>
+				</tr>
+				<tr>
+					<td>Suku</td>
+					<td><?php echo $data2[SUKU]; ?></td>
+				</tr>
+				<tr>
+					<td>Status Kependudukan</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Pekerjaan</td>
+					<td><?php echo $data2[JENISPEKERJAAN]; ?></td>
+				</tr>
+				<tr>
+					<td>Nilai-Nilai Kepercayaan</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Alamat & No. Telp Tempat Kerja</td>
+					<td><?php echo $data2[ALAMAT_DOMISILI]; ?></td>
+				</tr>
+				<tr>
+					<td>Nama Ibu Kandung</td>
+					<td><?php echo $data2[NAMA_IBU_KANDUNG]; ?></td>
+				</tr>
+				<tr>
+					<td>Keluarga Terdekat</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>Alamat Pemberitahuan Terdekat</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>No. Telp</td>
+					<td></td>
+				</tr>
+			</table>
 
 			<br>
 		</form>

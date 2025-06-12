@@ -13,7 +13,7 @@ $id  = $row[0];
 $user = $row[1]; 
 $idrpo = $row[2]; 
 $idresep = $row[3];
-$idrpo_detail = $row[4];
+$idresep_detail = $row[4];
 
 $qu="SELECT norm,noreg FROM ERM_ASSESMEN_HEADER where id='$id'";
 $h1u  = sqlsrv_query($conn, $qu);        
@@ -51,7 +51,7 @@ W_EResep_R.WaktuPakai, W_EResep_R.Keterangan, W_EResep_R.Satuan, Afarm_MstSatuan
 FROM            W_EResep_R INNER JOIN
 Afarm_MstSatuan ON W_EResep_R.Satuan = Afarm_MstSatuan.KODESATUAN LEFT OUTER JOIN
 AFarm_MstObat ON W_EResep_R.KodeR = AFarm_MstObat.KODEBARANG
-WHERE        (W_EResep_R.Id = $idresep)
+WHERE        (W_EResep_R.Id = $idresep_detail)
 ";
 $hasil  = sqlsrv_query($conn, $q);  
 $no=1;
@@ -65,7 +65,7 @@ while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){
 	$waktu_penggunaan = $data[WaktuPakai];
 
 	$q  = "insert into ERM_RI_RPO(noreg,userid,tglentry,tgl,nama_obat,dosis,jumlah,waktu_penggunaan,id_eresep,id_eresep_detail,id_rpo_header,nomor) 
-	values ('$noreg','$user','$tglinput','$tglinput','$nama_obat','$dosis','$jumlah','$waktu_penggunaan',$idresep,$data[Id],$idrpo,'$nomor')";
+	values ('$noreg','$user','$tglinput','$tglinput','$nama_obat','$dosis','$jumlah','$waktu_penggunaan',$idresep,$idresep_detail,$idrpo,'$nomor')";
 	$hs = sqlsrv_query($conn,$q);
 
 

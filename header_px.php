@@ -149,10 +149,11 @@ if (isset($_POST["cari"])) {
                <div class="col-12">
                     <table class="table table-bordered">
                          <tr>
-                              <td>Nama</td><td>: <?php echo $nama;?></td><td>No. RM</td><td>: <?php echo $norm;?></td>
+                              <td>Nama</td><td style="background-color: #FFD95F;">: <font color='blue' size='5'><b><?php echo $nama;?></b></font></td>
+                              <td>No. RM</td><td>: <?php echo $norm;?></td>
                          </tr>
                          <tr>
-                              <td>Tanggal Lahir</td><td>: <?php echo $tgllahir;?></td><td>NIK</td><td>: <?php echo $noktp;?></td>
+                              <td>Tanggal Lahir</td><td style="background-color: #FFD95F;">: <font color='blue' size='5'><b><?php echo $tgllahir;?></b></font></td><td>NIK</td><td>: <?php echo $noktp;?></td>
                          </tr>
                          <tr>
                               <td>Umur</td><td>: <?php echo $umur;?></td><td>Jenis Kelamin</td><td>: <?php echo $kelamin;?></td>

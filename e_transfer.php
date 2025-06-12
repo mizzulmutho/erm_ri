@@ -928,7 +928,10 @@ $tr150= $de['tr150'];
 					&nbsp;&nbsp;
 					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
-					<br>
+                    <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button>
+                    &nbsp;&nbsp;
+
+
 <!-- 				<div class="row">
 					<div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
 				</div>
@@ -1701,9 +1704,9 @@ if (isset($_POST["simpan"])) {
     $tr2	= $_POST["tr2"];
 
     $row = explode('-',$tr2);
-    $tr2  = $row[1];
+    $ctr2  = $row[1];
 
-    if(empty($tr2)){
+    if(empty($ctr2)){
         $eror='Unit Tujuan Tidak Valid, Gunakan Kode Unit !!!';
         $lanjut='T';
     }
@@ -2036,13 +2039,13 @@ if (isset($_POST["simpan"])) {
 
 }
 
-// if (isset($_POST["print"])) {
-// 	echo "
-// 	<script>
-// 	window.print();
-// 	</script>
-// 	";
-// }
+if (isset($_POST["print"])) {
+	echo "
+	<script>
+	window.print();
+	</script>
+	";
+}
 
 
 ?>

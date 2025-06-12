@@ -6,7 +6,7 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
-// include "phpqrcode/qrlib.php";
+include "phpqrcode/qrlib.php";
 
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tgl2		= gmdate("d/m/Y", time()+60*60*7);
@@ -132,6 +132,8 @@ $tglkeluar = $data3[tglkeluar];
 
 			<br>
 			<a href='r_rm.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+			&nbsp;&nbsp;
+			<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 			<!-- <a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a> -->
 			<br>
 			<br>
@@ -153,7 +155,7 @@ $tglkeluar = $data3[tglkeluar];
 					<b>RM 08a1 - ASESMEN AWAL MEDIS RAWAT INAP</b>
 					<hr>
 					<?php
-					include('r_anamnesis_medis.php');
+					include('r_anamnesis_medis2.php');
 					?>
 				</div>
 			</div>
@@ -243,19 +245,19 @@ $tglkeluar = $data3[tglkeluar];
 							// include('r_anamnesis_medis.php');
 
 							if($jenis=='NEONATUS'){
-								include('form_assesmen_neonatus_print.php');
+								include('form_assesmen_neonatus_print2.php');
 							}
 							if($jenis=='BERSALIN'){
-								include('form_assesmen_bersalin_print.php');
+								include('form_assesmen_bersalin_print2.php');
 							}
 							if($jenis=='ANAK'){
-								include('form_assesmen_anak_print.php');
+								include('form_assesmen_anak_print2.php');
 							}
 							if($jenis=='DEWASA'){
-								include('form_assesmen_dewasa_print.php');
+								include('form_assesmen_dewasa_print2.php');
 							}
 							if($jenis=='GERIATRI'){
-								include('form_assesmen_geriatri_print.php');
+								include('form_assesmen_geriatri_print2.php');
 							}
 
 							?>
@@ -268,7 +270,7 @@ $tglkeluar = $data3[tglkeluar];
 							<b>RM 09.1 - CATATAN PERKEMBANGAN PASIEN TERINTEGRASI</b>
 							<hr>
 							<?php
-							include('r_soap.php');
+							include('r_soap2.php');
 							?>
 						</div>
 					</div>
@@ -279,7 +281,7 @@ $tglkeluar = $data3[tglkeluar];
 							<b>RM 10.c2 - LEMBAR OBSERVASI EARLY WARNING SYSTEM (EWS)</b>
 							<hr>
 							<?php
-							// include('r_ews.php');
+							// include('r_ews2.php');
 							?>
 						</div>
 					</div>
@@ -290,7 +292,7 @@ $tglkeluar = $data3[tglkeluar];
 							<b>RM 12a.1 - TRANSFER PASIEN ANTAR UNIT PELAYANAN</b>
 							<hr>
 							<?php
-							include('r_transfer_pasien.php');
+							include('r_transfer_pasien2.php');
 							?>
 						</div>
 					</div>
@@ -332,7 +334,7 @@ $tglkeluar = $data3[tglkeluar];
 							<b>RM 17.1 - FORMULIR EDUKASI PASIEN DAN KELUARGA TERINTEGRASI</b>
 							<hr>
 							<?php
-							include('edukasi_print.php');
+							include('edukasi_print2.php');
 							?>
 						</div>
 					</div>

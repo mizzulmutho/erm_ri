@@ -56,7 +56,10 @@ $ket_nadi = $d1u['ket_nadi'];
 $nafas = $d1u['nafas'];
 $spo = $d1u['spo'];
 $bb = $d1u['bb'];
+$bb = str_replace("kg","",$bb);
+
 $tb = $d1u['tb'];
+$tb = str_replace("cm","",$tb);
 
 if($bb=='-'){
 	$bb=0;
@@ -72,12 +75,19 @@ if($tb=='-'){
 //SIMPAN
 if (isset($_POST["simpan"])) {
 
-	$td_sistolik	= trim($_POST["td_sistolik"]);
+	$td_sistolik	= trim($_POST["td_sistolik"]);	
 	$td_diastolik	= trim($_POST["td_diastolik"]);
 	$nadi	= trim($_POST["nadi"]);
+	$nadi = str_replace(",",".",$nadi);
+
 	$suhu	= trim($_POST["suhu"]);
+	$suhu = str_replace(",",".",$suhu);
+
 	$pernafasan	= trim($_POST["pernafasan"]);
+	$pernafasan = str_replace(",",".",$pernafasan);
+
 	$spo2	= trim($_POST["spo2"]);
+	$spo2 = str_replace(",",".",$spo2);
 
 	$tglinput	= trim($_POST["tglinput"]);
 
@@ -155,6 +165,16 @@ if (isset($_POST["simpan"])) {
 
 	if($lanjut == 'Y'){
 
+		if($hari_u < 28 and $bulan_u < 9 and $tahun_u <= 0){ //neonatus
+			$j_ews ="neonatus";
+		}else if($tahun_u >=0 and $tahun_u <=17){ //anak
+			$j_ews ="anak";
+		}else if($tahun_u >17 and $tahun_u <=60){ //dewasa
+			$j_ews ="dewasa";
+		}else if($tahun_u >60){//geriatri
+			$j_ews ="geriatri";
+		}
+
 		$ket =
 		'tensi :'.$data1[td_sistolik].'/'.$data1[td_diastolik].' ,'.
 		'nadi :'.$data1[nadi].' ,'.
@@ -163,62 +183,123 @@ if (isset($_POST["simpan"])) {
 		'spo2 :'.$data1[spo2]
 		;
 
-		$rr = $pernafasan; 
-		if($rr >=25){ $s_rr=3;}
-		if($rr >=21 && $rr <=24 ){ $s_rr=2;}
-		if($rr >=12 && $rr <=20 ){ $s_rr=0;}
-		if($rr >=9 && $rr <=11 ){ $s_rr=1;}
-		if($rr <=8){ $s_rr=3;}
+		if($j_ews=='anak'){
 
-		$oksigen_tambahan =$ob7; 
-		if($oksigen_tambahan=='ya'){
-			$s_oksigen_tambahan=2;
+			$rr = $pernafasan; 
+			if($rr >60 ){ $s_rr=3;}
+			if($rr >=51 && $rr <=60 ){ $s_rr=2;}
+			if($rr >=31 && $rr <=50 ){ $s_rr=1;}
+			if($rr >=20 && $rr <=30 ){ $s_rr=0;}
+			if($rr < 20){ $s_rr=3;}
+
+			$spo2 = $spo2; 
+			if($spo2 >95){ $s_spo2=0;}
+			if($spo2 >=90 && $spo2 <=94 ){ $s_spo2=1;}
+			if($spo2 >=86 && $spo2 <=89 ){ $s_spo2=2;}
+			if($spo2 <=85){ $s_spo2=3;}
+
+			$oksigen_tambahan = $ob7; 
+			if($oksigen_tambahan=='ya'){
+				$s_oksigen_tambahan=2;
+			}else{
+				$s_oksigen_tambahan=0;
+			}
+
+			$nadi = $nadi;
+			if($nadi > 160){ $s_nadi=3;}
+			if($nadi >=141 && $nadi <=160 ){ $s_nadi=2;}
+			if($nadi >=121 && $nadi <=140 ){ $s_nadi=1;}
+			if($nadi >=80 && $nadi <=120 ){ $s_nadi=0;}
+			if($nadi >=70 && $nadi <=79 ){ $s_nadi=1;}
+			if($nadi >=60 && $nadi <=69 ){ $s_nadi=2;}
+			if($nadi <60 ){ $s_nadi=3;}	
+
+
+			$suhu = $suhu; 
+			if($suhu >=39){ $s_suhu=2;}
+			if($suhu ==38){ $s_suhu=1;}
+			if($suhu ==37){ $s_suhu=0;}
+			if($suhu ==36){ $s_suhu=0;}
+			if($suhu ==35){ $s_suhu=1;}
+			if($suhu <=34 ){ $s_suhu=3;}
+
+
+			$sistole = $td_sistolik;
+			if($sistole >=150 ){ $s_sistole=3;}
+			if($sistole >=140 && $sistole >=149){ $s_sistole=3;}
+			if($sistole >=130 && $sistole >=139){ $s_sistole=2;}
+			if($sistole >=120 && $sistole >=129){ $s_sistole=1;}
+			if($sistole >=90 && $sistole >=119){ $s_sistole=0;}
+			if($sistole >=80 && $sistole >=89){ $s_sistole=1;}
+			if($sistole <=70 ){ $s_sistole=3;}						
+
+			$tingkat_kesadaran =$ob1; 
+			if($tingkat_kesadaran=='Tidak'){
+				$s_tingkat_kesadaran=3;
+			}else{
+				$s_tingkat_kesadaran=0;
+			}
+
+			$total_score = $s_rr+$s_spo2+$s_oksigen_tambahan+$s_suhu+$s_nadi+$s_tingkat_kesadaran;
+			$score = intval($total_score);
+			$total_ews = $score;
+
 		}else{
-			$s_oksigen_tambahan=0;
+
+			$rr = $pernafasan; 
+			if($rr >=12 && $rr <=20 ){ $s_rr=0;}
+			if($rr >=9 && $rr <=11 ){ $s_rr=1;}
+			if($rr >=21 && $rr <=24 ){ $s_rr=2;}
+			if($rr <=8){ $s_rr=3;}
+			if($rr >=25){ $s_rr=3;}
+
+			$oksigen_tambahan = $ob7; 
+			if($oksigen_tambahan=='ya'){
+				$s_oksigen_tambahan=2;
+			}else{
+				$s_oksigen_tambahan=0;
+			}
+
+			$spo2 = $spo2; 
+			if($spo2 >=96 && $spo2 <=100 ){ $s_spo2=0;}
+			if($spo2 >=92 && $spo2 <96 ){ $s_spo2=2;}
+			if($spo2 >=0 && $spo2 <92 ){ $s_spo2=3;}
+
+			$suhu = $suhu; 
+			if($suhu >=36 && $suhu <=37 ){ $s_suhu=0;}
+			if($suhu ==35 OR $suhu ==38 ){ $s_suhu=1;}
+			if($suhu >=39){ $s_suhu=2;}
+			if($suhu <=34 ){ $s_suhu=3;}
+
+			$sistole = $td_sistolik;
+			if($sistole >=100 && $sistole <=160 ){ $s_sistole=0;}
+			if($sistole ==90 OR $sistole ==170 OR $sistole ==180 ){ $s_sistole=1;}
+			if($sistole >=171 && $sistole <=180 ){ $s_sistole=1;}
+			if($sistole >=80 && $sistole <=89 ){ $s_sistole=2;}
+			if($sistole >=191 && $sistole <=209 ){ $s_sistole=2;}
+			if($sistole >=210){ $s_sistole=3;}
+			if($sistole <=79 ){ $s_sistole=3;}						
+
+			$nadi = $nadi;
+			if($nadi >=51 && $nadi <=90 ){ $s_nadi=0;}
+			if($nadi >=41 && $nadi <=50 ){ $s_nadi=1;}
+			if($nadi >=91 && $nadi <=110 ){ $s_nadi=1;}
+			if($nadi >=111 && $nadi <=130 ){ $s_nadi=2;}
+			if($nadi <=40 ){ $s_nadi=3;}	
+			if($nadi >=131){ $s_nadi=3;}
+
+			$tingkat_kesadaran =$ob1; 
+			if($tingkat_kesadaran=='Tidak'){
+				$s_tingkat_kesadaran=3;
+			}else{
+				$s_tingkat_kesadaran=0;
+			}
+
+			$total_score = $s_rr+$s_spo2+$s_oksigen_tambahan+$s_suhu+$s_sistole+$s_nadi+$s_tingkat_kesadaran;
+			$score = intval($total_score);
+			$total_ews = $score;
 		}
-
-		$spo2 = $spo2; 
-		if($spo2 >=25 && $spo2 <=100 ){ $s_spo2=0;}
-		if($spo2 >=94 && $spo2 <=95 ){ $s_spo2=1;}
-		if($spo2 >=92 && $spo2 <=93 ){ $s_spo2=2;}
-		if($spo2 >=91 && $spo2 <=92 ){ $s_spo2=3;}
-
-		$suhu = $suhu; 
-		if($suhu >=39.1){ $s_suhu=2;}
-		if($suhu >=38.1 && $suhu <=39 ){ $s_suhu=1;}
-		if($suhu >=36.1 && $suhu <=38 ){ $s_suhu=0;}
-		if($suhu >=35.1 && $suhu <=36 ){ $s_suhu=1;}
-		if($suhu >=9 && $suhu <=11 ){ $s_suhu=1;}
-		if($suhu <=3 ){ $s_suhu=3;}
-
-		$sistole = $td_sistolik;
-		if($sistole >=220){ $s_sistole=3;}
-		if($sistole >=180 && $sistole <=219 ){ $s_sistole=2;}
-		if($sistole >=150 && $sistole <=179 ){ $s_sistole=1;}
-		if($sistole >=111 && $sistole <=149 ){ $s_sistole=0;}
-		if($sistole >=101 && $sistole <=110 ){ $s_sistole=1;}
-		if($sistole >=91 && $sistole <=100 ){ $s_sistole=2;}
-		if($sistole <=90 ){ $s_sistole=3;}						
-
-		$nadi = $nadi;
-		if($nadi >=131){ $s_nadi=3;}
-		if($nadi >=111 && $nadi <=130 ){ $s_nadi=2;}
-		if($nadi >=91 && $nadi <=110 ){ $s_nadi=1;}
-		if($nadi >=51 && $nadi <=90 ){ $s_nadi=0;}
-		if($nadi >=41 && $nadi <=50 ){ $s_nadi=1;}
-		if($nadi <=40 ){ $s_nadi=3;}	
-
-		$tingkat_kesadaran =$ob1; 
-		if($tingkat_kesadaran=='Tidak'){
-			$s_tingkat_kesadaran=3;
-		}else{
-			$s_tingkat_kesadaran=0;
-		}
-
-
-		$total_score = $s_rr+$s_spo2+$s_oksigen_tambahan+$s_suhu+$s_sistole+$s_nadi+$s_tingkat_kesadaran;
-		$score = intval($total_score);
-		$total_ews = $score;
+		
 
 		if(intval($total_score) == 0){
 			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
@@ -228,7 +309,7 @@ if (isset($_POST["simpan"])) {
 			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
 			$bgcolor='#90EE90';
 			$ket_ews='Rendah<hr>Perawat jaga melakukan monitor setiap 4-6 jam dan menilai apakah perlu untuk meningkatkan frekuensi monitoring';
-		}else if(intval($total_score) > 2 and intval($total_score) < 5){
+		}else if(intval($total_score) >= 5 and intval($total_score) <= 6){
 			$score = "<font size='5px' color='black'><b>$total_score</b></font>";
 			$bgcolor='#FAFAD2';		
 			$ket_ews='Sedang<hr>Perawat jaga melakukan monitor tiap 1 jam dan melaporkan ke dr jaga dan mempersiapkan jika mengalami perburukan kondisi pasien';
@@ -344,7 +425,7 @@ if (isset($_POST["simpan"])) {
 			echo "
 			<script>
 			alert('".$eror."');
-			window.location.replace('listobservasi.php?id=$id|$user');
+			window.location.replace('listobservasi_ews.php?id=$id|$user');
 			</script>
 			";
 
@@ -401,364 +482,144 @@ if (isset($_POST["simpan"])) {
 <head>  
 	<title>eRM-RI</title>  
 	<link rel="icon" href="favicon.ico">  
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-	<script language="JavaScript" type="text/javascript">
-		nextfield = "box1";
-		netscape = "";
-		ver = navigator.appVersion; len = ver.length;
-		for(iln = 0; iln < len; iln++) if (ver.charAt(iln) == "(") break;
-			netscape = (ver.charAt(iln+1).toUpperCase() != "C");
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-		function keyDown(DnEvents) {
-			k = (netscape) ? DnEvents.which : window.event.keyCode;
-			if (k == 13) {
-				if (nextfield == 'done') return true;
-				else {
-					eval('document.myForm.' + nextfield + '.focus()');
-					return false;
-				}
-			}
-		}
-		document.onkeydown = keyDown;
-		if (netscape) document.captureEvents(Event.KEYDOWN|Event.KEYUP);
-	</script>
-
-	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-
-	<script>
-		CKEDITOR.replace('editor1');
-		CKEDITOR.config.width="100%";
-		CKEDITOR.config.height="500px"
-	</script>
-
-	<!-- Jqueri autocomplete untuk procedure !!! -->
-	<link rel="stylesheet" href="jquery-ui.css">
-	<script src="jquery-1.10.2.js"></script>
-	<script src="jquery-ui.js"></script>
-
-	<script>
-		$(function() {
-			$("#dokter").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                	$.ajax({
-                		type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_dokter.php', //your                         
-                        dataType: 'json',
-                        data: {
-                        	postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                            	response ($.map(data.response, function (item) {
-                            		return {
-                            			value: item.kodedokter + ' - ' + item.nama + ' - ' + item.keterangan
-                            		}
-                            	}));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-		});
-	</script>  
 </head> 
 
-<div class="container-fluid">
 
-	<body onload="document.myForm.td_sistolik.focus();">
-		<font size='2px'>	
-			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
+<div class="container py-4">
+	<form method="POST" name='myForm' action="" enctype="multipart/form-data">
+		<?php include "header_soap.php"; ?>
 
-				<div class="row">
-					<div class="col-12">
-						<?php 
-						include "header_soap.php";
-						?>
+		<div class="mb-3">
+			<a href='index.php?id=<?php echo $id."|".$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
+			<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+			<a href='observasi.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-graph-up"></i> Monitoring EWS</a>
+
+			<a href='observasi_cairan2.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-droplet"></i> Monitoring Cairan</a>
+		</div>
+
+		<div class="card shadow">
+			<div class="card-header bg-primary text-white">
+				<i class="bi bi-clipboard-plus"></i> Input Data Monitoring EWS
+			</div>
+			<div class="card-body row g-3">
+				<div class="col-md-6">
+
+					<div class="form-floating mb-3">
+						<a href='listobservasi_ews.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-list"></i> List Data</a>
 					</div>
+
+					<div class="form-floating mb-3">
+						<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput;?>">
+						<label><i class="bi bi-calendar-event"></i> Tanggal/Jam Input</label>
+					</div>
+
+					<h6><i class="bi bi-activity"></i> Monitoring EWS</h6>
+
+					<label class="form-label"><i class="bi bi-person-check"></i> Kesadaran</label>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="ob1" value="Sadar" <?php if ($ob1=="Sadar") echo "checked"; ?>>
+						<label class="form-check-label">Sadar</label>
+					</div>
+					<div class="form-check mb-2">
+						<input class="form-check-input" type="radio" name="ob1" value="Tidak" <?php if ($ob1=="Tidak") echo "checked"; ?>>
+						<label class="form-check-label">Tidak Sadar</label>
+					</div>
+					<input class="form-control mb-3" name="ob2" value="<?php echo $ob2;?>" placeholder="Isikan jika tidak sadar">
+
+					<div class="row g-2">
+						<label class="form-label"><i class="bi bi-eye"></i> GCS</label>
+						<div class="col">
+							<input class="form-control" name="ob3" id="ob3" value="<?php echo $ob3;?>" placeholder="E">
+						</div>
+						<div class="col">
+							<input class="form-control" name="ob4" id="ob4" value="<?php echo $ob4;?>" placeholder="V">
+						</div>
+						<div class="col">
+							<input class="form-control" name="ob5" id="ob5" value="<?php echo $ob5;?>" placeholder="M">
+						</div>
+						<div class="col">
+							<input class="form-control" name="ob6" id="ob6" value="<?php echo $ob6;?>" readonly placeholder="Total">
+						</div>
+					</div>
+
+					<script>
+						document.getElementById("ob5").addEventListener("input", function() {
+							let e = parseInt(document.getElementById("ob3").value) || 0;
+							let v = parseInt(document.getElementById("ob4").value) || 0;
+							let m = parseInt(document.getElementById("ob5").value) || 0;
+							document.getElementById("ob6").value = e + v + m;
+						});
+					</script>
+
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="td_sistolik" value="<?php echo $td_sistolik;?>">
+						<label><i class="bi bi-activity"></i> TD Sistolik (mmHg)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="td_diastolik" value="<?php echo $td_diastolik;?>">
+						<label><i class="bi bi-activity"></i> TD Diastolik (mmHg)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="suhu" value="<?php echo $suhu;?>">
+						<label><i class="bi bi-thermometer-sun"></i> Suhu (°C)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="nadi" value="<?php echo $nadi;?>">
+						<label><i class="bi bi-heart-pulse"></i> Nadi (x/menit)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="pernafasan" value="<?php echo $pernafasan;?>">
+						<label><i class="bi bi-wind"></i> Pernapasan (x/menit)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="spo2" value="<?php echo $spo2;?>">
+						<label><i class="bi bi-droplet-half"></i> SpO2 (%)</label>
+					</div>
+
+					<label class="form-label mt-3"><i class="bi bi-capsule"></i> Oksigen</label>
+					<div class="form-check">
+						<input class="form-check-input" type="radio" name="ob7" value="Ya" <?php if ($ob7=="Ya") echo "checked"; ?>>
+						<label class="form-check-label">Ya</label>
+					</div>
+					<div class="form-check mb-2">
+						<input class="form-check-input" type="radio" name="ob7" value="Tidak" <?php if ($ob7=="Tidak") echo "checked"; ?>>
+						<label class="form-check-label">Tidak</label>
+					</div>
+					<input class="form-control mb-3" name="ob8" value="<?php echo $ob8;?>" placeholder="Isikan jika tidak">
+
+<!-- 					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="ob9" value="<?php echo $bb;?>">
+						<label><i class="bi bi-person-fill"></i> Berat Badan (kg)</label>
+					</div>
+					<div class="form-floating mt-3">
+						<input type="text" class="form-control" name="ob10" value="<?php echo $tb;?>">
+						<label><i class="bi bi-rulers"></i> Tinggi Badan (cm)</label>
+					</div> -->
+					
 				</div>
 
-				<br>
-
-				<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
-				&nbsp;&nbsp;
-				<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i></a>
-				&nbsp;&nbsp;
-				<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
-				<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
-<!-- 				<button type="submit" name="simpan" class="btn btn-info btn-sm" onfocus="nextfield ='done';"><i class="bi bi-save"></i>
-				simpan</button> 
-			-->				
-			<a href='listobservasi.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success btn-sm'><i class="bi bi-list"></i> List</a>
-
-			<br><br>
-
-			<div class="row">
-				<div class="col-12">
-					<i class="bi bi-window-plus"> &nbsp; <b>INPUT DATA MONITORING</b></i>
+				<div class="col-md-6">
+					<?php if ($hs): ?>
+						<div class="card bg-light text-center">
+							<div class="card-body">
+								<h5><i class="bi bi-graph-up-arrow"></i> SCORE EWS</h5>
+								<p class="fs-3"><?php echo $score; ?></p>
+								<p><?php echo $ket_ews; ?></p>
+							</div>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
-			<hr>
 
-			<div class="row">
-				<div class="col-6">
-					<table border='0' width="100%">
-						<tr>
-							<td>Tgl/Jam Input</td>
-							<td>: &nbsp;&nbsp; <input class="" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder=""></td>
-						</tr>
-
-						<tr>
-							<td colspan="2"><b>Monitoring EWS</b></td>
-						</tr>
-
-						<tr><td>Kesadaran </td>
-							<td>: 
-								<?php 
-								if(empty($ob1)){
-									// if (strtoupper(trim($kesadaran))=='COMPOSMENTIS'){
-									// 	$ob1="Sadar";
-									// }else{
-									// 	$ob1="Tidak";
-									// 	$ob2=$kesadaran;
-									// }
-								}
-								?>
-								<input type='checkbox' name='ob1' value='Sadar' <?php if ($ob1=="Sadar"){echo "checked";}?> > Sadar
-								<input type='checkbox' name='ob1' value='Tidak' <?php if ($ob1=="Tidak"){echo "checked";}?> > Tidak
-								<input class="" name="ob2" value="<?php echo $ob2;?>" id="" type="text" size='30' placeholder="isikan jika tidak">
-							</td>
-						</tr>
-						<tr><td>GCS </td>
-							<td>: 
-								<?php 
-								if(empty($ob3)){
-									// $ob3=$e;
-									// $ob4=$v;
-									// $ob5=$m;
-									// $ob6=$e+$v+$m;
-
-									// 	//tekanan darah
-									// $row2 = explode('/',$tensi);
-									// $sistole  = $row2[0];
-									// $diastole = $row2[1]; 
-
-									// $td_sistolik = $sistole;
-									// $td_diastolik = $diastole;
-
-									// $suhu = $suhu;
-									// $nadi = $nadi;
-									// $pernafasan = $nafas;
-									// $spo2=$spo;
-
-								}
-								?>
-								&nbsp;&nbsp; 
-								E <input class="" name="ob3" value="<?php echo $ob3;?>" id="" type="text" size='2' placeholder=""> 
-								V <input class="" name="ob4" value="<?php echo $ob4;?>" id="" type="text" size='2' placeholder="">
-								M <input class="" name="ob5" value="<?php echo $ob5;?>" id="" type="text" size='2' placeholder="">
-								Total <input class="" name="ob6" value="<?php echo $ob6;?>" id="" type="text" size='2' placeholder="">
-							</td>
-						</tr>
-						<tr><td>TD Sistole </td>
-							<td>: &nbsp;&nbsp; <input class="" name="td_sistolik" value="<?php echo $td_sistolik;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;mmHg</td>
-						</tr>
-						<tr><td>TD Diastole </td>
-							<td>: &nbsp;&nbsp; <input class="" name="td_diastolik" value="<?php echo $td_diastolik;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;mmHg</td>
-						</tr>
-						<tr><td>Suhu </td><td>: &nbsp;&nbsp; <input class="" name="suhu" value="<?php echo $suhu;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;0C</td></tr>
-						<tr><td>Nadi </td><td>: &nbsp;&nbsp; <input class="" name="nadi" value="<?php echo $nadi;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; x/menit</td></tr>
-						<tr><td>Pernapasan </td><td>: &nbsp;&nbsp; <input class="" name="pernafasan" value="<?php echo $pernafasan;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp;  x/menit</td></tr>
-						<tr><td>SpO2 </td><td>: &nbsp;&nbsp; <input class="" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; %</td></tr>
-						<tr><td>Oksigen </td><td>: 
-							<input type='checkbox' name='ob7' value='Ya' <?php if ($ob7=="Ya"){echo "checked";}?> > Ya
-							<input type='checkbox' name='ob7' value='Tidak' <?php if ($ob7=="Tidak"){echo "checked";}?> > Tidak
-							<input class="" name="ob8" value="<?php echo $ob8;?>" id="" type="text" size='30' placeholder="isikan jika tidak">
-						</td>
-					</tr>
-					<tr><td>BB </td><td>: &nbsp;&nbsp; <input class="" name="ob9" value="<?php echo $bb;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; kg</td></tr>
-					<tr><td>TB </td><td>: &nbsp;&nbsp; <input class="" name="ob10" value="<?php echo $tb;?>" id="" type="text" size='20' placeholder="">&nbsp;&nbsp; cm</td></tr>
-
-				</table>
-			</div>
-			<div class="col-6">
-				<?php  
-
-				if($hs){
-					echo "
-					<table>
-					<tr>
-					<td align='center' bgcolor='$bgcolor'>
-					SCORE EWS :<br>
-					$score<br>$ket_ews </td>
-					</tr>
-					</table>
-					";
-				}
-
-
-				?>
-			</div>
-
-		</div>
-		<br>
-		<div class="row">
-			<div class="col-12">
-				<center>
-					<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-				</center>
+			<div class="card-footer text-center mt-4">
+				<button type="submit" name="simpan" value="simpan" class="btn btn-info btn-lg px-5">
+					<i class="bi bi-save-fill"></i> Simpan Monitoring EWS
+				</button>
 			</div>
 		</div>
-		<hr>
-		<div class="row">
-			<div class="col-12">
-				<table border='0' width="100%">
-					<tr>
-						<td colspan="6"><b>Monitoring Cairan</b></td>
-					</tr>
-					<tr>
-						<td colspan="6"><b>Input</b></td>
-					</tr>
-					<tr>
-						<td>Infus </td>
-						<td>
-							:<input class="" name="ob12" value="<?php echo $ob12;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>Tetesan </td>
-						<td>
-							:<input class="" name="ob13" value="<?php echo $ob13;?>" id="" type="text" size='20' placeholder=""> /menit 
-						</td>
-						<td>Jam </td>
-						<td>
-							:
-							<!-- <input class="" name="ob14" value="<?php echo $ob14;?>" id="" type="text" size='20' placeholder=""> (free text) -->
-							<input type='date' name='jam1a' value=''>
-							&nbsp;
-							<input type='time' name='jam1b' value=''>
-						</td>
-					</tr>
-					<tr>
-						<td>Nama Infus </td>
-						<td>
-							:<input class="" name="ob29" value="<?php echo $ob29;?>" id="" type="text" size='50' placeholder="isikan nama infus"> 
-						</td>
-					</tr>
-					<tr>
-						<td>Transfusi </td>
-						<td>
-							:<input class="" name="ob15" value="<?php echo $ob15;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>Tetesan </td>
-						<td>
-							:<input class="" name="ob16" value="<?php echo $ob16;?>" id="" type="text" size='20' placeholder=""> /menit 
-						</td>
-						<td>Jam </td>
-						<td>
-							:
-							<!-- <input class="" name="ob17" value="<?php echo $ob17;?>" id="" type="text" size='20' placeholder=""> (free text) -->
-							<input type='date' name='jam2a' value=''>
-							&nbsp;
-							<input type='time' name='jam2b' value=''>
-						</td>
-					</tr>
-					<tr>
-						<td>Makan </td>
-						<td>
-							:<input class="" name="ob18" value="<?php echo $ob18;?>" id="" type="text" size='20' placeholder=""> porsi
-						</td>
-						<td>Minum </td>
-						<td>
-							:<input class="" name="ob19" value="<?php echo $ob19;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-					</tr>
-					<tr>
-						<td colspan="6"><b>Output</b></td>
-					</tr>
-					<tr>
-						<td>Muntah </td>
-						<td>
-							:<input class="" name="ob20" value="<?php echo $ob20;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>BAB </td>
-						<td>
-							:<input class="" name="ob21" value="<?php echo $ob21;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>Urine </td>
-						<td>
-							:<input class="" name="ob22" value="<?php echo $ob22;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-					</tr>
-					<tr>
-						<td>IWL </td>
-						<td>
-							:<input class="" name="ob23" value="<?php echo $ob23;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>NGT </td>
-						<td>
-							:<input class="" name="ob24" value="<?php echo $ob24;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-						<td>Drain </td>
-						<td>
-							:<input class="" name="ob25" value="<?php echo $ob25;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-					</tr>
-					<tr>
-						<td>Perdarahan </td>
-						<td>
-							:<input class="" name="ob26" value="<?php echo $ob26;?>" id="" type="text" size='20' placeholder=""> cc
-						</td>
-					</tr>
-					<tr>
-						<td><b>Balance Cairan</b>  </td>
-						<td colspan="6">
-							:<input class="" name="ob27" value="<?php echo $ob27;?>" id="" type="text" size='20' placeholder=""> (total input - total output)
-
-						</td>
-					</tr>
-			<!-- <br><br>
-			<tr>
-				<td><b>GDA</b>  </td>
-				<td colspan="6">
-					:<input class="" name="ob28" value="<?php echo $ob28;?>" id="" type="text" size='20' placeholder=""> 
-
-				</td>
-			</tr> -->
-
-
-		</table>
-	</div>
-</div>
-<br>
-<div class="row">
-	<div class="col-12">
-		<table border='0' width="100%">
-			<tr>
-				<td colspan="2"></td>
-			</tr>
-			<tr><td><b>GDA</b></td>
-				<td>: 
-					<input class="" name="ob28" value="<?php echo $ob28;?>" id="" type="text" size='20' placeholder=""> 
-				</td>
-			</tr>
-		</table>
-	</div>
+	</form>
 </div>
 
-<div class="row">
-	<div class="col-12">
-		<center>
-			<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-		</center>
-	</div>
-</div>
-
-
-</div>
-<br><br><br>
-</form>
-</font>
-</body>
-</div>

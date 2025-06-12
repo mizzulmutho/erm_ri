@@ -338,6 +338,8 @@ if($idresep=='edit'){
 
 			<div class="row">
 				<div class="col-12 text-center">
+					<a href='r_soap_dokter.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-success' target='_blank'><i class="bi bi-list-ol"></i> History CPPT</a>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 					<?php if(empty($cek_eresep)){ ?>					
 						<a href='eresep_list.php?id=<?php echo $id.'|'.$user.'|'.$idrpo; ?>' class='btn btn-success'><i class="bi bi-box-arrow-in-right"></i> Ambil Data dari E-Resep</a>
 					<?php } ?>
@@ -450,82 +452,83 @@ if($idresep=='edit'){
 							&nbsp;
 						</div>
 						<div class="col-8">
-							<?php if(empty($cek_eresep)){ ?>
+							<?php //if(empty($cek_eresep)){ ?>
 								<br>
 								<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
 								<br><br>
-							<?php } ?>
+								<?php //} ?>
+							</div>
 						</div>
-					</div>
-				</td>
-			</tr>	
+					</td>
+				</tr>	
 
 
 
 
-		</table>
+			</table>
 
-		<br>
-		<table class='table'>
-			<tr>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>nama obat</font></td>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>aturan pakai</font></td>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>jumlah</font></td>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>waktu pemberian</font></td>
-				<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>edit</font></td>
-				<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>hapus</font></td>
-			</tr>
-			<?php 
-			$q="
-			select TOP(100) userid,nomor,nama_obat,jumlah,dosis,waktu_penggunaan,CONVERT(VARCHAR, tgl, 25) as tgl,id,
-			interval, dokter, apoteker, periksa, pemberi, keluarga
-			from ERM_RI_RPO
-			where noreg='$noreg' and id_rpo_header='$idrpo' order by id desc
-			";
-			$hasil  = sqlsrv_query($conn, $q);  
-			$no=1;
-			while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
+			<br>
+			<table class='table'>
+				<tr>
+					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>nama obat</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>aturan pakai</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>jumlah</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>waktu pemberian</font></td>
+					<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>edit</font></td>
+					<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>hapus</font></td>
+				</tr>
+				<?php 
+				$q="
+				select TOP(100) userid,nomor,nama_obat,jumlah,dosis,waktu_penggunaan,CONVERT(VARCHAR, tgl, 25) as tgl,id,
+				interval, dokter, apoteker, periksa, pemberi, keluarga
+				from ERM_RI_RPO
+				where noreg='$noreg' and id_rpo_header='$idrpo' order by id desc
+				";
+				$hasil  = sqlsrv_query($conn, $q);  
+				$no=1;
+				while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
 
-				if(empty($cek_eresep)){
-					echo "
-					<tr>
-					<td>$no</td>
-					<td>$data[nama_obat]</td>
-					<td>$data[interval]</td>
-					<td>$data[jumlah]</td>
-					<td>$data[tgl]</td>
-					<td align='center'><a href='rpo_detail.php?id=$id|$user|$idrpo|edit|$data[id]'><font color='green'>[-]</font></a></td>
-					<td align='center'><a href='del_rpo2.php?id=$id|$user|$idrpo|$data[id]'><font color='red'>[x]</font></a></td>
-					</tr>
-					";
-				}else{
-					echo "
-					<tr>
-					<td>$no</td>
-					<td>$data[nama_obat]</td>
-					<td>$data[interval]</td>
-					<td>$data[jumlah]</td>
-					<td>$data[tgl]</td>
-					<td align='center'><a href='rpo_detail.php?id=$id|$user|$idrpo|edit|$data[id]'><font color='green'>[-]</font></a></td>
-					</tr>
-					";
+					if(empty($cek_eresep)){
+						echo "
+						<tr>
+						<td>$no</td>
+						<td>$data[nama_obat]</td>
+						<td>$data[interval]</td>
+						<td>$data[jumlah]</td>
+						<td>$data[tgl]</td>
+						<td align='center'><a href='rpo_detail.php?id=$id|$user|$idrpo|edit|$data[id]'><font color='green'>[-]</font></a></td>
+						<td align='center'><a href='del_rpo2.php?id=$id|$user|$idrpo|$data[id]'><font color='red'>[x]</font></a></td>
+						</tr>
+						";
+					}else{
+						echo "
+						<tr>
+						<td>$no</td>
+						<td>$data[nama_obat]</td>
+						<td>$data[interval]</td>
+						<td>$data[jumlah]</td>
+						<td>$data[tgl]</td>
+						<td align='center'><a href='rpo_detail.php?id=$id|$user|$idrpo|edit|$data[id]'><font color='green'>[-]</font></a></td>
+						<td align='center'><a href='del_rpo2.php?id=$id|$user|$idrpo|$data[id]'><font color='red'>[x]</font></a></td>
+						</tr>
+						";
+					}
+					$no += 1;
+
 				}
-				$no += 1;
-
-			}
 
 
-			?>
-		</table>
+				?>
+			</table>
 
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-	</form>
-</font>
+			<br>
+			<br>
+			<br>
+			<br>
+			<br>
+		</form>
+	</font>
 </body>
 </div>
 </div>
@@ -541,6 +544,8 @@ if (isset($_POST["simpan"])) {
 	$pemberi	= $_POST["pemberi"];
 	$keluarga	= $_POST["keluarga"];
 	$nama_obat	= $_POST["nama_obat"];
+	$nama_obat  = str_replace("'","`",$nama_obat);
+
 	$jumlah= $_POST["jumlah"];
 	$tgl	= $_POST["tgl"];
 	$tgl3 = date('Y-m-d H:i:s', strtotime($tgl)); 
@@ -551,6 +556,8 @@ if (isset($_POST["simpan"])) {
 	}else{
 
 		$nama_obat= $_POST["nama_obat"];
+		$nama_obat  = str_replace("'","`",$nama_obat);
+		
 		$dosis= $_POST["dosis"];
 		$jumlah= $_POST["jumlah"];
 		$interval= $_POST["interval"];
@@ -579,6 +586,12 @@ if (isset($_POST["simpan"])) {
 											echo "
 											<script>
 											history.go(-1);
+											</script>
+											";
+
+											echo "
+											<script>
+											window.location.replace('rpo_detail.php?id=$id|$user|$idrpo');
 											</script>
 											";
 

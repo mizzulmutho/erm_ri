@@ -25,6 +25,20 @@ $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC);
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
 
+
+$qur="SELECT noreg FROM ERM_RI_RESUME_APPROVEL where noreg='$noreg'";
+$h1ur  = sqlsrv_query($conn, $qur);        
+$d1ur  = sqlsrv_fetch_array($h1ur, SQLSRV_FETCH_ASSOC); 
+$ceknoreg = trim($d1ur['noreg']);
+
+if(empty($ceknoreg)){
+	echo "
+	<script>
+	window.location.replace('resume_print2.php?id=$id|$user');
+	</script>
+	";
+}
+
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1, ARM_REGISTER.CUSTNO
 FROM            ARM_REGISTER INNER JOIN
 Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
@@ -52,7 +66,7 @@ if ($KET1 == 'GRAHU'){
 	$logo = "logo/grahu.png";
 };
 if ($KET1 == 'DRIYO'){
-	$nmrs = "RUMAH SAKIT DRIYOREJO";
+	$nmrs = "RUMAH SAKIT PETROKIMIA GRESIK DRIYOREJO";
 	$alamat = "Jalan Raya Legundi KM 0.5Driyorejo, Gresik";
 	$logo = "logo/driyo.png";
 };
@@ -337,6 +351,7 @@ if(empty($regcek)){
 	$am78= $de2['am78'];
 	$am79= $de2['am79'];
 	$am80= $de2['am80'];
+	$spo2= $de2['spo2'];
 
 }
 
@@ -358,6 +373,8 @@ if (isset($_POST["Print"])) {
 <!DOCTYPE html> 
 <html> 
 <head>  
+	<meta charset="UTF-8">
+
 	<title>Resume Medis</title>  
 	<link rel="icon" href="favicon.ico">  
 	<link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -839,8 +856,13 @@ if (isset($_POST["Print"])) {
 						</div>
 					</div>
 					<hr>
+					<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+					<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+
 					<div class="row">
 						<div class="col-12 text-center">
+							<i class="bi bi-clipboard2-pulse fa-2x text-secondary"></i>
 							<b>RINGKASAN PASIEN PULANG RAWAT INAP</b><br>
 							INPATIENT DISCHARGE SUMMARY (MEDICAL RESUME)
 						</div>
@@ -848,13 +870,13 @@ if (isset($_POST["Print"])) {
 					<hr> 
 					<div class="row">
 						<div class="col-3">
-							Ruang Perawatan
+							<i class="fas fa-procedures text-secondary"></i> Ruang Perawatan
 						</div>
 						<div class="col-3">
 							: <?php echo $resume1; ?>
 						</div>
 						<div class="col-3">
-							Tgl. MRS
+							<i class="fas fa-calendar-check text-secondary"></i> Tgl. MRS
 						</div>
 						<div class="col-3">
 							: <?php echo $resume2; ?>
@@ -869,7 +891,7 @@ if (isset($_POST["Print"])) {
 							<!-- : <?php echo $resume3; ?> -->
 						</div>
 						<div class="col-3">
-							Tgl. KRS
+							<i class="fas fa-calendar-check text-secondary"></i> Tgl. KRS
 						</div>
 						<div class="col-3">
 							: <?php echo $resume4; ?>
@@ -884,12 +906,14 @@ if (isset($_POST["Print"])) {
 							<div class="col-3">
 								<!-- : <?php echo $resume5; ?> -->
 							</div>
-							<div class="col-3">
-								Tgl. Meninggal
-							</div>
-							<div class="col-3">
-								: <?php echo $resume6 ?>
-							</div>
+							<?php if($resume6){ ?>
+								<div class="col-3">
+									<i class="fas fa-calendar-check text-secondary"></i> Tgl. Meninggal
+								</div>
+								<div class="col-3">
+									: <?php echo $resume6 ?>
+								</div>
+							<?php } ?>
 						</div>
 
 <!-- 						<div class="row">
@@ -910,7 +934,7 @@ if (isset($_POST["Print"])) {
 
 					<div class="row">
 						<div class="col-3">
-							<b>DPJP </b>
+							<b><i class="fas fa-user-md text-secondary me-1"></i> DPJP </b>
 						</div>
 						<div class="col-9">
 							<table border='0' width="100%">
@@ -939,7 +963,7 @@ if (isset($_POST["Print"])) {
 										<tr>
 										<td>$no.</td>
 										<td>$data[keterangan]</td>
-										<td>$data[kodedokter] - $namadokter</td>
+										<td>$namadokter</td>
 										</tr>
 										";
 									}else{
@@ -947,7 +971,7 @@ if (isset($_POST["Print"])) {
 										<tr>
 										<td>$no.</td>
 										<td>$data[keterangan]</td>
-										<td>$data[kodedokter] - $namadokter</td>
+										<td>$namadokter</td>
 										</tr>
 										";
 									}
@@ -959,15 +983,22 @@ if (isset($_POST["Print"])) {
 
 					</div>
 
+					<hr>
+
 					<div class="row">
-						<div class="col-12 bg-success text-white">
-							<b>Diisi Oleh Dokter</b><br>
+						
+						<div class="col-4">
+							<i class="bi bi-journal-medical text-secondary me-1"></i> <b>Diisi Oleh Dokter</b>
 						</div>
+						<div class="col-8">
+
+						</div>
+
 					</div>
 
 					<div class="row">
 						<div class="col-4">
-							<b>1. Anamnese</b>
+							<i class="bi bi-question-circle text-secondary me-1"></i> <b> Anamnese</b>
 						</div>
 						<div class="col-8">
 
@@ -995,7 +1026,7 @@ if (isset($_POST["Print"])) {
 
 					<div class="row">
 						<div class="col-4">
-							<b>2. Riwayat Penyakit Dahulu</b>
+							<i class="fas fa-history text-secondary me-1"></i> <b> Riwayat Penyakit Dahulu</b>
 						</div>
 						<div class="col-8">
 
@@ -1036,7 +1067,7 @@ if (isset($_POST["Print"])) {
 
 					<div class="row">
 						<div class="col-4">
-							<b>3. Pemeriksaan Saat MRS</b>
+							<i class="fas fa-stethoscope text-secondary me-1"></i> <b> Pemeriksaan Saat MRS</b>
 						</div>
 						<div class="col-8">
 
@@ -1069,6 +1100,9 @@ if (isset($_POST["Print"])) {
 							</tr>
 							<tr>
 							<td>Suhu tubuh:$am12 C</td><td>|</td><td>Frekuensi Pernafasan:$am13</td>
+							</tr>
+							<tr>
+							<td>SPO2: $spo2</td>
 							</tr>
 							<tr>
 							<td>Skala Nyeri:$am14</td><td>|</td><td>Berat Badan:$am15</td>
@@ -1188,66 +1222,126 @@ if (isset($_POST["Print"])) {
 						<div class="col-8">
 							<?php echo nl2br($resume16); ?>
 						</div>
-						<div class="col-4">
-							&bull; Laboratorium
-						</div>
-						<div class="col-8">
 
-							<?php 
-							$qlab="
-							SELECT 
-							CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,KEL_PEMERIKSAAN,PARAMETER_NAME,HASIL,SATUAN,NILAI_RUJUKAN,FLAG
-							FROM        LINKYAN5.SHARELIS.dbo.hasilLIS
-							WHERE        (NOLAB_RS = '$noreg') AND (PARAMETER_NAME NOT IN ('- Basofil', '- Eosinofil', '- Limfosit', '- Monosit', '- Neutrofil'))
-							order by REG_DATE desc, KEL_PEMERIKSAAN,PARAMETER_NAME
-							";
-							$hqlab  = sqlsrv_query($conn, $qlab);
+						<?php 
+						$tampil_lab='Y';
 
-							$labh = "no | tgl          | pemeriksaan | hasil | nilai normal";
-							$labh2 = "====================================";
+						if($KET1=='DRIYO') { 
+							//if($resume17==''){
+							$tampil_lab='T';
+							//}
+						}
 
-							echo "<table class='table'>
-							<tr>
-							<td>tgl</td><td>pemeriksaan</td><td>hasil</td><td>nilai normal</td>
-							</tr>
-							";
-							$i=1;
-							while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
-								$lab0 = $i.'|'.$dhqlab[REG_DATE].'|'.$dhqlab[KEL_PEMERIKSAAN].'-'.trim($dhqlab[PARAMETER_NAME]).' : '.    $dhqlab[HASIL].' | '.trim($dhqlab[NILAI_RUJUKAN]).' ('.trim($dhqlab[FLAG]).')';
-								$nnormal = trim($dhqlab[FLAG]);
-								$PARAMETER_NAME          = str_replace("-","",$dhqlab[PARAMETER_NAME]);
-
-								if($nnormal<>''){
-									echo "
-									<tr>
-									<td bgcolor=''>$dhqlab[REG_DATE]</td>
-									<td bgcolor=''>$dhqlab[KEL_PEMERIKSAAN] - $PARAMETER_NAME</td>
-									<td bgcolor=''>$dhqlab[HASIL]</td>
-									<td bgcolor=''>$dhqlab[NILAI_RUJUKAN] - $dhqlab[FLAG]</td>
-									</tr>
-									";
-								}
-
-								$i=$i+1;
+						if($KET1=='GRAHU') { 
+							if($CUSTNO=='0005'){
+								$tampil_lab='T';
 							}
+						}
 
-							echo "</table>";
+
+						if($tampil_lab=='Y'){
 
 							?>
-						</div>
+							<div class="col-4">
+								&bull; Laboratorium
+							</div>
+							<div class="col-8">
+								<?php 
+								function cleanString($text) {
+									return preg_replace('/[^\x20-\x7E]/', '', $text); 
+								}
+
+								$regigd=substr($noreg,1,12);
+								$qlab="
+								SELECT 
+								CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,KEL_PEMERIKSAAN,PARAMETER_NAME,HASIL,SATUAN,NILAI_RUJUKAN,FLAG,NOLAB_RS
+								FROM        LINKYAN5.SHARELIS.dbo.hasilLIS
+								WHERE        (NOLAB_RS = '$noreg' or NOLAB_RS = '$regigd' ) 
+								order by NOLAB_RS desc, REG_DATE desc, KEL_PEMERIKSAAN,PARAMETER_NAME
+								";
+								$hqlab  = sqlsrv_query($conn, $qlab);
+
+								$labh = "no | tgl          | pemeriksaan | hasil | nilai normal";
+								$labh2 = "====================================";
+
+								echo "<table class='table'>
+								<tr>
+								<td>unit</td><td>tgl</td><td>pemeriksaan</td><td>hasil</td><td>nilai normal</td>
+								</tr>
+								";
+								$i=1;
+								while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
+									$lab0 = $i.'|'.$dhqlab[REG_DATE].'|'.$dhqlab[KEL_PEMERIKSAAN].'-'.trim($dhqlab[PARAMETER_NAME]).' : '.    $dhqlab[HASIL].' | '.trim($dhqlab[NILAI_RUJUKAN]).' ('.trim($dhqlab[FLAG]).')';
+									$nnormal = trim($dhqlab[FLAG]);
+									$PARAMETER_NAME          = str_replace("-","",$dhqlab[PARAMETER_NAME]);
+									$rawat = trim($dhqlab[NOLAB_RS]);
+									$rawatx = substr($rawat,0,1);
+									if($rawatx=='R'){
+										$jrawat="RI";
+									}else{
+										$jrawat="IGD";
+									}
+									if($nnormal<>''){
+
+										$nilairujukan = cleanString($dhqlab["NILAI_RUJUKAN"]); 
+										echo "
+										<tr>
+										<td bgcolor=''>$jrawat</td>
+										<td bgcolor=''>$dhqlab[REG_DATE]</td>
+										<td bgcolor=''>$dhqlab[KEL_PEMERIKSAAN] - $PARAMETER_NAME</td>
+										<td bgcolor=''>$dhqlab[HASIL]</td>
+										<td bgcolor=''>$nilairujukan - $dhqlab[FLAG]</td>
+										</tr>
+										";
+									}
+
+									$i=$i+1;
+								}
+
+								echo "</table>";
+								echo "<br>";
+								?>
+							</div>
+							
+						<?php } ?>
 						<div class="col-4">
 							&bull; Hasil Lab Lain
 						</div>
 						<div class="col-8">
 							: <?php echo nl2br($resume17); ?>
 						</div>
-
 						<div class="col-4">
 							&bull; Radiologi
 						</div>
 						<div class="col-8">
+							: <?php 
+							$regigd=substr($noreg,1,12);
+							$qrad="
+							SELECT        HASIL, URAIAN, CONVERT(VARCHAR, TANGGAL, 103) AS TANGGAL,NOREG
+							FROM            HASILRAD_PEMERIKSAAN_RAD
+							WHERE        (NOREG = '$noreg') OR
+							(NOREG = '$regigd')
+							ORDER BY TANGGAL
+							";
+							$hqrad  = sqlsrv_query($conn, $qrad);
+
+							$i=1;
+							while   ($dhqrad = sqlsrv_fetch_array($hqrad, SQLSRV_FETCH_ASSOC)){     
+								$rad0 = 'TGL : '.$dhqrad[TANGGAL].', REG : '.$dhqrad[NOREG].'<br><u>'.$dhqrad[HASIL].'</u>:'."\n".nl2br($dhqrad[URAIAN])."<hr>";
+								$rad = $rad.'&#13;&#10;'.$rad0;
+							}
+
+							echo $rad;
+							?>
+						</div>
+
+						<div class="col-4">
+							&bull; Hasil Rad Lain
+						</div>
+						<div class="col-8">
 							: <?php echo nl2br($resume18); ?>
 						</div>
+
 						<div class="col-4">
 							&bull; Lain-lain
 						</div>
@@ -1260,30 +1354,46 @@ if (isset($_POST["Print"])) {
 					<div class="row">				
 
 						<div class="col-4">
-							<b>4. Diagnosis</b>
+							<b><i class="fas fa-notes-medical text-secondary me-1"></i> Diagnosis</b>
 						</div>
 						<div class="col-8">
 
 						</div>
-						
-<!-- 						<div class="col-4">
+
+						<!-- <div class="col-4">
 							&bull; Diagnosis Awal / Masuk
 						</div>
 						<div class="col-8">
-							: 
-							<?php 
-							$row = explode('-',$resume20);$resume20  = $row[1];
-							echo $resume20; 
-							?>
+							: <?php 
 
+							if(preg_match("/-/i", $resume20)){
+								$row = explode('-',$resume20);
+								$resume20  = $row[1]; 
+								if(empty($resume20)){
+									$resume20  = $row[0];
+								}else{
+									if(preg_match("/-/i", $resume20)){
+										$row = explode('-',$resume20);		
+										$resume20  = $row[1]; 		
+										if(empty($resume20)){
+											$resume20  = $row[0];								
+										}else{
+											$resume20;	
+										}
+									}else{
+
+									}
+								}
+							}
+							echo $resume20;?>
 						</div> -->
 						
 						<div class="col-4">
-						&bull; Diagnosis Akhir (Primer)
-					</div>
-					<div class="col-8">
-						: 
-						<!-- <input type='text' name='diagnosis_akhir_primer' value='<?php echo $diagnosis_akhir_primer; ?>' size='100'> -->
+							&bull; Diagnosis Akhir (Primer)
+						</div>
+						<div class="col-8">
+							: 
+							<!-- <input type='text' name='diagnosis_akhir_primer' value='<?php echo $diagnosis_akhir_primer; ?>' size='100'> -->
 <!-- 				<select id="resume21" name="resume21">
 					<option value=""></option>
 					<option value="R68.83">R68.83 - chills without feve</option>
@@ -1296,8 +1406,68 @@ if (isset($_POST["Print"])) {
 				</select>
 			-->				
 			<?php  
-			$row = explode('-',$resume21);$resume21  = $row[1];
-			echo $resume21; 
+			// if(preg_match("/NON/i", $resume20) or preg_match("/END/i", $resume20)) {
+			// 	$resume20 = trim(substr($resume20,7,500));
+			// }else{
+			// 	$row = explode('-',$resume20);$resume20  = $row[1]; if(empty($resume20)){$resume20  = $row[0];} 
+			// }
+
+			// if(preg_match("/NON/i", $resume21) or preg_match("/END/i", $resume21)) {
+			// 	$resume21 = trim(substr($resume21,7,500));
+			// }else{
+			// 	$row = explode('-',$resume21);$resume21  = $row[1]; if(empty($resume21)){$resume21  = $row[0];}
+			// }
+
+			if(preg_match("/-/i", $resume20)){
+				$row = explode('-',$resume20);
+				$resume20  = $row[1]; 
+				if(empty($resume20)){
+					$resume20  = $row[0];
+				}else{
+					if(preg_match("/-/i", $resume20)){
+						$row = explode('-',$resume20);		
+						$resume20  = $row[1]; 		
+						if(empty($resume20)){
+							$resume20  = $row[0];								
+						}else{
+							// $resume20  = $row[1];	
+							$resume20;	
+						}
+					}else{
+
+					}
+				}
+			}
+
+
+			if(preg_match("/-/i", $resume21)){
+				$row = explode('-',$resume21);
+				$resume21  = $row[1]; 
+				if(empty($resume21)){
+					$resume21  = $row[0];
+				}else{
+					if(preg_match("/-/i", $resume21)){
+						$row = explode('-',$resume21);		
+						$resume21  = $row[1]; 		
+						if(empty($resume21)){
+							$resume21  = $row[0];								
+						}else{
+							// $resume21  = $row[1];	
+							$resume21;	
+						}
+					}else{
+
+					}
+				}
+			}
+
+			if(empty($resume21)){
+				echo $resume20; 
+			}else{
+				echo $resume21; 
+
+			}
+			
 			?>
 		</div>
 		<div class="col-4">
@@ -1305,19 +1475,28 @@ if (isset($_POST["Print"])) {
 		</div>
 		<div class="col-8">
 			: 
-			<!-- <input type='text' name='diagnosis_akhir_sekunder' value='<?php echo $diagnosis_akhir_sekunder; ?>' size='100'> -->
-<!-- 			<select id="resume22" name="resume22">
-				<option value=""></option>
-				<option value="R68.83">R68.83 - chills without feve</option>
-				<option value="R56.0">R56.0 - febrile convulsions</option>
-				<option value="O75.2">O75.2 - fever of unknown origin during labor</option>
-				<option value="P81.9">P81.9 - fever of unknown origin in newborn</option>
-				<option value="R68.0">R68.0 - hypothermia due to illness</option>
-				<option value="T88.3">T88.3 - malignant hyperthermia due to anesthesia</option>
-				<option value="O86.4">O86.4 - puerperal pyrexia NOS</option>
-			</select> -->
 			<?php 
-			$row = explode('-',$resume22);$resume22  = $row[1];
+			if(preg_match("/-/i", $resume22)){
+				$row = explode('-',$resume22);
+				$resume22  = $row[1]; 
+				if(empty($resume22)){
+					$resume22  = $row[0];
+				}else{
+					if(preg_match("/-/i", $resume22)){
+						$row = explode('-',$resume22);		
+						$resume22  = $row[1]; 		
+						if(empty($resume22)){
+							$resume22  = $row[0];								
+						}else{
+							// $resume22  = $row[1];	
+							$resume22;	
+						}
+					}else{
+
+					}
+				}
+			}
+
 			echo $resume22; 
 			?>
 			<br>
@@ -1326,34 +1505,34 @@ if (isset($_POST["Print"])) {
 			$hqds  = sqlsrv_query($conn, $qds);        
 			$dhqds  = sqlsrv_fetch_array($hqds, SQLSRV_FETCH_ASSOC); 			
 			$diagnosa1  = $dhqds['diagnosa_sekunder1'];
-			$row = explode('-',$diagnosa1);$diagnosa1  = $row[1];
+			$row = explode('-',$diagnosa1);$diagnosa1  = $row[1];if(empty($diagnosa1)){$diagnosa1  = $row[0];}
 
 			$diagnosa2  = $dhqds['diagnosa_sekunder2'];
-			$row = explode('-',$diagnosa2);$diagnosa2  = $row[1];
+			$row = explode('-',$diagnosa2);$diagnosa2  = $row[1];if(empty($diagnosa2)){$diagnosa2  = $row[0];}
 
 			$diagnosa3  = $dhqds['diagnosa_sekunder3'];
-			$row = explode('-',$diagnosa3);$diagnosa3  = $row[1];
+			$row = explode('-',$diagnosa3);$diagnosa3  = $row[1];if(empty($diagnosa3)){$diagnosa3  = $row[0];}
 
 			$diagnosa4   = $dhqds['diagnosa_sekunder4'];
-			$row = explode('-',$diagnosa4);$diagnosa4  = $row[1];
+			$row = explode('-',$diagnosa4);$diagnosa4  = $row[1];if(empty($diagnosa4)){$diagnosa4  = $row[0];}
 
 			$diagnosa5   = $dhqds['diagnosa_sekunder5'];
-			$row = explode('-',$diagnosa5);$diagnosa5  = $row[1];
+			$row = explode('-',$diagnosa5);$diagnosa5  = $row[1];if(empty($diagnosa5)){$diagnosa5  = $row[0];}
 
 			$diagnosa6   = $dhqds['diagnosa_sekunder6'];
-			$row = explode('-',$diagnosa6);$diagnosa6  = $row[1];
+			$row = explode('-',$diagnosa6);$diagnosa6  = $row[1];if(empty($diagnosa6)){$diagnosa6  = $row[0];}
 
 			$diagnosa7   = $dhqds['diagnosa_sekunder7'];
-			$row = explode('-',$diagnosa7);$diagnosa7  = $row[1];
+			$row = explode('-',$diagnosa7);$diagnosa7  = $row[1];if(empty($diagnosa7)){$diagnosa7  = $row[0];}
 
 			$diagnosa8   = $dhqds['diagnosa_sekunder8'];
-			$row = explode('-',$diagnosa8);$diagnosa8  = $row[1];
+			$row = explode('-',$diagnosa8);$diagnosa8  = $row[1];if(empty($diagnosa8)){$diagnosa8  = $row[0];}
 
 			$diagnosa9   = $dhqds['diagnosa_sekunder9'];
-			$row = explode('-',$diagnosa9);$diagnosa9  = $row[1];
+			$row = explode('-',$diagnosa9);$diagnosa9  = $row[1];if(empty($diagnosa9)){$diagnosa9  = $row[0];}
 
 			$diagnosa10   = $dhqds['diagnosa_sekunder10'];
-			$row = explode('-',$diagnosa10);$diagnosa10  = $row[1];
+			$row = explode('-',$diagnosa10);$diagnosa10  = $row[1];if(empty($diagnosa10)){$diagnosa10  = $row[0];}
 
 			if($diagnosa1){
 				echo $diagnosa1;echo "<br>";
@@ -1389,11 +1568,95 @@ if (isset($_POST["Print"])) {
 			?>
 		</div>
 	</div>
+	<?php 
+	$qe="
+	SELECT *,CONVERT(VARCHAR, tgl, 23) as tgl
+	FROM ERM_RI_LAPORAN_OK
+	where noreg='$noreg'";
+	$he  = sqlsrv_query($conn, $qe);        
+	$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
+	$tgl = $de['tgl'];
+	$ok1 = $de['ok1'];
+	$ok2 = $de['ok2'];
+	$ok3 = $de['ok3'];
+	$ok4 = $de['ok4'];
+	$ok5 = $de['ok5'];
+	$ok6 = $de['ok6'];
+	$ok7 = $de['ok7'];
+	$ok8 = $de['ok8'];
 
+	if($ok1){
+		?>
+		<br>
+		<i class="bi bi-scissors text-secondary me-1"></i> <b>Tindakan Operasi / OK</b><br>		
+		<table width='100%' border='0'>
+			<tr>
+				<td colspan="2">
+					<div class="row">
+						<div class="col-4">
+							Diagnosa pra pembedahan
+						</div>
+						<div class="col-6">
+							: 
+							<?php $row = explode('-',$ok1);$ok1  = $row[1]; //echo $ok3;?>
+
+							<?php 
+							echo $ok1;
+							?>
+
+						</div>
+						<div class="col-2">
+							<table border='1'>
+								<tr><td>
+									&nbsp;BB : <?php echo $ok2;?> kg&nbsp;											
+								</td></tr>
+							</table>
+						</div>
+					</div>
+				</td>
+			</tr>	
+			<tr>
+				<td colspan="2">
+					<div class="row">
+						<div class="col-4">
+							Tindakan yang dilakukan
+						</div>
+						<div class="col-8">
+							: 
+							<!-- <input type='text' name='' value='' size='50'> -->
+							<?php $row = explode('-',$ok3);$ok3  = $row[1]; //echo $ok3;?>
+							<?php $row = explode('-',$ok4);$ok4  = $row[1]; //echo $ok4;?>
+							<?php $row = explode('-',$ok5);$ok5  = $row[1]; //echo $ok5;?>
+							<?php $row = explode('-',$ok6);$ok6  = $row[1]; //echo $ok6;?>
+							<?php $row = explode('-',$ok7);$ok7  = $row[1]; //echo $ok7;?>
+							<?php 
+							echo $ok3.'<br>'.$ok4.'<br>'.$ok5.'<br>'.$ok6.'<br>'.$ok7;
+							?>
+						</div>
+					</div>
+				</td>
+			</tr>	
+			<tr>
+				<td colspan="2">
+					<div class="row">
+						<div class="col-4">
+							Diagnosa pasca pembedahan
+						</div>
+						<div class="col-8">
+							:<?php $row = explode('-',$ok8);$ok8  = $row[1]; //echo $ok8;?>
+							<?php echo $ok8;?>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</table>
+		<?php
+	}
+	?>
 	<hr> 
 	<div class="row">
 		<div class="col-4">
-			<b>5. Masalah Utama</b>
+			<i class="fas fa-heartbeat text-secondary me-1"></i> <b> Masalah Utama</b>
 		</div>
 		<div class="col-8">
 			: <?php echo $resume23; ?>
@@ -1412,7 +1675,7 @@ if (isset($_POST["Print"])) {
 	<hr>  -->
 	<div class="row">
 		<div class="col-4">
-			<b>6. Pengobatan/Tindakan selama di RS</b>
+			<i class="fas fa-syringe text-secondary me-1"></i> <b> Pengobatan/Tindakan selama di RS</b>
 		</div>
 		<div class="col-8">
 			<!-- : <input type='text' name='pengobatan' value='<?php echo $pengobatan; ?>' size='100'> -->
@@ -1443,10 +1706,21 @@ if (isset($_POST["Print"])) {
 			: <?php echo nl2br($am77); ?>
 		</div>
 	</div>
+
+	<div class="row">
+		<div class="col-4">
+			<b>&nbsp;&nbsp;&nbsp;Terapi Tambahan</b>
+		</div>
+		<div class="col-8">
+			: 
+			<?php echo nl2br($resume34); ?>
+		</div>
+	</div>
+
 	<hr> 
 	<div class="row">
 		<div class="col-4">
-			<b>7. Prognosis</b>
+			<i class="bi bi-graph-up text-secondary me-1"></i> <b> Prognosis</b>
 		</div>
 		<div class="col-8">
 			: <?php echo $resume35; ?>
@@ -1455,7 +1729,7 @@ if (isset($_POST["Print"])) {
 	<hr> 
 	<div class="row">
 		<div class="col-4">
-			<b>8. Keadaan waktu keluar RS (Status pasien)</b>
+			<i class="fas fa-user-check text-secondary me-1"></i> <b> Keadaan waktu keluar RS (Status pasien)</b>
 		</div>
 		<div class="col-8">
 			: 
@@ -1464,14 +1738,16 @@ if (isset($_POST["Print"])) {
 		</div>
 	</div>
 	<hr> 
-	<div class="row">
-		<div class="col-4">
-			<b>9. Sebab meninggal</b>
+	<?php if($resume37){ ?>
+		<div class="row">
+			<div class="col-4">
+				<i class="bi bi-heartbreak text-secondary me-1"></i> <b> Sebab meninggal</b>
+			</div>
+			<div class="col-8">
+				: <?php echo $resume37; ?>
+			</div>
 		</div>
-		<div class="col-8">
-			: <?php echo $resume37; ?>
-		</div>
-	</div>
+	<?php } ?>
 
 	<div class="row">
 		<div class="col-4">
@@ -1490,7 +1766,7 @@ if (isset($_POST["Print"])) {
 		<div class="col-12">
 			<?php 
 			if($resume38){
-				$verif_dokter="Resume medis ini telah diVerifikasi Oleh Dokter : ".$resume38." Pada Tanggal : ".$resume2.', '.$jamentry; 
+				$verif_dokter="Resume medis ini telah diVerifikasi Oleh Dokter : ".$resume38." Pada Tanggal : ".$resume4.', '.$jamentry; 
 			// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_dokter&choe=UTF-8'/></center>";
 
 				QRcode::png($verif_dokter, "image_verif_dokter.png", "L", 2, 2);   
@@ -1506,7 +1782,7 @@ if (isset($_POST["Print"])) {
 	<hr>
 	<div class="row">
 		<div class="col-4">
-			<b>11. Tindak Lanjut (Diisi Oleh Bidan / Perawat)</b>
+			<i class="bi bi-clipboard-check text-secondary me-1"></i> <b>Tindak Lanjut (Diisi Oleh Bidan / Perawat)</b>
 		</div>
 		<div class="col-8">
 
@@ -1622,7 +1898,7 @@ if (isset($_POST["Print"])) {
 		<div class="col-12">
 			<?php 
 			if($resume49){
-				$verif_perawat="Resume medis ini telah diVerifikasi Oleh Petugas : ".$resume49." Pada Tanggal : ".$resume2.', '.$jamentry; 
+				$verif_perawat="Resume medis ini telah diVerifikasi Oleh Petugas : ".$resume49." Pada Tanggal : ".$resume4.', '.$jamentry; 
 			// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center>";
 
 				QRcode::png($verif_perawat, "image_verif_perawat.png", "L", 2, 2);   
@@ -1637,7 +1913,7 @@ if (isset($_POST["Print"])) {
 
 	<div class="row">
 		<div class="col-4">
-			<b>Diisi Oleh Ahli Gizi</b>
+			<i class="fas fa-utensils text-secondary me-1"></i> <b>Diisi Oleh Ahli Gizi</b>
 		</div>
 		<div class="col-8">
 
@@ -1682,7 +1958,7 @@ if (isset($_POST["Print"])) {
 		<div class="col-12">
 			<?php 
 			if($resume52){
-				$verif_gizi="Resume medis ini telah diVerifikasi Oleh : ".$resume52." Pada Tanggal : ".$resume2.', '.$jamentry; 
+				$verif_gizi="Resume medis ini telah diVerifikasi Oleh : ".$resume52." Pada Tanggal : ".$resume4.', '.$jamentry; 
 			// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_gizi&choe=UTF-8'/></center>";
 
 				QRcode::png($verif_gizi, "image_gizi.png", "L", 2, 2);   
@@ -1697,7 +1973,7 @@ if (isset($_POST["Print"])) {
 
 	<div class="row">
 		<div class="col-12">
-			<b>Daftar Obat</b>
+			<i class="bi bi-capsule text-secondary me-1"></i> <b>Daftar Obat</b>
 		</div>
 	</div>
 
@@ -1766,7 +2042,7 @@ if (isset($_POST["Print"])) {
 				W_EResep_R ON W_EResep.Id = W_EResep_R.IdResep LEFT OUTER JOIN
 				W_EResep_Racikan ON W_EResep_R.Id = W_EResep_Racikan.IdR LEFT OUTER JOIN
 				AFarm_MstObat ON W_EResep_R.KodeR = AFarm_MstObat.KODEBARANG
-				WHERE        (W_EResep.Noreg = '$noreg') AND (W_EResep.Kategori LIKE '%KRS%')
+				WHERE        (W_EResep.Noreg = '$noreg') AND (W_EResep.Kategori LIKE '%KRS%') and W_EResep_R.DeletedBy is NULL
 				union
 				SELECT Noreg,'' as Jenis,'' as KodeR, jumlah,aturan_pakai,'' as CaraPakai,'' as WaktuPakai, '' as Nama, instruksi_khusus, '' as Keterangan, nama_obat, Id, '' as Dosis
 				FROM ERM_RI_DISCHARGE where noreg='$noreg'
@@ -1790,7 +2066,7 @@ if (isset($_POST["Print"])) {
 					<td>$nama_obat</td>
 					<td>$data[jumlah]</td>
 					<td>$data[aturan_pakai]</td>
-					<td>$data[Keterangan]</td>
+					<td>$data[instruksi_khusus]</td>
 					</tr>
 					";
 					$no+=1;
@@ -1853,7 +2129,7 @@ if (isset($_POST["Print"])) {
 	<div class="col-12">
 		<?php 
 		if($resume133){
-			$verif_apoteker="Resume medis ini telah diVerifikasi Oleh : ".$resume133." Pada Tanggal : ".$resume2.', '.$jamentry; 
+			$verif_apoteker="Resume medis ini telah diVerifikasi Oleh : ".$resume133." Pada Tanggal : ".$resume4.', '.$jamentry; 
 			// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_apoteker&choe=UTF-8'/></center>";
 
 			QRcode::png($verif_apoteker, "image_apoteker.png", "L", 2, 2);   
@@ -1871,7 +2147,7 @@ if (isset($_POST["Print"])) {
 	<div class="col-12">
 		<table border='0' bordercolor='green'>
 			<tr>
-				<td>Telah membaca dan mengerti,</td>
+				<td><i class="bi bi-file-earmark-check fa-2x text-secondary me-1"></i> Telah membaca dan mengerti,</td>
 			</tr>
 			<tr>
 				<td>Nama & Tanda Tangan 
@@ -1912,6 +2188,26 @@ if (isset($_POST["Print"])) {
 	</div>
 </div>
 
+<?php 
+
+$qdoc="SELECT        TOP (200) noreg, jenis, doc FROM            document_erm where noreg='$noreg'";
+$hqdoc  = sqlsrv_query($conn, $qdoc);  
+while   ($dhqdoc = sqlsrv_fetch_array($hqdoc,SQLSRV_FETCH_ASSOC)){ 
+	$doc	= 'http://192.168.10.109/dok_erm/'.$dhqdoc[doc];
+	$jenis = $dhqdoc[jenis];
+	$row3 = explode('.',$dhqdoc[doc]);
+	$file  = $row3[1];
+
+	if($file=='png' or $file=='PNG' or $file=='jpg' or $file=='JPG' or $file=='jpeg' or $file=='JPEG' ){
+		echo "
+		<div style='page-break-before: always;'>
+		$jenis<br>
+		<img src='$doc' width='100%'>
+		</div>
+		";
+	}
+}
+?>
 
 <!-- <div class="row">
 	<div class="col-12">
@@ -1930,332 +2226,3 @@ if (isset($_POST["Print"])) {
 </body>
 </div>
 </div>
-
-<?php 
-
-if (isset($_POST["simpan"])) {
-
-	$resume1	= $_POST["resume1"];
-	$resume2	= $_POST["resume2"];
-	$resume3	= $_POST["resume3"];
-	$resume4	= $_POST["resume4"];
-	$resume5	= $_POST["resume5"];
-	$resume6	= $_POST["resume6"];
-	$resume7	= $_POST["resume7"];
-	$resume8	= $_POST["resume8"];
-	$resume9	= $_POST["resume9"];
-	$resume10	= $_POST["resume10"];
-	$resume11	= $_POST["resume11"];
-	$resume12	= $_POST["resume12"];
-	$resume13	= $_POST["resume13"];
-	$resume14	= $_POST["resume14"];
-	$resume15	= $_POST["resume15"];
-	$resume16	= $_POST["resume16"];
-	$resume17	= $_POST["resume17"];
-	$resume18	= $_POST["resume18"];
-	$resume19	= $_POST["resume19"];
-	$resume20	= $_POST["resume20"];
-	$resume21	= $_POST["resume21"];
-	$resume22	= $_POST["resume22"];
-	$resume23	= $_POST["resume23"];
-	$resume24	= $_POST["resume24"];
-	$resume25	= $_POST["resume25"];
-	$resume26	= $_POST["resume26"];
-	$resume27	= $_POST["resume27"];
-	$resume28	= $_POST["resume28"];
-	$resume29	= $_POST["resume29"];
-	$resume30	= $_POST["resume30"];
-	$resume31	= $_POST["resume31"];
-	$resume32	= $_POST["resume32"];
-	$resume33	= $_POST["resume33"];
-	$resume34	= $_POST["resume34"];
-	$resume35	= $_POST["resume35"];
-	$resume36	= $_POST["resume36"];
-	$resume37	= $_POST["resume37"];
-	$resume38	= $_POST["resume38"];
-	$resume39	= $_POST["resume39"];
-	$resume40	= $_POST["resume40"];
-	$resume41	= $_POST["resume41"];
-	$resume42	= $_POST["resume42"];
-	$resume43	= $_POST["resume43"];
-	$resume44	= $_POST["resume44"];
-	$resume45	= $_POST["resume45"];
-	$resume46	= $_POST["resume46"];
-	$resume47	= $_POST["resume47"];
-	$resume48	= $_POST["resume48"];
-	$resume49	= $_POST["resume49"];
-	$resume50	= $_POST["resume50"];
-	$resume51	= $_POST["resume51"];
-	$resume52	= $_POST["resume52"];
-	$resume53	= $_POST["resume53"];
-	$resume54	= $_POST["resume54"];
-	$resume55	= $_POST["resume55"];
-	$resume56	= $_POST["resume56"];
-	$resume57	= $_POST["resume57"];
-	$resume58	= $_POST["resume58"];
-	$resume59	= $_POST["resume59"];
-	$resume60	= $_POST["resume60"];
-	$resume61	= $_POST["resume61"];
-	$resume62	= $_POST["resume62"];
-	$resume63	= $_POST["resume63"];
-	$resume64	= $_POST["resume64"];
-	$resume65	= $_POST["resume65"];
-	$resume66	= $_POST["resume66"];
-	$resume67	= $_POST["resume67"];
-	$resume68	= $_POST["resume68"];
-	$resume69	= $_POST["resume69"];
-	$resume70	= $_POST["resume70"];
-	$resume71	= $_POST["resume71"];
-	$resume72	= $_POST["resume72"];
-	$resume73	= $_POST["resume73"];
-	$resume74	= $_POST["resume74"];
-	$resume75	= $_POST["resume75"];
-	$resume76	= $_POST["resume76"];
-	$resume77	= $_POST["resume77"];
-	$resume78	= $_POST["resume78"];
-	$resume79	= $_POST["resume79"];
-	$resume80	= $_POST["resume80"];
-	$resume81	= $_POST["resume81"];
-	$resume82	= $_POST["resume82"];
-	$resume83	= $_POST["resume83"];
-	$resume84	= $_POST["resume84"];
-	$resume85	= $_POST["resume85"];
-	$resume86	= $_POST["resume86"];
-	$resume87	= $_POST["resume87"];
-	$resume88	= $_POST["resume88"];
-	$resume89	= $_POST["resume89"];
-	$resume90	= $_POST["resume90"];
-	$resume91	= $_POST["resume91"];
-	$resume92	= $_POST["resume92"];
-	$resume93	= $_POST["resume93"];
-	$resume94	= $_POST["resume94"];
-	$resume95	= $_POST["resume95"];
-	$resume96	= $_POST["resume96"];
-	$resume97	= $_POST["resume97"];
-	$resume98	= $_POST["resume98"];
-	$resume99	= $_POST["resume99"];
-	$resume100	= $_POST["resume100"];
-	$resume101	= $_POST["resume101"];
-	$resume102	= $_POST["resume102"];
-	$resume103	= $_POST["resume103"];
-	$resume104	= $_POST["resume104"];
-	$resume105	= $_POST["resume105"];
-	$resume106	= $_POST["resume106"];
-	$resume107	= $_POST["resume107"];
-	$resume108	= $_POST["resume108"];
-	$resume109	= $_POST["resume109"];
-	$resume110	= $_POST["resume110"];
-	$resume111	= $_POST["resume111"];
-	$resume112	= $_POST["resume112"];
-	$resume113	= $_POST["resume113"];
-	$resume114	= $_POST["resume114"];
-	$resume115	= $_POST["resume115"];
-	$resume116	= $_POST["resume116"];
-	$resume117	= $_POST["resume117"];
-	$resume118	= $_POST["resume118"];
-	$resume119	= $_POST["resume119"];
-	$resume120	= $_POST["resume120"];
-	$resume121	= $_POST["resume121"];
-	$resume122	= $_POST["resume122"];
-	$resume123	= $_POST["resume123"];
-	$resume124	= $_POST["resume124"];
-	$resume125	= $_POST["resume125"];
-	$resume126	= $_POST["resume126"];
-	$resume127	= $_POST["resume127"];
-	$resume128	= $_POST["resume128"];
-	$resume129	= $_POST["resume129"];
-	$resume130	= $_POST["resume130"];
-	$resume131	= $_POST["resume131"];
-	$resume132	= $_POST["resume132"];
-	$resume133	= $_POST["resume133"];
-	$resume134	= $_POST["resume134"];
-	$resume135	= $_POST["resume135"];
-	$resume136	= $_POST["resume136"];
-	$resume137	= $_POST["resume137"];
-	$resume138	= $_POST["resume138"];
-	$resume139	= $_POST["resume139"];
-	$resume140	= $_POST["resume140"];
-	$resume141	= $_POST["resume141"];
-	$resume142	= $_POST["resume142"];
-	$resume143	= $_POST["resume143"];
-	$resume144	= $_POST["resume144"];
-	$resume145	= $_POST["resume145"];
-	$resume146	= $_POST["resume146"];
-	$resume147	= $_POST["resume147"];
-	$resume148	= $_POST["resume148"];
-	$resume149	= $_POST["resume149"];
-	$resume150	= $_POST["resume150"];
-
-	$q  = "update ERM_RI_RESUME set
-	resume1	='$resume1',
-	resume2	='$resume2',
-	resume3	='$resume3',
-	resume4	='$resume4',
-	resume5	='$resume5',
-	resume6	='$resume6',
-	resume7	='$resume7',
-	resume8	='$resume8',
-	resume9	='$resume9',
-	resume10	='$resume10',
-	resume11	='$resume11',
-	resume12	='$resume12',
-	resume13	='$resume13',
-	resume14	='$resume14',
-	resume15	='$resume15',
-	resume16	='$resume16',
-	resume17	='$resume17',
-	resume18	='$resume18',
-	resume19	='$resume19',
-	resume20	='$resume20',
-	resume21	='$resume21',
-	resume22	='$resume22',
-	resume23	='$resume23',
-	resume24	='$resume24',
-	resume25	='$resume25',
-	resume26	='$resume26',
-	resume27	='$resume27',
-	resume28	='$resume28',
-	resume29	='$resume29',
-	resume30	='$resume30',
-	resume31	='$resume31',
-	resume32	='$resume32',
-	resume33	='$resume33',
-	resume34	='$resume34',
-	resume35	='$resume35',
-	resume36	='$resume36',
-	resume37	='$resume37',
-	resume38	='$resume38',
-	resume39	='$resume39',
-	resume40	='$resume40',
-	resume41	='$resume41',
-	resume42	='$resume42',
-	resume43	='$resume43',
-	resume44	='$resume44',
-	resume45	='$resume45',
-	resume46	='$resume46',
-	resume47	='$resume47',
-	resume48	='$resume48',
-	resume49	='$resume49',
-	resume50	='$resume50',
-	resume51	='$resume51',
-	resume52	='$resume52',
-	resume53	='$resume53',
-	resume54	='$resume54',
-	resume55	='$resume55',
-	resume56	='$resume56',
-	resume57	='$resume57',
-	resume58	='$resume58',
-	resume59	='$resume59',
-	resume60	='$resume60',
-	resume61	='$resume61',
-	resume62	='$resume62',
-	resume63	='$resume63',
-	resume64	='$resume64',
-	resume65	='$resume65',
-	resume66	='$resume66',
-	resume67	='$resume67',
-	resume68	='$resume68',
-	resume69	='$resume69',
-	resume70	='$resume70',
-	resume71	='$resume71',
-	resume72	='$resume72',
-	resume73	='$resume73',
-	resume74	='$resume74',
-	resume75	='$resume75',
-	resume76	='$resume76',
-	resume77	='$resume77',
-	resume78	='$resume78',
-	resume79	='$resume79',
-	resume80	='$resume80',
-	resume81	='$resume81',
-	resume82	='$resume82',
-	resume83	='$resume83',
-	resume84	='$resume84',
-	resume85	='$resume85',
-	resume86	='$resume86',
-	resume87	='$resume87',
-	resume88	='$resume88',
-	resume89	='$resume89',
-	resume90	='$resume90',
-	resume91	='$resume91',
-	resume92	='$resume92',
-	resume93	='$resume93',
-	resume94	='$resume94',
-	resume95	='$resume95',
-	resume96	='$resume96',
-	resume97	='$resume97',
-	resume98	='$resume98',
-	resume99	='$resume99',
-	resume100	='$resume100',
-	resume101	='$resume101',
-	resume102	='$resume102',
-	resume103	='$resume103',
-	resume104	='$resume104',
-	resume105	='$resume105',
-	resume106	='$resume106',
-	resume107	='$resume107',
-	resume108	='$resume108',
-	resume109	='$resume109',
-	resume110	='$resume110',
-	resume111	='$resume111',
-	resume112	='$resume112',
-	resume113	='$resume113',
-	resume114	='$resume114',
-	resume115	='$resume115',
-	resume116	='$resume116',
-	resume117	='$resume117',
-	resume118	='$resume118',
-	resume119	='$resume119',
-	resume120	='$resume120',
-	resume121	='$resume121',
-	resume122	='$resume122',
-	resume123	='$resume123',
-	resume124	='$resume124',
-	resume125	='$resume125',
-	resume126	='$resume126',
-	resume127	='$resume127',
-	resume128	='$resume128',
-	resume129	='$resume129',
-	resume130	='$resume130',
-	resume131	='$resume131',
-	resume132	='$resume132',
-	resume133	='$resume133',
-	resume134	='$resume134',
-	resume135	='$resume135',
-	resume136	='$resume136',
-	resume137	='$resume137',
-	resume138	='$resume138',
-	resume139	='$resume139',
-	resume140	='$resume140',
-	resume141	='$resume141',
-	resume142	='$resume142',
-	resume143	='$resume143',
-	resume144	='$resume144',
-	resume145	='$resume145',
-	resume146	='$resume146',
-	resume147	='$resume147',
-	resume148	='$resume148',
-	resume149	='$resume149',
-	resume150	='$resume150'
-	where noreg='$noreg'
-	";
-
-	$hs = sqlsrv_query($conn,$q);
-
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
-
-	}
-
-	echo "
-	<script>
-	history.go(-1);
-	</script>
-	";
-
-
-}
-
-?>

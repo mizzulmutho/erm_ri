@@ -204,6 +204,7 @@ $tglkeluar = $data3[tglkeluar];
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>nomor antrian</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>status layanan</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>tgl - pilih</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>pernah ditambahkan</font></td>
 				</tr>
 				<?php 
 				$q="
@@ -221,6 +222,18 @@ $tglkeluar = $data3[tglkeluar];
 						$nomorantrian=$data[NomerAntrian];						
 					}
 
+					$qur="SELECT noreg FROM ERM_RI_RPO where noreg='$noreg' and  id_eresep=$data[Id]";
+					$h1ur  = sqlsrv_query($conn, $qur);        
+					$d1ur  = sqlsrv_fetch_array($h1ur, SQLSRV_FETCH_ASSOC); 
+					$ceknoreg = trim($d1ur['noreg']);
+
+					if($ceknoreg){
+						$status='Pernah Ditambahkan';
+					}else{
+						$status='';
+					}
+
+
 					echo "
 					<tr>
 					<td>$no</td>					
@@ -235,6 +248,7 @@ $tglkeluar = $data3[tglkeluar];
 					<font color='gren'><i class='bi bi-check-all'></i></font>
 					</a>
 					</td>
+					<td>$status</td>
 					</tr>
 					";
 					$no += 1;

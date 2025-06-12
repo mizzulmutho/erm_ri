@@ -133,6 +133,23 @@ if(!empty($regcek)){
 	$asanak169 = $de['asanak169'];
 	$asanak170 = $de['asanak170'];
 
+	$tjatuh1 = $de['tjatuh1'];
+	$tjatuh2 = $de['tjatuh2'];
+	$tjatuh3 = $de['tjatuh3'];
+	$tjatuh4 = $de['tjatuh4'];
+	$tjatuh5 = $de['tjatuh5'];
+	$tjatuh6 = $de['tjatuh6'];
+	$tjatuh7 = $de['tjatuh7'];
+	$tjatuh8 = $de['tjatuh8'];
+	$tjatuh9 = $de['tjatuh9'];
+	$tjatuh10 = $de['tjatuh10'];
+	$tjatuh11 = $de['tjatuh11'];
+	$tjatuh12 = $de['tjatuh12'];
+	$tjatuh13 = $de['tjatuh13'];
+	$tjatuh14 = $de['tjatuh14'];
+	$tjatuh15 = $de['tjatuh15'];
+	$tjatuh16 = $de['tjatuh16'];
+	$tjatuh17 = $de['tjatuh17'];
 
 
 }
@@ -275,6 +292,24 @@ if(!empty($regcek)){
 				<tr>
 					<td>
 						<div class="row">
+							<div class="col-4">
+								&nbsp;&bull; Shift
+							</div>
+							<div class="col-8">
+								: 
+								<select name='shift' style="min-width:330px; min-height:30px;">
+									<option value=''>--pilih--</option>
+									<option value='Satu'>Satu</option>
+									<option value='Dua'>Dua</option>
+									<option value='Tiga'>Tiga</option>
+								</select>
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<div class="row">
 							
 							<div class="col-12">
 								<table border='0' width="100%">
@@ -282,7 +317,291 @@ if(!empty($regcek)){
 										<td colspan="2"><b>Monitoring Risiko Jatuh</b></td>
 									</tr>
 								</table>
-								<?php if($umur >= 17) { ?>
+								<?php if($umur > 60) { //Geriatri?>
+									(Sydney Scoring)<br>
+
+									<table>
+										<tr>
+											<td style="border: 1px solid;" width='20%'>Faktor Risiko</td>
+											<td style="border: 1px solid;" width='60%'>skrining</td>
+											<td style="border: 1px solid;" width='15%'>skala</td>
+											<td style="border: 1px solid;" width='5%'>Skor pasien</td>
+										</tr>
+
+										<tr>
+											<td style="border: 1px solid;" rowspan="2">Riwayat jatuh</td>
+											<td style="border: 1px solid;">apakah pasien datang ke Rumah sakit karena jatuh?</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh1' value='YA' <?php if ($tjatuh1=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh1' value='Tidak' <?php if ($tjatuh1=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh1=='YA'){
+													echo $tjatuh1_skor='6';
+												}
+												?>
+											</td>
+										</tr>
+
+										<tr>
+											<td style="border: 1px solid;">Jika Tidak, apakah pasien mengalami jatuh dalam 2 bulan terakhir ini ?</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh2' value='YA' <?php if ($tjatuh2=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh2' value='Tidak' <?php if ($tjatuh2=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh2=='YA'){
+													echo $tjatuh2_skor='6';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;" rowspan="3">Status Mental</td>
+											<td style="border: 1px solid;">Apakah pasien delirium? Tidak dapat membuat keputusan, Pola pikir tidak terkoorganisir, gangguan daya ingat)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh3' value='YA' <?php if ($tjatuh3=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh3' value='Tidak' <?php if ($tjatuh3=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh3=='YA'){
+													echo $tjatuh3_skor='14';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">Apakah pasien disorientasi? (salah menyebutkan waktu, tempat atau orang)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh4' value='YA' <?php if ($tjatuh4=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh4' value='Tidak' <?php if ($tjatuh4=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh4=='YA'){
+													echo $tjatuh4_skor='14';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">apakah pasien mengalami agitasi? (ketekutan, gelisah, dan cemas?)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh5' value='YA' <?php if ($tjatuh5=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh5' value='Tidak' <?php if ($tjatuh5=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh5=='YA'){
+													echo $tjatuh5_skor='14';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;" rowspan="3">Penglihatan</td>
+											<td style="border: 1px solid;">apakah pasien memakai kacamata?</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh6' value='YA' <?php if ($tjatuh6=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh6' value='Tidak' <?php if ($tjatuh6=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh6=='YA'){
+													echo $tjatuh6_skor='1';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">apakah pasien mengeluh adanya penglihatan buram?</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh7' value='YA' <?php if ($tjatuh7=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh7' value='Tidak' <?php if ($tjatuh7=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh7=='YA'){
+													echo $tjatuh7_skor='1';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">apakah pasien mempunyai glaukoma? Katarak/degenerasi makula?</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh8' value='YA' <?php if ($tjatuh8=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh8' value='Tidak' <?php if ($tjatuh8=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh8=='YA'){
+													echo $tjatuh8_skor='1';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">Kebiasaan Berkemih</td>
+											<td style="border: 1px solid;">apakah terdapat perubahan perilaku berkemih? (frekuensi, urgensi, inkempetensia, nokturia)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh9' value='YA' <?php if ($tjatuh9=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh9' value='Tidak' <?php if ($tjatuh9=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh9=='YA'){
+													echo $tjatuh9_skor='2';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;" rowspan="4">transfer (dari tempat tidur ke kursi dan kembali lagi ke tempat tidur)</td>
+											<td style="border: 1px solid;">mandiri (boleh memakai alat bantu jalan)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh10' value='YA' <?php if ($tjatuh10=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh10' value='Tidak' <?php if ($tjatuh10=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh10=='YA'){
+													echo $tjatuh10_skor='0';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">memerlukan sedikit bantuan (1 orang )/dalampengawasan</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh11' value='YA' <?php if ($tjatuh11=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh11' value='Tidak' <?php if ($tjatuh11=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh11=='YA'){
+													echo $tjatuh11_skor='1';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">memerlukan bantuan yang nyata (2 orang)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh12' value='YA' <?php if ($tjatuh12=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh12' value='Tidak' <?php if ($tjatuh12=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh12=='YA'){
+													echo $tjatuh12_skor='2';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">tidak dapat duduk dengan seimbang, perlu bantuan total</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh13' value='YA' <?php if ($tjatuh13=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh13' value='Tidak' <?php if ($tjatuh13=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh13=='YA'){
+													echo $tjatuh13_skor='3';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;" rowspan="4">mobilitas</td>
+											<td style="border: 1px solid;">mandiri (boleh memakai alat bantu jalan)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh14' value='YA' <?php if ($tjatuh14=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh14' value='Tidak' <?php if ($tjatuh14=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh14=='YA'){
+													echo $tjatuh14_skor='0';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">berjalan dengan bantuan 1 orang (verbal/fisik)</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh15' value='YA' <?php if ($tjatuh15=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh15' value='Tidak' <?php if ($tjatuh15=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh15=='YA'){
+													echo $tjatuh15_skor='1';
+												}
+												?>
+											</td>
+										</tr>
+
+										<tr>
+											<td style="border: 1px solid;">menggunakan kursi roda</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh16' value='YA' <?php if ($tjatuh16=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh16' value='Tidak' <?php if ($tjatuh16=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh16=='YA'){
+													echo $tjatuh16_skor='2';
+												}
+												?>
+											</td>
+										</tr>
+										<tr>
+											<td style="border: 1px solid;">imobilisasi</td>
+											<td style="border: 1px solid;">
+												<input type='checkbox' name='tjatuh17' value='YA' <?php if ($tjatuh17=="YA"){echo "checked";}?>>Ya
+												<input type='checkbox' name='tjatuh17' value='Tidak' <?php if ($tjatuh17=="Tidak"){echo "checked";}?>>Tidak
+											</td>
+											<td style="border: 1px solid;">
+												<?php 
+												if($tjatuh17=='YA'){
+													echo $tjatuh17_skor='3';
+												}
+												?>
+											</td>
+										</tr>
+
+										<tr>
+											<td style="border: 1px solid;" colspan="3">Total Skor</td>
+											<td style="border: 1px solid;">
+												<?php 
+												echo $tjatuh_skor_total=$tjatuh1_skor+$tjatuh2_skor+$tjatuh3_skor+$tjatuh4_skor+$tjatuh5_skor+$tjatuh6_skor+$tjatuh7_skor+$tjatuh8_skor+$tjatuh9_skor+$tjatuh10_skor+$tjatuh11_skor+$tjatuh12_skor+$tjatuh13_skor+$tjatuh14_skor+$tjatuh15_skor+$tjatuh16_skor+$tjatuh17_skor; 
+												$tjatuh_skor_nilai = $tjatuh_skor_total;
+												?>
+											</td>
+										</tr>
+
+									</table>
+
+									<br>
+									[] >45 : Risiko tinggi ;         [] 25-44 : Risiko sedang ;         [] 0 -24 : Risiko rendah
+									<br>
+									<?php 
+									echo "<h5>";
+									echo "[".$tjatuh_skor_total."]";
+
+									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total_ket="Risiko rendah";}
+									if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total_ket="Risiko sedang";}
+									if($tjatuh_skor_total >= 45){echo $tjatuh_skor_total_ket="Risiko tinggi";}
+									echo "</h5>";
+									?>
+
+								<?php } ?>
+								<?php if($umur > 17 and $umur <=60) { ?>
 
 									<table>
 										<tr>
@@ -469,6 +788,7 @@ if(!empty($regcek)){
 											<td style="border: 1px solid;">
 												<?php 
 												echo $tjatuh_skor_total=$tjatuh1_skor+$tjatuh2_skor+$tjatuh3_skor+$tjatuh4_skor+$tjatuh5_skor+$tjatuh6_skor+$tjatuh7_skor+$tjatuh8_skor+$tjatuh9_skor+$tjatuh10_skor+$tjatuh11_skor+$tjatuh12_skor+$tjatuh13_skor+$tjatuh14_skor; 
+												$tjatuh_skor_nilai = $tjatuh_skor_total;
 												?>
 											</td>
 										</tr>
@@ -481,8 +801,8 @@ if(!empty($regcek)){
 									echo "<h5>";
 									echo "[".$tjatuh_skor_total."]";
 
-									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total="Risiko rendah";}
-									if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total="Risiko sedang";}
+									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total_ket="Risiko rendah";}
+									if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total_ket="Risiko sedang";}
 									if($tjatuh_skor_total >= 45){echo $tjatuh_skor_total_ket="Risiko tinggi";}
 									echo "</h5>";
 									?>
@@ -773,6 +1093,7 @@ if(!empty($regcek)){
 											<td style="border: 1px solid;">
 												<?php 
 												echo $tjatuh_skor_total=$tjatuh1_skor+$tjatuh2_skor+$tjatuh3_skor+$tjatuh4_skor+$tjatuh5_skor+$tjatuh6_skor+$tjatuh7_skor+$tjatuh8_skor+$tjatuh9_skor+$tjatuh10_skor+$tjatuh11_skor+$tjatuh12_skor+$tjatuh13_skor+$tjatuh14_skor+$tjatuh15_skor+$tjatuh16_skor+$tjatuh17_skor+$tjatuh18_skor+$tjatuh19_skor+$tjatuh20_skor+$tjatuh21_skor+$tjatuh22_skor; 
+												$tjatuh_skor_nilai = $tjatuh_skor_total;
 												?>
 											</td>
 										</tr>
@@ -787,8 +1108,8 @@ if(!empty($regcek)){
 									echo "<h5>";
 									echo "[".$tjatuh_skor_total."]";
 
-									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 6){echo $tjatuh_skor_total="Risiko rendah";}
-									if($tjatuh_skor_total >= 7 and $tjatuh_skor_total <= 11 ){echo $tjatuh_skor_total="Risiko sedang";}
+									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 6){echo $tjatuh_skor_total_ket="Risiko rendah";}
+									if($tjatuh_skor_total >= 7 and $tjatuh_skor_total <= 11 ){echo $tjatuh_skor_total_ket="Risiko sedang";}
 									if($tjatuh_skor_total >= 12){echo $tjatuh_skor_total_ket="Risiko tinggi";}
 									echo "</h5>";
 
@@ -823,28 +1144,59 @@ if(!empty($regcek)){
 			<tr>
 				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
 				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>tgl & jam</font></td>
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>shift</font></td>
 				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>ket</font></td>
-				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>user - pasien</font></td>				
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>user entry</font></td>	
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>nm pasien</font></td>				
 				<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>aksi</font></td>
+				<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>intervensi</font></td>
 			</tr>
 			<?php 
 			$q="
-			select TOP(100) userid,ket,CONVERT(VARCHAR, tglentry, 25) as tglentry,id
+			select TOP(100) userid,ket,CONVERT(VARCHAR, tglentry, 25) as tglentry,id, shift
 			from ERM_RI_RJATUH
 			where noreg='$noreg' order by id desc
 			";
 			$hasil  = sqlsrv_query($conn, $q);  
 			$no=1;
 			while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
-				echo "
-				<tr>
-				<td>$no</td>
-				<td>$data[tglentry]</td>
-				<td>$data[ket]</td>
-				<td>$data[userid] - $nama</td>
-				<td align='center'><a href='del_rjatuh.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
-				</tr>
-				";
+
+				$userid = trim($data[userid]);
+				$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 like '%$userid%'";
+				$h1u  = sqlsrv_query($conn, $qu);        
+				$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+				$nmuserid = trim($d1u['NamaUser']);
+
+				if($data[ket]=='Risiko tinggi'){
+					echo "
+					<tr>
+					<td>$no</td>
+					<td>$data[tglentry]</td>
+					<td>$data[shift]</td>				
+					<td>$data[ket]</td>
+					<td>$nmuserid</td>
+					<td>$nama</td>
+					<td align='center'><a href='del_rjatuh.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
+					<td align='center'><a href='implementasi_jatuh.php?id=$id|$user|$noreg|D.0143|$data[id]'><font color='green'>[!]</font></a></td>
+					</tr>
+					";
+
+				}else{
+
+					echo "
+					<tr>
+					<td>$no</td>
+					<td>$data[tglentry]</td>
+					<td>$data[shift]</td>				
+					<td>$data[ket]</td>
+					<td>$nmuserid</td>
+					<td>$nama</td>
+					<td align='center'><a href='del_rjatuh.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
+					<td align='center'><a href='implementasi_jatuh.php?id=$id|$user|$noreg|D.0143|$data[id]'><font color='green'>[!]</font></a></td>
+					</tr>
+					";
+				}
+
 				$no += 1;
 
 			}
@@ -853,14 +1205,130 @@ if(!empty($regcek)){
 			?>
 		</table>
 
+		<hr>
+		<h5>Intervensi / Implementasi Resiko Jatuh</h5>
+<!-- 		Input Baru Intervensi Resiko Jatuh<br>
+		Tanggal Jam : <input class="" name="tgli" value="<?php echo $tgl;?>" id="" type="text" size='50' onfocus="nextfield ='';" >
+		<select name='shifti' style="min-width:330px; min-height:30px;">
+			<option value=''>--pilih--</option>
+			<option value='Satu'>Satu</option>
+			<option value='Dua'>Dua</option>
+			<option value='Tiga'>Tiga</option>
+		</select>
+		<input type='submit' name='simpani' value='simpan'>
+	-->
+	<div class="table-responsive">
+		<font size="2">
+			<?php
 
-		<br>
-		<br>
-		<br>
-		<br>
-		<br>
-	</form>
-</font>
+                    // Ambil data implementasi
+			$q2 = "
+			SELECT id, sift, userid, implementasi, 
+			CONVERT(VARCHAR, tanggal, 103) AS tanggal, 
+			CONVERT(VARCHAR, jam, 24) AS jam
+			FROM ERM_IMPLEMENTASI_JATUH
+			WHERE noreg = '$noreg' AND diagnosa_keperawatan = 'D.0143'
+			ORDER BY tanggal DESC, jam DESC";
+
+			$hasil2 = sqlsrv_query($conn, $q2);
+
+                    // Kelompok data per tanggal > sift
+			$grouped_data = [];
+
+			while ($data2 = sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC)) {
+                        $tanggal = $data2['tanggal']; // format dd/mm/yyyy
+                        $sift = trim($data2['sift']);
+                        $grouped_data[$tanggal][$sift][] = $data2;
+                    }
+
+                    // Urutkan tanggal DESC
+                    krsort($grouped_data);
+
+                    // Urutan sift yang diinginkan
+                    $sift_order = ['DINAS PAGI', 'DINAS SIANG', 'DINAS MALAM'];
+
+                    foreach ($grouped_data as $tanggal => $sift_group) {
+                    	echo "<h6 class='mt-4'><i class='bi bi-calendar-event'></i> Tanggal: <strong>$tanggal</strong></h6>";
+
+                        // Urutkan sift sesuai urutan custom
+                    	foreach ($sift_order as $sift) {
+                    		if (!isset($sift_group[$sift])) continue;
+
+                            // Set warna card
+                    		if ($sift == 'DINAS PAGI') {
+                    			$bgCard = 'bg-info text-white';
+                    			$warna = '';
+                    		} elseif ($sift == 'DINAS SIANG') {
+                    			$bgCard = 'bg-warning text-dark';
+                    			$warna = '#F5F7F8';
+                    		} elseif ($sift == 'DINAS MALAM') {
+                    			$bgCard = 'bg-dark text-white';
+                    			$warna = '#F1F8E8';
+                    		} else {
+                    			$bgCard = 'bg-light';
+                    			$warna = '';
+                    		}
+
+                    		echo "
+                    		<div class='card mb-3'>
+                    		<div class='card-header $bgCard'>
+                    		<strong>Sift:</strong> $sift
+                    		</div>
+                    		<div class='card-body'>
+                    		<div class='table-responsive'>
+                    		<table class='table table-bordered table-striped'>
+                    		<thead class='table-light'>
+                    		<tr>
+                    		<th>No</th>    
+                    		<th>User Input</th>
+                    		<th>Tanggal</th>
+                    		<th>Jam</th>                                     
+                    		<th>Implementasi</th>
+                    		<th>Aksi</th>
+                    		</tr>
+                    		</thead>
+                    		<tbody>";
+
+                    		$i = 1;
+                    		foreach ($sift_group[$sift] as $data2) {
+                    			echo "
+                    			<tr style='background-color:$warna'>
+                    			<td>$i</td>
+                    			<td>{$data2['userid']}</td>
+                    			<td>{$data2['tanggal']}</td>
+                    			<td>{$data2['jam']}</td>
+                    			<td>{$data2['implementasi']}</td>
+                    			<td>
+                    			<a href='del_implementasijatuh.php?id={$id}|{$user}|{$data2['id']}' 
+                    			class='btn btn-sm btn-outline-danger'>
+                    			<i class='bi bi-trash'></i>
+                    			</a>
+                    			</td>
+                    			</tr>";
+                    			$i++;
+                    		}
+
+                    		echo "
+                    		</tbody>
+                    		</table>
+                    		</div>
+                    		</div>
+                    		</div>";
+                    	}
+                    }
+
+                    ?>
+                </font>
+            </div>
+
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+        </form>
+    </font>
 </body>
 </div>
 </div>
@@ -871,6 +1339,7 @@ if(!empty($regcek)){
 if (isset($_POST["simpan"])) {
 
 	$tgl	= $_POST["tgl"];
+	$shift	= $_POST["shift"];
 	$nama_obat	= $_POST["nama_obat"];
 	$dosis	= $_POST["dosis"];
 	$waktu_penggunaan	= $_POST["waktu_penggunaan"];
@@ -912,27 +1381,51 @@ if (isset($_POST["simpan"])) {
 	$asanak169 = $_POST['asanak169'];
 	$asanak170 = $_POST['asanak170'];
 
+	$tjatuh1=$_POST['tjatuh1'];
+	$tjatuh2=$_POST['tjatuh2'];
+	$tjatuh3=$_POST['tjatuh3'];
+	$tjatuh4=$_POST['tjatuh4'];
+	$tjatuh5=$_POST['tjatuh5'];
+	$tjatuh6=$_POST['tjatuh6'];
+	$tjatuh7=$_POST['tjatuh7'];
+	$tjatuh8=$_POST['tjatuh8'];
+	$tjatuh9=$_POST['tjatuh9'];
+	$tjatuh10=$_POST['tjatuh10'];
+	$tjatuh11=$_POST['tjatuh11'];
+	$tjatuh12=$_POST['tjatuh12'];
+	$tjatuh13=$_POST['tjatuh13'];
+	$tjatuh14=$_POST['tjatuh14'];
+	$tjatuh15=$_POST['tjatuh15'];
+	$tjatuh16=$_POST['tjatuh16'];
+	$tjatuh17=$_POST['tjatuh17'];
+
+	$ket=$tjatuh_skor_total_ket;
+	$nilai=$tjatuh_skor_nilai;
+
 	$q  = "insert into ERM_RI_RJATUH(noreg,userid,tglentry,tgl,ob31,ob32,ob33,ob34,ob35,ob36,ob37,ob38,ob39,ob40,ob41,ob42,ob43,ob44,ket,nilai,
 	asanak149,asanak150,asanak151,asanak152,asanak153,asanak154,asanak155,asanak156,asanak157,asanak158,asanak159,asanak160,
-	asanak161,asanak162,asanak163,asanak164,asanak165,asanak166,asanak167,asanak168,asanak169,asanak170
+	asanak161,asanak162,asanak163,asanak164,asanak165,asanak166,asanak167,asanak168,asanak169,asanak170,shift,
+	tjatuh1,tjatuh2,tjatuh3,tjatuh4,tjatuh5,tjatuh6,tjatuh7,tjatuh8,tjatuh9,tjatuh10,tjatuh11,tjatuh12,tjatuh13,tjatuh14,tjatuh15,tjatuh16,tjatuh17
 	) 
-	values ('$noreg','$user','$tgl','$tgl','$ob31','$ob32','$ob33','$ob34','$ob35','$ob36','$ob37','$ob38','$ob39','$ob40','$ob41','$ob42','$ob43','$ob44','$tjatuh_skor_total_ket','$tjatuh_skor_total',
+	values ('$noreg','$user','$tgl','$tgl','$ob31','$ob32','$ob33','$ob34','$ob35','$ob36','$ob37','$ob38','$ob39','$ob40','$ob41','$ob42','$ob43','$ob44','$ket','$nilai',
 	'$asanak149','$asanak150','$asanak151','$asanak152','$asanak153','$asanak154','$asanak155','$asanak156','$asanak157','$asanak158','$asanak159','$asanak160',
-	'$asanak161','$asanak162','$asanak163','$asanak164','$asanak165','$asanak166','$asanak167','$asanak168','$asanak169','$asanak170')";
-	$hs = sqlsrv_query($conn,$q);
+	'$asanak161','$asanak162','$asanak163','$asanak164','$asanak165','$asanak166','$asanak167','$asanak168','$asanak169','$asanak170','$shift',
+	'$tjatuh1','$tjatuh2','$tjatuh3','$tjatuh4','$tjatuh5','$tjatuh6','$tjatuh7','$tjatuh8','$tjatuh9','$tjatuh10','$tjatuh11','$tjatuh12','$tjatuh13','$tjatuh14','$tjatuh15','$tjatuh16','$tjatuh17'
+)";
+$hs = sqlsrv_query($conn,$q);
 
-	if($hs){
-		$eror = "Success";
-	}else{
-		$eror = "Gagal Insert";
+if($hs){
+	$eror = "Success";
+}else{
+	$eror = "Gagal Insert";
 
-	}
+}
 
-	echo "
-	<script>
-	history.go(-1);
-	</script>
-	";
+echo "
+<script>
+history.go(-1);
+</script>
+";
 
 
 

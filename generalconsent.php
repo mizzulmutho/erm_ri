@@ -535,186 +535,179 @@ if(empty($regcek)){
 					&nbsp;&nbsp;
 					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
-					<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
-					<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
-					<a href='r_generalconsent.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a>
-
+					<a href='generalconsent2.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info'><i class="bi bi-info-circle"></i> From HPK</a>
 					&nbsp;&nbsp;
 					<br>
 					<br>
-<!-- 				<div class="row">
-					<div class="col-12 text-center bg-success text-white"><b>RUMAH SAKIT PETROKIMIA GRESIK</b></div>
-				</div>
-			-->				
-			<div class="row">
-			</div>
+					<div class="row">
+					</div>
 
-			<div class="row">
-				<div class="col-6">
-					<h5><b><?php echo $nmrs; ?></b></h5>
-					<?php echo $alamat; ?>
-				</div>
-				<div class="col-6">
-					<?php echo 'NIK : '.$noktp.'<br>'; ?>					
-					<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
-					<?php echo 'JENIS KELAMIN : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
-				</div>
-			</div>
-			<hr>
+					<div class="row">
+						<div class="col-6">
+							<h5><b><?php echo $nmrs; ?></b></h5>
+							<?php echo $alamat; ?>
+						</div>
+						<div class="col-6">
+							<?php echo 'NIK : '.$noktp.'<br>'; ?>					
+							<?php echo 'NAMA LENGKAP : '.$nama.' , NORM :'.$norm.'<br> TGL LAHIR : '.$tgllahir.' UMUR : '.$umur.'<br>'; ?>
+							<?php echo 'JENIS KELAMIN : '.$kelamin.'<br> ALAMAT : '.$alamatpasien.'<br>'; ?>
+						</div>
+					</div>
+					<hr>
 
-			<div class="row">
-				<div class="col-12 text-center">
-					<b>General Consent / Persetujuan Umum  </b><br>
+					<div class="row">
+						<div class="col-12 text-center">
+							<b>General Consent / Persetujuan Umum  </b><br>
+							<?php 
+							$qe       = "SELECT      IDENCOUNTERSS from  ARM_REGISTER where noreg='$noreg'";
+							$hasile  = sqlsrv_query($conn, $qe);                
+							$datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);  
+							$c_encontered = $datae[IDENCOUNTERSS];  
+
+							if(empty($c_encontered)){
+								$encontered = 'Kunjungan Rawat Inap Belum dikirimkan ke Satu Sehat';
+							}else{
+								$encontered = 'Kunjungan Rawat Inap Success dikirimkan ke Satu Sehat - '.$datae[IDENCOUNTERSS];
+							}
+
+							echo $encontered; 
+
+							?>
+						</div>
+					</div>
+
+					<br>
+
 					<?php 
-					$qe       = "SELECT      IDENCOUNTERSS from  ARM_REGISTER where noreg='$noreg'";
-					$hasile  = sqlsrv_query($conn, $qe);                
-					$datae    = sqlsrv_fetch_array($hasile, SQLSRV_FETCH_ASSOC);  
-					$c_encontered = $datae[IDENCOUNTERSS];  
-
-					if(empty($c_encontered)){
-						$encontered = 'Kunjungan Rawat Inap Belum dikirimkan ke Satu Sehat';
-					}else{
-						$encontered = 'Kunjungan Rawat Inap Success dikirimkan ke Satu Sehat - '.$datae[IDENCOUNTERSS];
-					}
-
-					echo $encontered; 
-
-					?>
-				</div>
-			</div>
-
-			<br>
-
-			<?php 
-			if(empty($kodedokter)){
-				echo "DPJP masih Kosong isi terlebih dahulu DPJP !!!";
-				echo "<br>";
-				echo "<input name='dpjp' value='' id='dokter' type='text' size='50' placeholder='Isikan Nama Dokter atau Kode Dokter'>";
-				echo "<input type='submit' name='simpan_dpjp' value='simpan_dpjp' style='color: white;background: #66CDAA;border-color: #66CDAA;'>";
+					if(empty($kodedokter)){
+						echo "DPJP masih Kosong isi terlebih dahulu DPJP !!!";
+						echo "<br>";
+						echo "<input name='dpjp' value='' id='dokter' type='text' size='50' placeholder='Isikan Nama Dokter atau Kode Dokter'>";
+						echo "<input type='submit' name='simpan_dpjp' value='simpan_dpjp' style='color: white;background: #66CDAA;border-color: #66CDAA;'>";
 				// exit();
-			}else{
-				?>
-				<table width='100%' border='0'>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									<font size='3'><b>Persetujuan Pasien</b></font>
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc1' value='Ya' <?php if ($gc1=="Ya"){echo "checked";}?> >Ya
-									<input type='radio' name='gc1' value='Tidak' <?php if ($gc1=="Tidak"){echo "checked";}?> >Tidak								
-								</div>
-							</div>
-						</td>
-					</tr>	
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Informasi Ketentuan Pembayaran
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc2' value='Setuju' <?php if ($gc2=="Setuju"){echo "checked";}?> >Setuju
-									<input type='radio' name='gc2' value='Tidak Setuju' <?php if ($gc2=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Informasi Jenis Pembayaran
-								</div>
-								<div class="col-8">
-									: <input type='checkbox' name='gc18' value='umum' <?php if ($gc18=="umum"){echo "checked";}?> >umum
-									<input type='checkbox' name='gc18' value='bpjs' <?php if ($gc18=="bpjs"){echo "checked";}?> >bpjs
-									<input type='checkbox' name='gc18' value='asuransi lain' <?php if ($gc18=="asuransi lain"){echo "checked";}?> >asuransi lain
-									keterangan : 
-									<input class="" name="gc19" value="<?php echo $gc19;?>" id="" type="text" size='50' placeholder="Isikan asuransi lain">
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Informasi tentang Hak dan Kewajiban Pasien
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc3' value='Setuju' <?php if ($gc3=="Setuju"){echo "checked";}?> >Setuju
-									<input type='radio' name='gc3' value='Tidak Setuju' <?php if ($gc3=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
-								</div>
-							</div>
-						</td>
-					</tr>	
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Informasi tentang Tata Tertib RS
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc4' value='Setuju' <?php if ($gc4=="Setuju"){echo "checked";}?> >Setuju
-									<input type='radio' name='gc4' value='Tidak Setuju' <?php if ($gc4=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Kebutuhan Penterjemah Bahasa
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc5' value='Ya' <?php if ($gc5=="Ya"){echo "checked";}?> >Ya
-									<input type='radio' name='gc5' value='Tidak' <?php if ($gc5=="Tidak"){echo "checked";}?> >Tidak
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Kebutuhan Rohaniawan
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc6' value='Ya' <?php if ($gc6=="Ya"){echo "checked";}?> >Ya
-									<input type='radio' name='gc6' value='Tidak' <?php if ($gc6=="Tidak"){echo "checked";}?> >Tidak
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									Pelepasan Informasi / Kerahasiaan Informasi
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc7' value='Setuju' <?php if ($gc7=="Setuju"){echo "checked";}?> >Setuju
-									<input type='radio' name='gc7' value='Tidak Setuju' <?php if ($gc7=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
-								</div>
-							</div>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<div class="row">
-								<div class="col-4">
-									&nbsp;&bull; Hasil Pemeriksaan Penunjang dapat Diberikan kepada Pihak Penjamin
-								</div>
-								<div class="col-8">
-									: <input type='radio' name='gc8' value='Setuju' <?php if ($gc8=="Setuju"){echo "checked";}?> >Setuju
-									<input type='radio' name='gc8' value='Tidak Setuju' <?php if ($gc8=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
-								</div>
-							</div>
-						</td>
-					</tr>
+					}else{
+						?>
+						<table width='100%' border='0'>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											<font size='3'><b>Persetujuan Pasien</b></font>
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc1' value='Ya' <?php if ($gc1=="Ya"){echo "checked";}?> >Ya
+											<input type='radio' name='gc1' value='Tidak' <?php if ($gc1=="Tidak"){echo "checked";}?> >Tidak								
+										</div>
+									</div>
+								</td>
+							</tr>	
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Informasi Ketentuan Pembayaran
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc2' value='Setuju' <?php if ($gc2=="Setuju"){echo "checked";}?> >Setuju
+											<input type='radio' name='gc2' value='Tidak Setuju' <?php if ($gc2=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Informasi Jenis Pembayaran
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc18' value='umum' <?php if ($gc18=="umum"){echo "checked";}?> >umum
+											<input type='radio' name='gc18' value='bpjs' <?php if ($gc18=="bpjs"){echo "checked";}?> >bpjs
+											<input type='radio' name='gc18' value='asuransi lain' <?php if ($gc18=="asuransi lain"){echo "checked";}?> >asuransi lain
+											keterangan : 
+											<input class="" name="gc19" value="<?php echo $gc19;?>" id="" type="text" size='50' placeholder="Isikan asuransi lain">
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Informasi tentang Hak dan Kewajiban Pasien
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc3' value='Setuju' <?php if ($gc3=="Setuju"){echo "checked";}?> >Setuju
+											<input type='radio' name='gc3' value='Tidak Setuju' <?php if ($gc3=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
+										</div>
+									</div>
+								</td>
+							</tr>	
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Informasi tentang Tata Tertib RS
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc4' value='Setuju' <?php if ($gc4=="Setuju"){echo "checked";}?> >Setuju
+											<input type='radio' name='gc4' value='Tidak Setuju' <?php if ($gc4=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Kebutuhan Penterjemah Bahasa
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc5' value='Ya' <?php if ($gc5=="Ya"){echo "checked";}?> >Ya
+											<input type='radio' name='gc5' value='Tidak' <?php if ($gc5=="Tidak"){echo "checked";}?> >Tidak
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Kebutuhan Rohaniawan
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc6' value='Ya' <?php if ($gc6=="Ya"){echo "checked";}?> >Ya
+											<input type='radio' name='gc6' value='Tidak' <?php if ($gc6=="Tidak"){echo "checked";}?> >Tidak
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											Pelepasan Informasi / Kerahasiaan Informasi
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc7' value='Setuju' <?php if ($gc7=="Setuju"){echo "checked";}?> >Setuju
+											<input type='radio' name='gc7' value='Tidak Setuju' <?php if ($gc7=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
+										</div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<div class="row">
+										<div class="col-4">
+											&nbsp;&bull; Hasil Pemeriksaan Penunjang dapat Diberikan kepada Pihak Penjamin
+										</div>
+										<div class="col-8">
+											: <input type='radio' name='gc8' value='Setuju' <?php if ($gc8=="Setuju"){echo "checked";}?> >Setuju
+											<input type='radio' name='gc8' value='Tidak Setuju' <?php if ($gc8=="Tidak Setuju"){echo "checked";}?> >Tidak Setuju
+										</div>
+									</div>
+								</td>
+							</tr>
 				<!-- <tr>
 					<td>
 						<div class="row">

@@ -187,7 +187,7 @@ if (isset($_POST["cari"])) {
             </h3>
         </div>
         <div class="card-body">
-            
+
             <a href='listdata.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
             &nbsp;&nbsp;
             <a href="listdokter.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
@@ -228,12 +228,13 @@ if (isset($_POST["cari"])) {
                 <?php
 
                 $q="
-                SELECT DISTINCT TOP (50) ARM_REGISTER.NOREG, AFarm_MstPasien.NORM, AFarm_MstPasien.NAMA, ARM_REGISTER.TUJUAN as KODEUNIT
+                SELECT DISTINCT TOP (50) ARM_REGISTER.NOREG, AFarm_MstPasien.NORM, AFarm_MstPasien.NAMA, ARM_REGISTER.TUJUAN AS KODEUNIT
                 FROM            AFarm_MstPasien INNER JOIN
                 ARM_REGISTER ON AFarm_MstPasien.NORM = ARM_REGISTER.NORM INNER JOIN
-                V_ERM_RI_DPJP ON ARM_REGISTER.NOREG = V_ERM_RI_DPJP.noreg
-                WHERE        (YEAR(ARM_REGISTER.TGLENTRY) = '$tahun') and (V_ERM_RI_DPJP.kodedokter = '$kodedokter') 
-                order by ARM_REGISTER.NOREG desc
+                V_ERM_RI_DPJP ON ARM_REGISTER.NOREG = V_ERM_RI_DPJP.noreg INNER JOIN
+                Afarm_Unitlayanan ON ARM_REGISTER.TUJUAN = Afarm_Unitlayanan.KODEUNIT
+                WHERE        (YEAR(ARM_REGISTER.TGLENTRY) = '$tahun') AND (V_ERM_RI_DPJP.kodedokter = '$kodedokter') AND (Afarm_Unitlayanan.KET = '$sbu')
+                ORDER BY ARM_REGISTER.NOREG DESC
                 ";
                 $hq  = sqlsrv_query($conn, $q); 
                 $no=1;

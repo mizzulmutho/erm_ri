@@ -163,7 +163,7 @@ $tglkeluar = $data3[tglkeluar];
 			<font size='2px'>
 				<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 					<br>
-					<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+					<a href='jadwaloperasi2.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
 					&nbsp;&nbsp;
 					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;

@@ -429,9 +429,16 @@ if (isset($_POST["simpan"])) {
 	$td_sistolik	= trim($_POST["td_sistolik"]);
 	$td_diastolik	= trim($_POST["td_diastolik"]);
 	$nadi	= trim($_POST["nadi"]);
+	$nadi = str_replace(",",".",$nadi);
+
 	$suhu	= trim($_POST["suhu"]);
+	$suhu = str_replace(",",".",$suhu);
+
 	$pernafasan	= trim($_POST["pernafasan"]);
+	$pernafasan = str_replace(",",".",$pernafasan);
+
 	$spo2	= trim($_POST["spo2"]);
+	$spo2 = str_replace(",",".",$spo2);
 
 	$tglinput	= trim($_POST["tglinput"]);
 	$userinput	= trim($_POST["userinput"]);

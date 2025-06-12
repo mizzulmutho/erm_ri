@@ -202,6 +202,7 @@ $tglkeluar = $data3[tglkeluar];
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>NAMABARANG</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>Jumlah</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>pilih</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>status</font></td>
 				</tr>
 				<?php 
 				$q="
@@ -227,16 +228,29 @@ $tglkeluar = $data3[tglkeluar];
 					}else{
 						$namabarang = $data[Nama].' - (racikan)';
 					}
+
+					$qur="SELECT noreg FROM ERM_RI_RPO where noreg='$noreg' and id_eresep_detail=$data[Id]";
+					$h1ur  = sqlsrv_query($conn, $qur);        
+					$d1ur  = sqlsrv_fetch_array($h1ur, SQLSRV_FETCH_ASSOC); 
+					$ceknoreg = trim($d1ur['noreg']);
+
+					if($ceknoreg){
+						$status='Pernah Ditambahkan';
+					}else{
+						$status='';
+					}
+
 					echo "
 					<tr>
 					<td>$no</td>					
 					<td>$namabarang</td>
 					<td>$data[Jumlah]</td>
 					<td align='center'>
-					<a href='i_rpo_resep.php?id=$id|$user|$idrpo|$data[Id]'>
+					<a href='i_rpo_resep.php?id=$id|$user|$idrpo|$idresep|$data[Id]'>
 					<font color='gren'><i class='bi bi-check-all'></i></font>
 					</a>
 					</td>
+					<td align='center'>$status</td>
 					</tr>
 					";
 					$no += 1;

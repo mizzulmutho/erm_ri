@@ -18,6 +18,7 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
+$noreg_igd = substr($noreg, 1,12);
 
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
 FROM            ARM_REGISTER INNER JOIN
@@ -202,7 +203,8 @@ $tglkeluar = $data3[tglkeluar];
 			<br>
 			<table class='table'>
 				<tr>
-					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>no</font></td>					
+					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>no</font></td>
+					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>noreg</font></td>										
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>tgl</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>pemeriksaan</font></td>
 					<td style="border: 1px solid;" bgcolor='#708090' align="center"><font color='white'>hasil</font></td>
@@ -213,9 +215,9 @@ $tglkeluar = $data3[tglkeluar];
 				</tr>
 				<?php 
 				$q="
-				SELECT        CONVERT(VARCHAR, REG_DATE, 103) AS REG_DATE,CONVERT(VARCHAR, REG_DATE, 23) as TGLLAB, KEL_PEMERIKSAAN, PARAMETER_NAME, HASIL, SATUAN, NILAI_RUJUKAN, FLAG, ID_HASIL
+				SELECT        CONVERT(VARCHAR, REG_DATE, 103) AS REG_DATE,CONVERT(VARCHAR, REG_DATE, 23) as TGLLAB, KEL_PEMERIKSAAN, PARAMETER_NAME, HASIL, SATUAN, NILAI_RUJUKAN, FLAG, ID_HASIL,NOLAB_RS
 				FROM            LINKYAN5.SHARELIS.dbo.hasilLIS AS hasilLIS_1
-				WHERE        (NOLAB_RS = '$noreg') AND (CONVERT(DATETIME, CONVERT(VARCHAR, REG_DATE, 101), 101) BETWEEN '$tgllab' AND '$tgllab')
+				WHERE        (NOLAB_RS like '%$noreg_igd%') AND (CONVERT(DATETIME, CONVERT(VARCHAR, REG_DATE, 101), 101) BETWEEN '$tgllab' AND '$tgllab')
 				";
 				$hasil  = sqlsrv_query($conn, $q);  
 				$no=1;
@@ -223,7 +225,7 @@ $tglkeluar = $data3[tglkeluar];
 
 					$q2 = " 
 					SELECT idlab from ERM_RI_LAB_TEMP
-					WHERE        noreg='$noreg' and (idlab = '$data[ID_HASIL]')";
+					WHERE        noreg like '%$noreg_igd%' and (idlab = '$data[ID_HASIL]')";
 					$h2  = sqlsrv_query($conn, $q2);
 					$dh2  = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
 					$idlab = trim($dh2['idlab']);
@@ -236,7 +238,8 @@ $tglkeluar = $data3[tglkeluar];
 
 					echo "
 					<tr>
-					<td bgcolor='$color'>$no</td>					
+					<td bgcolor='$color'>$no</td>
+					<td bgcolor='$color'>$data[NOLAB_RS]</td>					
 					<td bgcolor='$color'>$data[REG_DATE]</td>
 					<td bgcolor='$color'>$data[KEL_PEMERIKSAAN]-$data[PARAMETER_NAME]</td>
 					<td bgcolor='$color'>$data[HASIL]</td>

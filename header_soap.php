@@ -141,22 +141,46 @@ if (isset($_POST["cari"])) {
 <br>
 <!-- Page content-->
 
-<div class="row">
-     <div class="col-12">
-          <table class="table table-bordered">
-               <tr>
-                    <td>Nama</td><td>: <?php echo $nama;?></td><td>No. RM</td><td>: <?php echo $norm;?></td>
-               </tr>
-               <tr>
-                    <td>Tanggal Lahir</td><td>: <?php echo $tgllahir;?></td><td>NIK</td><td>: <?php echo $noktp;?></td>
-               </tr>
-               <tr>
-                    <td>Umur</td><td>: <?php echo $umur;?></td><td>Jenis Kelamin</td><td>: <?php echo $kelamin;?></td>
-               </tr>
-               <tr>
-                    <td>Riwayat Alergi</td><td>: <?php echo $alergi;?></td><td>Diet</td><td>: <?php echo $diet;?></td>
-               </tr>
-          </table>
-     </div>
+<style>
+     .table {
+        background-color: white;
+        width: 100%;
+        border-collapse: collapse;
+   }
+   .table-bordered td {
+        border: 1px solid black;
+        padding: 8px;
+   }
+</style>
+
+<div class="container-fluid mt-3"> <!-- ubah container jadi container-fluid -->
+   <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white text-center">
+         <h5 class="mb-0">Informasi Pasien</h5>
+    </div>
+    <div class="card-body">
+         <div class="row mb-2">
+            <div class="col-md-6"><i class="fas fa-user"></i> <strong>Nama:</strong> <?php echo $nama;?></div>
+            <div class="col-md-6"><i class="fas fa-id-card"></i> <strong>No. RM:</strong> <?php echo $norm;?></div>
+       </div>
+       <div class="row mb-2">
+            <div class="col-md-6"><i class="fas fa-calendar-alt"></i> <strong>Tanggal Lahir:</strong> <?php echo $tgllahir;?></div>
+            <div class="col-md-6"><i class="fas fa-id-badge"></i> <strong>NIK:</strong> <?php echo $noktp;?></div>
+       </div>
+       <div class="row mb-2">
+            <div class="col-md-6"><i class="fas fa-hourglass-half"></i> <strong>Umur:</strong> <?php echo $umur;?></div>
+            <div class="col-md-6"><i class="fas fa-venus-mars"></i> <strong>Jenis Kelamin:</strong> <?php echo $kelamin;?></div>
+       </div>
+       <div class="row mb-2">
+            <div class="col-md-6"><i class="fas fa-allergies"></i> <strong>Riwayat Alergi:</strong> <?php echo $alergi;?></div>
+            <div class="col-md-6"><i class="fas fa-utensils"></i> <strong>Diet:</strong> <?php echo $diet;?></div>
+       </div>
+  </div>
 </div>
+</div>
+<br>
+
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 

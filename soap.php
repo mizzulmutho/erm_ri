@@ -7,8 +7,6 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
-
-
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -149,6 +147,7 @@ $nadi = $dho['nadi'];
 $suhu = $dho['suhu'];
 $nafas = $dho['pernafasan'];
 $bb = $dho['bb'];
+$spo = $dho['spo2'];
 $skala_nyeri = 0;
 
 $qn="select TOP(1) skala from ERM_RI_NYERI where noreg='$noreg' order by id desc";
@@ -381,7 +380,7 @@ if(empty($skala_nyeri)){
 
 <div class="container-fluid">
 
-	<body onload="document.myForm.ku.focus();">
+	<body onload="document.myForm.ku.focus();" style="background-color: #E4EFE7;">
 		<font size='2px'>	
 			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 				<br>
@@ -431,7 +430,7 @@ if(empty($skala_nyeri)){
 
 				<div class="row">
 					<div class="col-12 text-center">
-						<b>INPUT SOAP </b><br>
+						<b>INPUT SOAP PERAWAT</b><br>
 					</div>					
 				</div>
 				<br><br>
@@ -457,7 +456,7 @@ if(empty($skala_nyeri)){
 						SELECT        distinct ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan, ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_nama
 						FROM            ERM_ASUHAN_KEPERAWATAN INNER JOIN
 						ERM_MASTER_ASUHANKEPERAWATAN ON ERM_ASUHAN_KEPERAWATAN.diagnosa_keperawatan = ERM_MASTER_ASUHANKEPERAWATAN.diagnosa_keperawatan
-						where noreg='$noreg'
+						where noreg='$noreg' and (ERM_ASUHAN_KEPERAWATAN.teratasi is null or ERM_ASUHAN_KEPERAWATAN.teratasi ='')
 						";
 						$hl  = sqlsrv_query($conn, $ql);
 						$no=1;
@@ -536,12 +535,13 @@ if(empty($skala_nyeri)){
 								<input class="form-control-sm" name="skala_nyeri" value="<?php echo $skala_nyeri;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder=""><br>
 								<label for="" class="col-3">Berat Badan : </label>
 								<input class="form-control-sm" name="berat_badan" value="<?php echo $bb;?>" id="" type="text" size='' onfocus="nextfield ='status_lokalis';" placeholder="">Kg<br>
-								
+								<label for="" class="col-3">SPO2 : </label>
+								<input class="form-control-sm" name="spo" value="<?php echo $spo;?>" id="" type="text" size='' onfocus="nextfield ='status_lokalis';" placeholder=""><br>
 							</div>
 						</div>
 					</div>
 				</div>
-
+				<br>
 				<div class="row">
 					<div class="col-12">
 						<div class="card">
@@ -571,48 +571,75 @@ if(empty($skala_nyeri)){
 						<hr>
 						<b><font size='5' color='green'>(P)</font>lan</b></br>
 						<?php 
-						$qus="SELECT   distinct rencana as implementasi
-						FROM            ERM_ASUHAN_KEPERAWATAN2
-						WHERE        (noreg = '$noreg') and jenis in('master6','master7','master8','master9')
-						";
-						$h1us  = sqlsrv_query($conn, $qus);
-						$noe=1;        
-						while   ($d1us = sqlsrv_fetch_array($h1us, SQLSRV_FETCH_ASSOC)){
-							if($noe==1){
-								$aplan = $d1us[implementasi]."\n";
-							}else{
-								$aplan = $aplan.$d1us[implementasi]."\n";
-							}
-							$noe=$noe+1;
+						// $qus="SELECT   distinct rencana as implementasi
+						// FROM            ERM_ASUHAN_KEPERAWATAN2
+						// WHERE        (noreg = '$noreg') and jenis in('master6','master7','master8','master9')
+						// ";
+						// $h1us  = sqlsrv_query($conn, $qus);
+						// $noe=1;        
+						// while   ($d1us = sqlsrv_fetch_array($h1us, SQLSRV_FETCH_ASSOC)){
+						// 	if($noe==1){
+						// 		$aplan = $d1us[implementasi]."\n";
+						// 	}else{
+						// 		$aplan = $aplan.$d1us[implementasi]."\n";
+						// 	}
+						// 	$noe=$noe+1;
 
-						}
+						// }
 
 						?>
-						<textarea name= "aplan" id="" class="form-control" style="min-width:100%; min-height:200px;"><?php echo $aplan;?></textarea>
+						<textarea name= "aplan" id="" class="form-control" style="min-width:100%; min-height:150px;"><?php echo $aplan;?></textarea>
 						<hr>
 
 						<i>Instruksi PPA</i>
 
 						<?php 
+
+						function cleanString($text) {
+							return preg_replace('/[^\x20-\x7E]/', '', $text); 
+						}
+
+
 						$qins="SELECT   distinct rencana as instruksi
 						FROM            ERM_ASUHAN_KEPERAWATAN2
-						WHERE        (noreg = '$noreg') and jenis in('master5')
+						WHERE        (noreg = '$noreg') and jenis in('master6','master7','master8','master9')
 						";
 						$hins  = sqlsrv_query($conn, $qins);
 						$dnoe=1;        
 						while   ($dhins = sqlsrv_fetch_array($hins, SQLSRV_FETCH_ASSOC)){
+							// $nilairujukan = cleanString($dhqlab["NILAI_RUJUKAN"]);
+
 							if($dnoe==1){
-								$instruksi = $dhins[instruksi]."\n";
+								$instruksi = cleanString($dhins[instruksi])."\n";
 							}else{
-								$instruksi = $instruksi.$dhins[instruksi]."\n";
+								$instruksi = $instruksi.cleanString($dhins[instruksi])."\n";
 							}
-							$noe=$noe+1;
+							$dnoe=$dnoe+1;
 
 						}
 
 						?>
 
-						<textarea class="form-control" name="instruksi" style="min-width:600px; min-height:200px;" onfocus="nextfield ='';"><?php echo $instruksi;?></textarea>
+						<?php 
+						// $qins="SELECT   distinct rencana as instruksi
+						// FROM            ERM_ASUHAN_KEPERAWATAN2
+						// WHERE        (noreg = '$noreg') and jenis in('master5')
+						// ";
+						// $hins  = sqlsrv_query($conn, $qins);
+						// $dnoe=1;        
+						// while   ($dhins = sqlsrv_fetch_array($hins, SQLSRV_FETCH_ASSOC)){
+						// 	if($dnoe==1){
+						// 		$instruksi = $dhins[instruksi]."\n";
+						// 	}else{
+						// 		$instruksi = $instruksi.$dhins[instruksi]."\n";
+						// 	}
+						// 	$noe=$noe+1;
+
+						// }
+
+						?>
+
+						<textarea class="form-control" name="instruksi" style="min-width:600px; min-height:400px;" onfocus="nextfield ='';"><?php echo $instruksi;?></textarea>
 
 					</div>
 				</div>
@@ -679,6 +706,7 @@ if (isset($_POST["simpan"])) {
 	$frekuansi_pernafasan	= trim($_POST["frekuansi_pernafasan"]);
 	$skala_nyeri	= trim($_POST["skala_nyeri"]);
 	$berat_badan	= trim($_POST["berat_badan"]);
+	$spo	= trim($_POST["spo"]);
 	$fisik_kepala	= trim($_POST["fisik_kepala"]);
 	$fisik_mata	= trim($_POST["fisik_mata"]);
 	$fisik_tht	= trim($_POST["fisik_tht"]);
@@ -708,7 +736,7 @@ if (isset($_POST["simpan"])) {
 	//object
 	$dobjektif=
 	"GCS - Eye : ".$eye.", Verbal : ".$verbal.", Movement : ".$movement.", Total GCS : ".$total_gcs.
-	", Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.
+	", Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.", SPO2 : ".$spo.
 	"<br>Status Lokalis : ".$status_lokalis.", Pemeriksaan Penunjang : ".$pemeriksaan_penunjang;
 
 	// $tglinput	= trim($_POST["tglinput"]);

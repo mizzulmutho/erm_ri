@@ -119,17 +119,17 @@ if(empty($regcek)){
 	$hs = sqlsrv_query($conn,$q);
 }else{
 
-	$q  = "UPDATE ERM_RI_RESUME set 
-	resume8='',
-	resume9='',
-	resume10='',
-	resume11='',
-	resume12='',
-	resume13='',
-	resume14='',
-	resume15=''
-	where noreg='$noreg'";
-	$hs = sqlsrv_query($conn,$q);
+	// $q  = "UPDATE ERM_RI_RESUME set 
+	// resume8='',
+	// resume9='',
+	// resume10='',
+	// resume11='',
+	// resume12='',
+	// resume13='',
+	// resume14='',
+	// resume15=''
+	// where noreg='$noreg'";
+	// $hs = sqlsrv_query($conn,$q);
 
 	$qe="
 	SELECT *,CONVERT(VARCHAR, tglresume, 23) as tglresume
@@ -1486,6 +1486,10 @@ if (isset($_POST["Pdf"])) {
 			</div>
 			<hr>
 			<div class="row">
+				<?php include('menu_dokter.php');?>
+			</div>
+			<hr>
+			<div class="row">
 				<div class="col-12 text-center">
 					<b>RINGKASAN PASIEN PULANG RAWAT INAP</b><br>
 					INPATIENT DISCHARGE SUMMARY (MEDICAL RESUME)
@@ -1543,7 +1547,8 @@ if (isset($_POST["Pdf"])) {
 						$resume10 = $resume10;
 					}
 					?>
-					: <input type='text' name='resume10' value='<?php echo $resume10; ?>' size='80'>
+					: 
+					<textarea name= "resume10" id="fisik" style="min-width:630px; min-height:260px;"><?php echo $resume10;?></textarea>					
 				</div>
 			</div>			
 			<hr> 
@@ -1771,7 +1776,7 @@ if (isset($_POST["Pdf"])) {
 					: <textarea name= "resume16" id="fisik" style="min-width:630px; min-height:50px;"></textarea>
 				</div>
 				<div class="col-4">
-					&bull; Laboratorium
+					&bull; Pemeriksaan Laboratorium Lain
 				</div>
 				<div class="col-8">
 					: 
@@ -1784,7 +1789,7 @@ if (isset($_POST["Pdf"])) {
 					<textarea name= "resume17" id="fisik" style="min-width:630px; min-height:50px;"><?php echo $resume17;?></textarea>
 				</div>
 				<div class="col-4">
-					&bull; Radiologi
+					&bull; Pemeriksaan Radiologi Lain
 				</div>
 				<div class="col-8">
 					: 
@@ -1852,7 +1857,7 @@ if (isset($_POST["Pdf"])) {
 					<option value="O86.4">O86.4 - puerperal pyrexia NOS</option>
 				</select>
 			-->				
-			<input class="" name="resume21" value="<?php echo $resume20;?>" id="icd102" type="text" size='80' onfocus="nextfield ='';" placeholder="Isikan ICD10">
+			<input class="" name="resume21" value="<?php echo $resume21;?>" id="icd102" type="text" size='80' onfocus="nextfield ='';" placeholder="Isikan ICD10">
 		</div>
 		<div class="col-4">
 			&bull; Diagnosis Akhir (Sekunder)
@@ -1871,6 +1876,54 @@ if (isset($_POST["Pdf"])) {
 				<option value="O86.4">O86.4 - puerperal pyrexia NOS</option>
 			</select> -->
 			<input class="" name="resume22" value="<?php echo $resume22;?>" id="icd103" type="text" size='80' onfocus="nextfield ='periode';" placeholder="Isikan ICD10">
+			<a href='diagnosis_sekunder_dokter.php?id=<?php echo $id.'|'.$user;?>'>(+)</a><br>
+			<?php
+			$qds="SELECT * FROM  ERM_RI_DIAGNOSA_SEKUNDER where noreg='$noreg'";
+			$hqds  = sqlsrv_query($conn, $qds);        
+			$dhqds  = sqlsrv_fetch_array($hqds, SQLSRV_FETCH_ASSOC); 			
+			$diagnosa1  = $dhqds['diagnosa_sekunder1'];
+			$diagnosa2  = $dhqds['diagnosa_sekunder2'];
+			$diagnosa3  = $dhqds['diagnosa_sekunder3'];
+			$diagnosa4   = $dhqds['diagnosa_sekunder4'];
+			$diagnosa5   = $dhqds['diagnosa_sekunder5'];
+			$diagnosa6   = $dhqds['diagnosa_sekunder6'];
+			$diagnosa7   = $dhqds['diagnosa_sekunder7'];
+			$diagnosa8   = $dhqds['diagnosa_sekunder8'];
+			$diagnosa9   = $dhqds['diagnosa_sekunder9'];
+			$diagnosa10   = $dhqds['diagnosa_sekunder10'];
+			if($diagnosa1){
+				echo $diagnosa1;echo "<br>";
+			}
+			if($diagnosa2){
+				echo $diagnosa2;echo "<br>";
+			}
+			if($diagnosa3){
+				echo $diagnosa3;echo "<br>";
+			}
+			if($diagnosa4){
+				echo $diagnosa4;echo "<br>";
+			}
+			if($diagnosa5){
+				echo $diagnosa5;echo "<br>";
+			}
+			if($diagnosa6){
+				echo $diagnosa6;echo "<br>";
+			}
+			if($diagnosa7){
+				echo $diagnosa7;echo "<br>";
+			}
+			if($diagnosa8){
+				echo $diagnosa8;echo "<br>";
+			}
+			if($diagnosa9){
+				echo $diagnosa9;echo "<br>";
+			}
+			if($diagnosa10){
+				echo $diagnosa10;echo "<br>";
+			}
+
+			?>
+
 		</div>
 	</div>
 
@@ -1920,16 +1973,15 @@ if (isset($_POST["Pdf"])) {
 		</div>
 	</div>
 	
-<!-- 	<div class="row">
+	<div class="row">
 		<div class="col-4">
-			<b>&nbsp;&nbsp;&nbsp;b. Pengobatan</b>
+			<b>&nbsp;&nbsp;&nbsp;Terapi Tambahan</b>
 		</div>
 		<div class="col-8">
 			: 
-			<input type='text' name='resume34' value='<?php echo $resume34; ?>' size='80'>
-			<textarea name= "resume34" id="resume34" style="min-width:630px; min-height:150px;" placeholder="Isikan Pengobatan Saat Rawat Inap"><?php echo $resume34;?></textarea>
+			<textarea name= "resume34" id="resume34" style="min-width:630px; min-height:150px;" placeholder="Isikan Jika ada Terapi Tambahan"><?php echo $resume34;?></textarea>
 		</div>
-	</div> -->
+	</div>
 
 	<hr> 
 	<div class="row">
@@ -2039,13 +2091,6 @@ if (isset($_POST["upload"])) {
 
 if (isset($_POST["simpan"])) {
 
-	$resume1	= $_POST["resume1"];
-	$resume2	= $_POST["resume2"];
-	$resume3	= $_POST["resume3"];
-	$resume4	= $_POST["resume4"];
-	$resume5	= $_POST["resume5"];
-	$resume6	= $_POST["resume6"];
-	$resume7	= $_POST["resume7"];
 	$resume8	= $_POST["resume8"];
 	$resume9	= $_POST["resume9"];
 	$resume10	= $_POST["resume10"];
@@ -2062,143 +2107,14 @@ if (isset($_POST["simpan"])) {
 	$resume21	= $_POST["resume21"];
 	$resume22	= $_POST["resume22"];
 	$resume23	= $_POST["resume23"];
-	$resume24	= $_POST["resume24"];
-	$resume25	= $_POST["resume25"];
-	$resume26	= $_POST["resume26"];
-	$resume27	= $_POST["resume27"];
-	$resume28	= $_POST["resume28"];
-	$resume29	= $_POST["resume29"];
-	$resume30	= $_POST["resume30"];
-	$resume31	= $_POST["resume31"];
-	$resume32	= $_POST["resume32"];
-	$resume33	= $_POST["resume33"];
-	$resume34	= $_POST["resume34"];
 	$resume35	= $_POST["resume35"];
 	$resume36	= $_POST["resume36"];
 	$resume37	= $_POST["resume37"];
 	$resume38	= $_POST["resume38"];
-	$resume39	= $_POST["resume39"];
-	$resume40	= $_POST["resume40"];
-	$resume41	= $_POST["resume41"];
-	$resume42	= $_POST["resume42"];
-	$resume43	= $_POST["resume43"];
-	$resume44	= $_POST["resume44"];
-	$resume45	= $_POST["resume45"];
-	$resume46	= $_POST["resume46"];
-	$resume47	= $_POST["resume47"];
-	$resume48	= $_POST["resume48"];
-	$resume49	= $_POST["resume49"];
-	$resume50	= $_POST["resume50"];
-	$resume51	= $_POST["resume51"];
-	$resume52	= $_POST["resume52"];
-	$resume53	= $_POST["resume53"];
-	$resume54	= $_POST["resume54"];
-	$resume55	= $_POST["resume55"];
-	$resume56	= $_POST["resume56"];
-	$resume57	= $_POST["resume57"];
-	$resume58	= $_POST["resume58"];
-	$resume59	= $_POST["resume59"];
-	$resume60	= $_POST["resume60"];
-	$resume61	= $_POST["resume61"];
-	$resume62	= $_POST["resume62"];
-	$resume63	= $_POST["resume63"];
-	$resume64	= $_POST["resume64"];
-	$resume65	= $_POST["resume65"];
-	$resume66	= $_POST["resume66"];
-	$resume67	= $_POST["resume67"];
-	$resume68	= $_POST["resume68"];
-	$resume69	= $_POST["resume69"];
-	$resume70	= $_POST["resume70"];
-	$resume71	= $_POST["resume71"];
-	$resume72	= $_POST["resume72"];
-	$resume73	= $_POST["resume73"];
-	$resume74	= $_POST["resume74"];
-	$resume75	= $_POST["resume75"];
-	$resume76	= $_POST["resume76"];
-	$resume77	= $_POST["resume77"];
-	$resume78	= $_POST["resume78"];
-	$resume79	= $_POST["resume79"];
-	$resume80	= $_POST["resume80"];
-	$resume81	= $_POST["resume81"];
-	$resume82	= $_POST["resume82"];
-	$resume83	= $_POST["resume83"];
-	$resume84	= $_POST["resume84"];
-	$resume85	= $_POST["resume85"];
-	$resume86	= $_POST["resume86"];
-	$resume87	= $_POST["resume87"];
-	$resume88	= $_POST["resume88"];
-	$resume89	= $_POST["resume89"];
-	$resume90	= $_POST["resume90"];
-	$resume91	= $_POST["resume91"];
-	$resume92	= $_POST["resume92"];
-	$resume93	= $_POST["resume93"];
-	$resume94	= $_POST["resume94"];
-	$resume95	= $_POST["resume95"];
-	$resume96	= $_POST["resume96"];
-	$resume97	= $_POST["resume97"];
-	$resume98	= $_POST["resume98"];
-	$resume99	= $_POST["resume99"];
-	$resume100	= $_POST["resume100"];
-	$resume101	= $_POST["resume101"];
-	$resume102	= $_POST["resume102"];
-	$resume103	= $_POST["resume103"];
-	$resume104	= $_POST["resume104"];
-	$resume105	= $_POST["resume105"];
-	$resume106	= $_POST["resume106"];
-	$resume107	= $_POST["resume107"];
-	$resume108	= $_POST["resume108"];
-	$resume109	= $_POST["resume109"];
-	$resume110	= $_POST["resume110"];
-	$resume111	= $_POST["resume111"];
-	$resume112	= $_POST["resume112"];
-	$resume113	= $_POST["resume113"];
-	$resume114	= $_POST["resume114"];
-	$resume115	= $_POST["resume115"];
-	$resume116	= $_POST["resume116"];
-	$resume117	= $_POST["resume117"];
-	$resume118	= $_POST["resume118"];
-	$resume119	= $_POST["resume119"];
-	$resume120	= $_POST["resume120"];
-	$resume121	= $_POST["resume121"];
-	$resume122	= $_POST["resume122"];
-	$resume123	= $_POST["resume123"];
-	$resume124	= $_POST["resume124"];
-	$resume125	= $_POST["resume125"];
-	$resume126	= $_POST["resume126"];
-	$resume127	= $_POST["resume127"];
-	$resume128	= $_POST["resume128"];
-	$resume129	= $_POST["resume129"];
-	$resume130	= $_POST["resume130"];
-	$resume131	= $_POST["resume131"];
-	$resume132	= $_POST["resume132"];
-	$resume133	= $_POST["resume133"];
-	$resume134	= $_POST["resume134"];
-	$resume135	= $_POST["resume135"];
-	$resume136	= $_POST["resume136"];
-	$resume137	= $_POST["resume137"];
-	$resume138	= $_POST["resume138"];
-	$resume139	= $_POST["resume139"];
-	$resume140	= $_POST["resume140"];
-	$resume141	= $_POST["resume141"];
-	$resume142	= $_POST["resume142"];
-	$resume143	= $_POST["resume143"];
-	$resume144	= $_POST["resume144"];
-	$resume145	= $_POST["resume145"];
-	$resume146	= $_POST["resume146"];
-	$resume147	= $_POST["resume147"];
-	$resume148	= $_POST["resume148"];
-	$resume149	= $_POST["resume149"];
-	$resume150	= $_POST["resume150"];
+	$resume34	= $_POST["resume34"];
 
 	$q  = "update ERM_RI_RESUME set
 	userid = '$user',tglentry='$tglinput',
-	resume1	='$resume1',
-	resume2	='$resume2',
-	resume3	='$resume3',
-	resume4	='$resume4',
-	resume5	='$resume5',
-	resume6	='$resume6',
-	resume7	='$resume7',
 	resume8	='$resume8',
 	resume9	='$resume9',
 	resume10	='$resume10',
@@ -2215,133 +2131,11 @@ if (isset($_POST["simpan"])) {
 	resume21	='$resume21',
 	resume22	='$resume22',
 	resume23	='$resume23',
-	resume24	='$resume24',
-	resume25	='$resume25',
-	resume26	='$resume26',
-	resume27	='$resume27',
-	resume28	='$resume28',
-	resume29	='$resume29',
-	resume30	='$resume30',
-	resume31	='$resume31',
-	resume32	='$resume32',
-	resume33	='$resume33',
 	resume34	='$resume34',
 	resume35	='$resume35',
 	resume36	='$resume36',
 	resume37	='$resume37',
-	resume38	='$resume38',
-	resume39	='$resume39',
-	resume40	='$resume40',
-	resume41	='$resume41',
-	resume42	='$resume42',
-	resume43	='$resume43',
-	resume44	='$resume44',
-	resume45	='$resume45',
-	resume46	='$resume46',
-	resume47	='$resume47',
-	resume48	='$resume48',
-	resume49	='$resume49',
-	resume50	='$resume50',
-	resume51	='$resume51',
-	resume52	='$resume52',
-	resume53	='$resume53',
-	resume54	='$resume54',
-	resume55	='$resume55',
-	resume56	='$resume56',
-	resume57	='$resume57',
-	resume58	='$resume58',
-	resume59	='$resume59',
-	resume60	='$resume60',
-	resume61	='$resume61',
-	resume62	='$resume62',
-	resume63	='$resume63',
-	resume64	='$resume64',
-	resume65	='$resume65',
-	resume66	='$resume66',
-	resume67	='$resume67',
-	resume68	='$resume68',
-	resume69	='$resume69',
-	resume70	='$resume70',
-	resume71	='$resume71',
-	resume72	='$resume72',
-	resume73	='$resume73',
-	resume74	='$resume74',
-	resume75	='$resume75',
-	resume76	='$resume76',
-	resume77	='$resume77',
-	resume78	='$resume78',
-	resume79	='$resume79',
-	resume80	='$resume80',
-	resume81	='$resume81',
-	resume82	='$resume82',
-	resume83	='$resume83',
-	resume84	='$resume84',
-	resume85	='$resume85',
-	resume86	='$resume86',
-	resume87	='$resume87',
-	resume88	='$resume88',
-	resume89	='$resume89',
-	resume90	='$resume90',
-	resume91	='$resume91',
-	resume92	='$resume92',
-	resume93	='$resume93',
-	resume94	='$resume94',
-	resume95	='$resume95',
-	resume96	='$resume96',
-	resume97	='$resume97',
-	resume98	='$resume98',
-	resume99	='$resume99',
-	resume100	='$resume100',
-	resume101	='$resume101',
-	resume102	='$resume102',
-	resume103	='$resume103',
-	resume104	='$resume104',
-	resume105	='$resume105',
-	resume106	='$resume106',
-	resume107	='$resume107',
-	resume108	='$resume108',
-	resume109	='$resume109',
-	resume110	='$resume110',
-	resume111	='$resume111',
-	resume112	='$resume112',
-	resume113	='$resume113',
-	resume114	='$resume114',
-	resume115	='$resume115',
-	resume116	='$resume116',
-	resume117	='$resume117',
-	resume118	='$resume118',
-	resume119	='$resume119',
-	resume120	='$resume120',
-	resume121	='$resume121',
-	resume122	='$resume122',
-	resume123	='$resume123',
-	resume124	='$resume124',
-	resume125	='$resume125',
-	resume126	='$resume126',
-	resume127	='$resume127',
-	resume128	='$resume128',
-	resume129	='$resume129',
-	resume130	='$resume130',
-	resume131	='$resume131',
-	resume132	='$resume132',
-	resume133	='$resume133',
-	resume134	='$resume134',
-	resume135	='$resume135',
-	resume136	='$resume136',
-	resume137	='$resume137',
-	resume138	='$resume138',
-	resume139	='$resume139',
-	resume140	='$resume140',
-	resume141	='$resume141',
-	resume142	='$resume142',
-	resume143	='$resume143',
-	resume144	='$resume144',
-	resume145	='$resume145',
-	resume146	='$resume146',
-	resume147	='$resume147',
-	resume148	='$resume148',
-	resume149	='$resume149',
-	resume150	='$resume150'
+	resume38	='$resume38'
 	where noreg='$noreg'
 	";
 

@@ -20,6 +20,7 @@ $h1u  = sqlsrv_query($conn, $qu);
 $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 $norm = trim($d1u['norm']);
 $noreg = trim($d1u['noreg']);
+$noreg_igd = substr($noreg, 1,12);
 
 $qu="SELECT        ARM_REGISTER.NOREG, ARM_REGISTER.NORM, Afarm_Unitlayanan.KODEUNIT, Afarm_Unitlayanan.NAMAUNIT, Afarm_Unitlayanan.KET1
 FROM            ARM_REGISTER INNER JOIN
@@ -214,7 +215,7 @@ $tglkeluar = $data3[tglkeluar];
 				CONVERT(VARCHAR, REG_DATE, 103) as REG_DATE,
 				CONVERT(VARCHAR, REG_DATE, 23) as TGLLAB
 				FROM        LINKYAN5.SHARELIS.dbo.hasilLIS
-				WHERE        (NOLAB_RS = '$noreg') order by REG_DATE desc
+				WHERE        (NOLAB_RS like '%$noreg_igd%') order by REG_DATE desc
 				";
 				$hasil  = sqlsrv_query($conn, $q);  
 				$no=1;
@@ -222,7 +223,7 @@ $tglkeluar = $data3[tglkeluar];
 
 					$q2 = " 
 					SELECT idlab from ERM_RI_LAB_TEMP
-					WHERE        noreg='$noreg' and (idlab = '$data[ID_HASIL]')";
+					WHERE        noreg like '%$noreg_igd%' and (idlab = '$data[ID_HASIL]')";
 					$h2  = sqlsrv_query($conn, $q2);
 					$dh2  = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
 					$idlab = trim($dh2['idlab']);

@@ -1,171 +1,166 @@
-<?php 
-// include ("koneksi.php");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Asuhan Keperawatan</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body onload="document.myForm.pasien_mcu.focus();">
 
-error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
-
-$serverName = "192.168.10.1"; //serverName\instanceName
-$connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
-$conn = sqlsrv_connect( $serverName, $connectionInfo);
-
-$tgl		= gmdate("Y-m-d", time()+60*60*7);
-
-$id = $_GET["id"];
-$row = explode('|',$id);
-$id  = $row[0];
-$user = $row[1]; 
-
-$qu="SELECT noreg FROM ERM_ASSESMEN_HEADER where id='$id'";
-$h1u  = sqlsrv_query($conn, $qu);        
-$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-$noreg = $d1u['noreg'];
-
-
-$ql1="SELECT  id,rencana,userid from ERM_ASUHAN_KEPERAWATAN where id_assesmen='$id' order by id desc";
-$hl1  = sqlsrv_query($conn, $ql1);
-$d11  = sqlsrv_fetch_array($hl1, SQLSRV_FETCH_ASSOC); 
-$rencana = $d11['rencana'];
-$rencana = html_entity_decode($rencana);
-
-$userid = $d11['userid'];
-$idrasuhan = $d11['id'];
-
-
-if (isset($_POST["implementasi_rencana"])) {
-	$idrasuhan = trim($_POST["idrasuhan"]);
-
-	echo "
-	<script>
-	top.location='i_asuhankeperawatan.php?id=$id|$user|$idrasuhan';
-	</script>
-	";            
-}
-
-
-?>
-
-<!DOCTYPE html> 
-<html> 
-<head>  
-	<title>eRM-RI</title>  
-	<link rel="icon" href="favicon.ico">  
-	<link rel="stylesheet" href="css/bootstrap.min.css" />
-	<script type="text/javascript" src="ckeditor/ckeditor.js"></script>
-	<script>
-		CKEDITOR.replace('editor1');
-		CKEDITOR.config.width="100%";
-		CKEDITOR.config.height="500px"
-	</script>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-</head> 
-
-<div class="container-fluid">
-
-	<body onload="document.myForm.pasien_mcu.focus();">
-		<form method="POST" name='myForm' action="" enctype="multipart/form-data">
-
-			<div class="row">
-
+	<div class="container py-4">
+		<form method="POST" name="myForm" action="" enctype="multipart/form-data">
+			<div class="row mb-3">
 				<div class="col-12">
-
-					<?php 
-					include "header_soap.php";
-					?>
-
+					<?php include "header_soap.php"; ?>
 				</div>
-
 			</div>
 
-			<br>
-			<a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'>Close</a>
-			&nbsp;&nbsp;&nbsp;
-			<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i> </a>
-			&nbsp;&nbsp;&nbsp;
-			<a href='askep.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'>+ Rencana Asuhan </a>
-			&nbsp;&nbsp;&nbsp;
-			<br>
-			<!-- <h3>Rencana Asuhan Keperawatan</h3> -->
-			<br>
+			<div class="mb-3 d-flex gap-2">
+				<a href='index.php?id=<?php echo $id."|".$user;?>' class='btn btn-warning'>
+					<i class="bi bi-x-circle-fill"></i> Tutup
+				</a>
+				<a href='' class='btn btn-success'>
+					<i class="bi bi-arrow-clockwise"></i> Refresh
+				</a>
+				<a href='askep.php?id=<?php echo $id."|".$user;?>' class='btn btn-primary'>
+					<i class="bi bi-journal-plus"></i> Tambah Rencana Asuhan
+				</a>
+			</div>
 
-			<b><u>REPORT ASUHAN KEPERAWATAN</u></b><br>
-			<font size='2px'>
-				<?php
-				// $ql="SELECT DISTINCT *,CONVERT(VARCHAR, tgl_teratasi, 20) as tglteratasi  FROM ERM_ASUHAN_KEPERAWATAN WHERE noreg='$noreg' ORDER BY id desc";
+			<div class="card">
+				<div class="card-header bg-primary text-white">
+					<i class="bi bi-file-earmark-medical-fill"></i> Report Asuhan Keperawatan
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<font size="2">
+							<?php
+							$ql = "SELECT DISTINCT noreg, diagnosa_keperawatan 
+							FROM ERM_ASUHAN_KEPERAWATAN 
+							WHERE noreg = '$noreg' 
+							ORDER BY diagnosa_keperawatan ASC";
+							$hl1 = sqlsrv_query($conn, $ql);
 
-				$ql="SELECT DISTINCT noreg,diagnosa_keperawatan from ERM_ASUHAN_KEPERAWATAN WHERE noreg='$noreg' ORDER BY diagnosa_keperawatan asc";
+							while ($dl1 = sqlsrv_fetch_array($hl1, SQLSRV_FETCH_ASSOC)) {
+								$diagnosa_keperawatan = $dl1['diagnosa_keperawatan'];
 
-				$hl1  = sqlsrv_query($conn, $ql);
-				while   ($dl1 = sqlsrv_fetch_array($hl1, SQLSRV_FETCH_ASSOC)){   
-					$diagnosa_keperawatan = $dl1['diagnosa_keperawatan'];
+								$q2 = "SELECT diagnosa_nama 
+								FROM ERM_MASTER_ASUHANKEPERAWATAN 
+								WHERE diagnosa_keperawatan LIKE '%$diagnosa_keperawatan%' 
+								ORDER BY id DESC";
+								$h2 = sqlsrv_query($conn, $q2);
+								$d2 = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
+								$diagnosa_nama = $d2['diagnosa_nama'];
 
-					$q2="SELECT diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN WHERE diagnosa_keperawatan like '%$diagnosa_keperawatan%' ORDER BY id desc";
-					$h2  = sqlsrv_query($conn, $q2);
-					$d2  = sqlsrv_fetch_array($h2, SQLSRV_FETCH_ASSOC); 
-					$diagnosa_nama = $d2['diagnosa_nama'];
+								echo "<h6 class='mt-3'><i class='bi bi-bandaid-fill text-danger'></i> Diagnosa Keperawatan: <strong>$diagnosa_nama</strong></h6>";
 
-					echo "diagnosa keperawatan : ".$diagnosa_nama;
-					echo "<br>";
+                    // Ambil data implementasi
+								$q2 = "
+								SELECT id, sift, userid, implementasi, 
+								CONVERT(VARCHAR, tanggal, 103) AS tanggal, 
+								CONVERT(VARCHAR, jam, 24) AS jam
+								FROM ERM_IMPLEMENTASI_ASUHAN
+								WHERE noreg = '$noreg' AND diagnosa_keperawatan = '$diagnosa_keperawatan'
+								ORDER BY tanggal DESC, jam DESC";
 
-					echo "
-					<table class='table'>
-					<tr>
-					<td>no</td>	
-					<td>sift</td>
-					<td>user input</td>
-					<td>tgl / jam</td>									
-					<td width='50%'>implementasi</td>
-					<td>hapus</td>
-					</tr>
-					";
+								$hasil2 = sqlsrv_query($conn, $q2);
 
-					//implementasi..
-					$q2="
-					SELECT      id,sift,userid,implementasi,CONVERT(VARCHAR, tanggal, 103) AS tanggal, CONVERT(VARCHAR, jam, 24) AS jam
-					FROM         ERM_IMPLEMENTASI_ASUHAN
-					WHERE        (noreg = '$noreg') and diagnosa_keperawatan='$diagnosa_keperawatan'
-					order by id desc
-					";
-					$hasil2  = sqlsrv_query($conn, $q2);
-					$i=1;				  
+                    // Kelompok data per tanggal > sift
+								$grouped_data = [];
 
-					while 	($data2 = sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC)){				  
+								while ($data2 = sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC)) {
+                        $tanggal = $data2['tanggal']; // format dd/mm/yyyy
+                        $sift = trim($data2['sift']);
+                        $grouped_data[$tanggal][$sift][] = $data2;
+                    }
 
-						if(trim($data2[sift])=='DINAS PAGI'){
-							$warna = '';
-						}
-						if(trim($data2[sift])=='DINAS SIANG'){
-							$warna = 'F5F7F8';
-						}
-						if(trim($data2[sift])=='DINAS MALAM'){
-							$warna = 'F1F8E8';
-						}
+                    // Urutkan tanggal DESC
+                    krsort($grouped_data);
 
-						echo "
-						<tr>
-						<td bgcolor='$warna'>$i</td>
-						<td bgcolor='$warna'>$data2[sift]</td>
-						<td bgcolor='$warna'>$data2[userid]</td>
-						<td bgcolor='$warna'>$data2[tanggal] - $data2[jam]</td>
-						<td bgcolor='$warna'>$data2[implementasi]</td>
-						<td bgcolor='$warna'><a href='del_implementasi.php?id=$id|$user|$data2[id]'><font color='red'>[x]</font></a></td>
-						</tr>
-						";
+                    // Urutan sift yang diinginkan
+                    $sift_order = ['DINAS PAGI', 'DINAS SIANG', 'DINAS MALAM'];
 
-						$csift = $data2[sift];
+                    foreach ($grouped_data as $tanggal => $sift_group) {
+                    	echo "<h6 class='mt-4'><i class='bi bi-calendar-event'></i> Tanggal: <strong>$tanggal</strong></h6>";
 
-						$i=$i+1;
+                        // Urutkan sift sesuai urutan custom
+                    	foreach ($sift_order as $sift) {
+                    		if (!isset($sift_group[$sift])) continue;
 
-					}
+                            // Set warna card
+                    		if ($sift == 'DINAS PAGI') {
+                    			$bgCard = 'bg-info text-white';
+                    			$warna = '';
+                    		} elseif ($sift == 'DINAS SIANG') {
+                    			$bgCard = 'bg-warning text-dark';
+                    			$warna = '#F5F7F8';
+                    		} elseif ($sift == 'DINAS MALAM') {
+                    			$bgCard = 'bg-dark text-white';
+                    			$warna = '#F1F8E8';
+                    		} else {
+                    			$bgCard = 'bg-light';
+                    			$warna = '';
+                    		}
 
-					echo "</table>";
+                    		echo "
+                    		<div class='card mb-3'>
+                    		<div class='card-header $bgCard'>
+                    		<strong>Sift:</strong> $sift
+                    		</div>
+                    		<div class='card-body'>
+                    		<div class='table-responsive'>
+                    		<table class='table table-bordered table-striped'>
+                    		<thead class='table-light'>
+                    		<tr>
+                    		<th>No</th>    
+                    		<th>User Input</th>
+                    		<th>Tanggal</th>
+                    		<th>Jam</th>                                     
+                    		<th>Implementasi</th>
+                    		<th>Aksi</th>
+                    		</tr>
+                    		</thead>
+                    		<tbody>";
 
-				}
+                    		$i = 1;
+                    		foreach ($sift_group[$sift] as $data2) {
+                    			echo "
+                    			<tr style='background-color:$warna'>
+                    			<td>$i</td>
+                    			<td>{$data2['userid']}</td>
+                    			<td>{$data2['tanggal']}</td>
+                    			<td>{$data2['jam']}</td>
+                    			<td>{$data2['implementasi']}</td>
+                    			<td>
+                    			<a href='del_implementasi.php?id={$id}|{$user}|{$data2['id']}' 
+                    			class='btn btn-sm btn-outline-danger'>
+                    			<i class='bi bi-trash'></i>
+                    			</a>
+                    			</td>
+                    			</tr>";
+                    			$i++;
+                    		}
 
-				?>
-			</table>
-			<br>
-
-			<!-- <h5>Implementasi Asuhan Keperawatan</h5> -->
-		</font>
-	</form>
-</body>
+                    		echo "
+                    		</tbody>
+                    		</table>
+                    		</div>
+                    		</div>
+                    		</div>";
+                    	}
+                    }
+                }
+                ?>
+            </font>
+        </div>
+    </div>
 </div>
+
+
+</form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

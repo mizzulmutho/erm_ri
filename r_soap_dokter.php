@@ -139,20 +139,38 @@ $noktp =  $data2[NOKTP];
 
 				<table  class="table table-bordered">
 					<?php
+					// $ql="
+					// SELECT TOP(200) id,kodedokter,noreg,userid,dpjp,subjektif,objektif,assesment,planning,instruksi,sbu,
+					// CONVERT(VARCHAR, tanggal, 101) as tgl2,
+					// CONVERT(VARCHAR, tglentry, 8) as tgl3, 
+					// CONVERT(VARCHAR, tglentry, 20) as tgl4,'SOAP' as jenis,instruksi  
+					// FROM ERM_SOAP WHERE norm='$norm'
+					// union
+					// select top(200) id,'' as kodedokter,noreg,userinput,'' as dpjp, '' as subjektif, '' as objektif, '' as assesment, '' as planning,'' as instruksi,'' as sbu,
+					// CONVERT(VARCHAR, tglinput, 101) as tgl2, 
+					// CONVERT(VARCHAR, tglinput, 8) as tgl3, 
+					// CONVERT(VARCHAR, tglinput, 20) as tgl4, 'MONITORING' as jenis,'' as instruksi
+					// FROM ERM_RI_OBSERVASI WHERE norm='$norm'
+					// ORDER BY tgl4 desc
+					// ";
+
 					$ql="
 					SELECT TOP(200) id,kodedokter,noreg,userid,dpjp,subjektif,objektif,assesment,planning,instruksi,sbu,
-					CONVERT(VARCHAR, tanggal, 101) as tgl2,
+					CONVERT(VARCHAR, tanggal, 103) as tgl2,
 					CONVERT(VARCHAR, tglentry, 8) as tgl3, 
 					CONVERT(VARCHAR, tglentry, 20) as tgl4,'SOAP' as jenis,instruksi  
-					FROM ERM_SOAP WHERE norm='$norm'
+					FROM ERM_SOAP WHERE norm='$norm' and noreg like '%R%'
 					union
-					select top(200) id,'' as kodedokter,noreg,userinput,'' as dpjp, '' as subjektif, '' as objektif, '' as assesment, '' as planning,'' as instruksi,'' as sbu,
-					CONVERT(VARCHAR, tglinput, 101) as tgl2, 
-					CONVERT(VARCHAR, tglinput, 8) as tgl3, 
-					CONVERT(VARCHAR, tglinput, 20) as tgl4, 'MONITORING' as jenis,'' as instruksi
-					FROM ERM_RI_OBSERVASI WHERE norm='$norm'
+					select top(200) a.id,'' as kodedokter,a.noreg,a.userid as userinput,'' as dpjp, '' as subjektif, '' as objektif, '' as assesment, '' as planning,'' as instruksi,'' as sbu,
+					CONVERT(VARCHAR, a.tgl, 103) as tgl2, 
+					CONVERT(VARCHAR, a.tgl, 8) as tgl3, 
+					CONVERT(VARCHAR, a.tgl, 20) as tgl4, 'ASSESMEN' as jenis,'' as instruksi
+					FROM            ERM_RI_ANAMNESIS_MEDIS as a INNER JOIN
+					ARM_REGISTER ON a.noreg = ARM_REGISTER.NOREG
+					WHERE ARM_REGISTER.norm='$norm' and a.noreg like '%R%'
 					ORDER BY tgl4 desc
 					";
+
 					$hl  = sqlsrv_query($conn, $ql);
 					$no=1;
 					echo 
@@ -170,6 +188,7 @@ $noktp =  $data2[NOKTP];
 						
 						$kodedokter = trim($dl[kodedokter]);
 						$noreg = trim($dl[noreg]);
+						$jenis = trim($dl[jenis]);
 
 						//cek assesment awal medis.
 						$qcea		= "select noreg,userid from ERM_RI_ANAMNESIS_MEDIS where noreg='$noreg'";
@@ -178,7 +197,7 @@ $noktp =  $data2[NOKTP];
 						$cek_qcea	= $dhqcea[noreg];
 						$dokter_ass	= substr($dhqcea[userid],0,3);
 
-						if($cek_qcea and $tampil_ass=='Y'){
+						if($cek_qcea and $jenis=='ASSESMEN'){
 
 							$q2		= "select nama from afarm_dokter where kodedokter like '%$dokter_ass%'";
 							$hasil2  = sqlsrv_query($conn, $q2);			  					
@@ -291,6 +310,7 @@ $noktp =  $data2[NOKTP];
 							$am88= $de['am88'];
 							$am89= $de['am89'];
 							$am90= $de['am90'];
+							$diagnosa_planning= $de['diagnosa_planning'];
 
 							$qe="
 							SELECT resume20,resume21,resume22
@@ -340,6 +360,7 @@ $noktp =  $data2[NOKTP];
 
 
 							$kondisi_kejiwaan = $am16;
+							$diagnosa_planning = $diagnosa_planning;
 
 							if($am19){
 								if($am19=='Normal'){
@@ -571,8 +592,9 @@ $noktp =  $data2[NOKTP];
 
 							echo "
 							<tr>
-							<td colspan='5'>
-							<b>Assesment Awal Medis : </b> $namadokter ($dokter_ass) - Tgl : $tgl_assesment Jam : $jam_assesment
+							<td>$no</td>
+							<td colspan='4'>
+							<b>Assesment Awal Medis : </b> $namadokter ($dokter_ass) - Tgl : $tgl_assesment Jam : $jam_assesment ($noreg)
 
 							<table width='100%'>
 							<tr>
@@ -608,6 +630,10 @@ $noktp =  $data2[NOKTP];
 							<td>$penunjang</td>
 							</tr>
 							<tr>
+							<td>Diagnosa Planning</td>
+							<td>$diagnosa_planning</td>
+							</tr>
+							<tr>
 							<td>Rencana Terapi</td>
 							<td>$rencana_terapi</td>
 							</tr>
@@ -628,7 +654,6 @@ $noktp =  $data2[NOKTP];
 							</td>
 							</tr>
 							";
-							$tampil_ass="T";
 						}
 
 						$jam_ccpt = substr($dl[tgl3],0,5);
@@ -673,12 +698,25 @@ $noktp =  $data2[NOKTP];
 							}
 
 						//cek verif dokter...
-							// $q3		= "select userverif,CONVERT(VARCHAR, tglverif, 20) as tanggal from  ERM_SOAP_VERIF where noreg='$noreg' and userverif like '%$dpjp%' and (CONVERT(DATETIME, CONVERT(VARCHAR, tanggal, 101), 101) BETWEEN '$periode' AND '$periode')";
-							$q3		= "select userverif,CONVERT(VARCHAR, tglverif, 20) as tanggal from  ERM_SOAP_VERIF where noreg='$noreg' and userverif like '%$dpjp%'";
+							// $q3		= "select userverif,CONVERT(VARCHAR, tglverif, 20) as tanggal from  ERM_SOAP_VERIF where noreg='$noreg' and userverif like '%$dpjp%'";
+							// $hasil3  = sqlsrv_query($conn, $q3);			  					
+							// $data3	= sqlsrv_fetch_array($hasil3, SQLSRV_FETCH_ASSOC);				  
+							// $userverif	= $data3[userverif];
+							// $tanggal	= $data3[tanggal];
+
+							$q3		= "
+							SELECT        ERM_SOAP.dpjp, CONVERT(VARCHAR, ERM_SOAP.verif_dpjp, 103) AS tgl, 
+							CONVERT(VARCHAR, ERM_SOAP.verif_dpjp, 8) as tgl3, 
+							Afarm_DOKTER.NAMA
+							FROM            ERM_SOAP LEFT OUTER JOIN
+							Afarm_DOKTER ON ERM_SOAP.dpjp = Afarm_DOKTER.KODEDOKTER
+							WHERE        (ERM_SOAP.noreg = '$noreg') AND (ERM_SOAP.id = $dl[id]) and ERM_SOAP.verif_dpjp is not null
+							";
 							$hasil3  = sqlsrv_query($conn, $q3);			  					
 							$data3	= sqlsrv_fetch_array($hasil3, SQLSRV_FETCH_ASSOC);				  
-							$userverif	= $data3[userverif];
-							$tanggal	= $data3[tanggal];
+							$userverif	= $data3[NAMA];
+							$tanggal	= $data3[tgl];
+							$jam_verif = substr($data3[tgl3],0,5);
 
 							$subjektif = nl2br($dl[subjektif]);
 							$objektif = nl2br($dl[objektif]);
@@ -748,227 +786,148 @@ $noktp =  $data2[NOKTP];
 								$keterangan = 'CPPT Telah diEdit '.$jumlah.' kali';
 							}
 
-							$q5		= "select namadokter,CONVERT(VARCHAR, tglentry, 103) as tgl 
+							$q5		= "select namadokter,CONVERT(VARCHAR, tglentry, 103) as tgl,userid, CONVERT(VARCHAR, tglentry, 8) as tgl3,
+							CONVERT(VARCHAR, verif_dpjp, 103) as tglt, CONVERT(VARCHAR, verif_dpjp, 8) as tglt2
 							from ERM_TULBAKON where noreg='$noreg' and idsoap='$dl[id]'";
 							$hasil5  = sqlsrv_query($conn, $q5);			  					
 							$data5	= sqlsrv_fetch_array($hasil5, SQLSRV_FETCH_ASSOC);				  
 							$namadokter2	= $data5[namadokter];
 							$tgl	= $data5[tgl];
+							$userid	= $data5[userid];
+							$jam_lapor = substr($data5[tgl3],0,5);
+							$tgl_vtulbakon	= $data5[tglt];
+							$jam_vtulbakon = substr($data5[tglt2],0,5);
 
 							if($namadokter2){
-								$tulbakon = 'TULBAKON/SBAR<br>'.$tgl.'<br>'.$namadokter2;
+
+								$qu="SELECT  [user],role FROM ROLERSPGENTRY.dbo.user_roleERM where [user] like '%$userid%'";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$role = trim($d1u['role']);
+
+
+								if($role=='DOKTER'){
+									$qrnmUser = "SELECT NamaUser from ROLERSPGENTRY.dbo.tblusererm WHERE user1 ='$userid'";
+									$hqrnmUser = sqlsrv_query($conn, $qrnmUser);
+									$dhqrnmUser = sqlsrv_fetch_array($hqrnmUser, SQLSRV_FETCH_ASSOC);
+									$namaUser = $dhqrnmUser['NamaUser'];
+									$userid = $namaUser;
+								}
+
+								$tulbakon = 'Petugas : <b>'.$userid.'</b><br>Tgl:'.$tgl.' Jam: '.$jam_lapor;
+								$tulbakon_dokter = 'Dokter: <b>'.$namadokter2.'</b><br>Tgl:'.$tgl_vtulbakon.' Jam: '.$jam_vtulbakon;
 							}
 
 
 
 							if($tulbakon){
-								echo "	<tr>
-								<td>$no</td>
-								<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
-								<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
-								<td>
-								$hasilassesment
-								<table>
-								<tr>
-								<td>Verif DPJP<br>$userverif<br>$tanggal</td>
-								</tr>
-								</table>
-								</td>
-								<td>$keterangan</td>
-								</tr>
-								";
+								if($profesi<>'APOTEKER' and $profesi<>'DOKTER' ){
+									echo "	<tr>
+									<td>$no</td>
+									<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
+									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
+									<td>
+									$hasilassesment
+									<table>
+									<tr>
+									<td>Verif DPJP<br>
+									<table>
+									<tr><td>
+									Diverifikasi Oleh<br>
+									<b>$userverif</b><br>Tgl : $tanggal - Jam : $jam_verif
+									</td></tr>
+									</table>
+									</td>
+									<td>
+									<table>Oper Shift
+									<tr>
+									<td>Dioperkan Oleh<br>$petugasoper</td>
+									<td>Diterima Oleh<br>$gantishift</td>
+									</tr>
+									</table>
+									</td>
+									<td>
+
+									<table>Tulbakon
+									<tr>
+									<td>Dilaporkan Oleh<br>$tulbakon</td>
+									<td>Diterima Oleh<br>$tulbakon_dokter</td>
+									</tr>
+									</table>
+									</td>
+									</tr>
+									</table>
+									</td>
+									<td>$keterangan</td>
+									</tr>
+									";
+								}else{
+									echo "	<tr>
+									<td>$no</td>
+									<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
+									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
+									<td>
+									$hasilassesment
+									<hr>
+									<table>Tulbakon
+									<tr>
+									<td>Dilaporkan Oleh<br>$tulbakon</td>
+									<td>Diverifikasi Oleh<br>$tulbakon_dokter</td>
+									</tr>
+									</table>
+									</td>
+									<td>$keterangan</td>
+									</tr>
+									";
+								}
 							}else{
-								echo "	<tr>
-								<td>$no</td>
-								<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
-								<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
-								<td>
-								$hasilassesment
-								<table>
-								<tr>
-								<td>Verif DPJP<br>$userverif<br>$tanggal</td>
-								</tr>
-								</table>
-								</td>
-								<td>$keterangan</td>
-								</tr>
-								";
+								if($profesi<>'APOTEKER' and $profesi<>'DOKTER' and $profesi<>'GIZI'){
+									echo "	<tr>
+									<td>$no</td>
+									<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
+									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
+									<td>
+									$hasilassesment
+									<table>
+									<tr>
+									<td>Verif DPJP<br>
+
+									<table>
+									<tr><td>
+									Diverifikasi Oleh<br>
+									<b>$userverif</b><br>Tgl : $tanggal - Jam : $jam_verif
+									</td></tr>
+									</table>
+
+									</td>
+									<td colspan='2'>
+									<table>Oper Shift
+									<tr>
+									<td>Dioperkan Oleh<br>$petugasoper</td>
+									<td>Diterima Oleh<br>$gantishift</td>
+									</tr>
+									</table>
+									</td>
+									</tr>
+									</table>
+									</td>
+									<td>$keterangan</td>
+									</tr>
+									";
+								}else{
+									echo "	<tr>
+									<td>$no</td>
+									<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
+									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
+									<td>
+									$hasilassesment
+									</td>
+									<td>$keterangan</td>
+									</tr>
+									";
+								}
 
 							}
-
-						}else{
-							// echo "monitoring";
-
-							$qe="
-							SELECT *,CONVERT(VARCHAR, tglinput, 20) as tglinput
-							FROM ERM_RI_OBSERVASI
-							where id='$dl[id]'";
-							$he  = sqlsrv_query($conn, $qe);        
-							$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
-							$tglinput = $de['tglinput'];
-							$userinput = $de['userinput'];
-
-							$td_sistolik= $de['td_sistolik'];
-							$td_diastolik= $de['td_diastolik'];
-							$suhu= $de['suhu'];
-							$nadi= $de['nadi'];
-							$spo2= $de['spo2'];
-							$pernafasan= $de['pernafasan'];
-							$total_ews= $de['total_ews'];
-
-							$ob1 = $de['ob1'];
-							$ob2= $de['ob2'];
-							$ob3= $de['ob3'];
-							$ob4= $de['ob4'];
-							$ob5= $de['ob5'];
-							$ob6= $de['ob6'];
-							$ob7= $de['ob7'];
-							$ob8= $de['ob8'];
-							$ob9= $de['ob9'];
-							$ob10= $de['ob10'];
-							$ob11= $de['ob11'];
-							$ob12= $de['ob12'];
-							$ob13= $de['ob13'];
-							$ob14= $de['ob14'];
-							$ob15= $de['ob15'];
-							$ob16= $de['ob16'];
-							$ob17= $de['ob17'];
-							$ob18= $de['ob18'];
-							$ob19= $de['ob19'];
-							$ob20= $de['ob20'];
-							$ob21= $de['ob21'];
-							$ob22= $de['ob22'];
-							$ob23= $de['ob23'];
-							$ob24= $de['ob24'];
-							$ob25= $de['ob25'];
-							$ob26= $de['ob26'];
-							$ob27= $de['ob27'];
-							$ob28= $de['ob28'];
-							$ob29= $de['ob29'];
-							$ob30= $de['ob30'];
-							$ob31= $de['ob31'];
-							$ob32= $de['ob32'];
-							$ob33= $de['ob33'];
-							$ob34= $de['ob34'];
-							$ob35= $de['ob35'];
-							$ob36= $de['ob36'];
-							$ob37= $de['ob37'];
-							$ob38= $de['ob38'];
-							$ob39= $de['ob39'];
-							$ob40= $de['ob40'];
-							$ob41= $de['ob41'];
-							$ob42= $de['ob42'];
-							$ob43= $de['ob43'];
-							$ob44= $de['ob44'];
-							$ob45= $de['ob45'];
-							$ob46= $de['ob46'];
-							$ob47= $de['ob47'];
-							$ob48= $de['ob48'];
-							$ob49= $de['ob49'];
-							$ob50= $de['ob50'];
-							$ob51= $de['ob51'];
-							$ob52= $de['ob52'];
-							$ob53= $de['ob53'];
-							$ob54= $de['ob54'];
-							$ob55= $de['ob55'];
-							$ob56= $de['ob56'];
-							$ob57= $de['ob57'];
-							$ob58= $de['ob58'];
-							$ob59= $de['ob59'];
-							$ob60= $de['ob60'];
-
-							$total_input=$ob12+$ob13+$ob18+$ob19;
-							$total_output=$ob20+$ob26+$ob22+$ob21+$ob23+$ob24+$ob25;
-							$balance_cairan = $total_input-$total_output;
-
-							if($td_sistolik){
-								$monitoringket="
-								<table class='table table-bordered'>
-								<tr valign='top'>
-								<td rowspan='1' colspan='10' align='center'>EWS</td>
-								<td rowspan='3'>total ews</td>						
-								<td rowspan='1' colspan='14' align='center'>cairan</td>	
-								<td rowspan='3'>GDA</td>
-								<td rowspan='3'>Skala Nyeri</td>
-								<td rowspan='3'>Resiko Jatuh</td>		
-								</tr>
-								<tr>
-								<td rowspan='2'>kesadaran</td>
-								<td rowspan='2'>gcs</td>
-								<td rowspan='2'>tensi</td>
-								<td rowspan='2'>suhu</td>
-								<td rowspan='2'>nadi</td>
-								<td rowspan='2'>rr</td>
-								<td rowspan='2'>spo2</td>
-								<td rowspan='2'>oksigen</td>
-								<td rowspan='2'>bb</td>
-								<td rowspan='2'>tb</td>
-								<td rowspan='1' colspan='5' align='center'>Input</td>
-								<td rowspan='1' colspan='8' align='center'>Output</td>
-								<td rowspan='2'>Balance Cairan</td>
-								</tr>
-								<tr>
-								<td>Infus</td>
-								<td>Tranfusi</td>
-								<td>Makan</td>
-								<td>Minum</td>
-								<td>Total</td>
-								<td>Muntah</td>
-								<td>Peradangan</td>
-								<td>Urine</td>
-								<td>BAB</td>
-								<td>IWL</td>
-								<td>NGT</td>
-								<td>Drain</td>
-								<td>Total</td>
-								</tr>
-
-								<tr>
-								<td>$ob1</td>
-								<td>$ob6</td>
-								<td>$td_sistolik/$td_diastolik</td>
-								<td>$suhu</td>
-								<td>$nadi</td>
-								<td>$pernafasan</td>
-								<td>$spo2</td>
-								<td>$ob7</td>
-								<td>$ob9</td>
-								<td>$ob10</td>
-								<td>$total_ews</td>
-								<td>$ob12</td>
-								<td>$ob13</td>
-								<td>$ob18</td>
-								<td>$ob19</td>
-								<td>$total_input</td>
-								<td>$ob20</td>
-								<td>$ob26</td>
-								<td>$ob22</td>
-								<td>$ob21</td>
-								<td>$ob23</td>
-								<td>$ob24</td>
-								<td>$ob25</td>
-								<td>$total_output</td>
-								<td>$balance_cairan</td>
-								<td>$ob28</td>
-								<td>$ob29</td>
-								<td>$ob45</td>
-
-								</tr>
-
-								</table>
-								";
-
-							}
-
-							echo "	<tr>
-							<td>$no</td>
-							<td>$dl[noreg]<br>$dl[tgl2]<br>$jam_ccpt</td>
-							<td>$userinput</td>
-							<td>$monitoringket<br>
-							</td>
-							<td></td>
-							</tr>
-							";
 
 						}
 						$no += 1;

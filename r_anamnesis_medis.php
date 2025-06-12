@@ -7,7 +7,7 @@ $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd"
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
 
-// include "phpqrcode/qrlib.php";
+include "phpqrcode/qrlib.php";
 
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
@@ -346,372 +346,387 @@ if(empty($regcek)){
 
 				<hr>
 
-<!-- 				<div class="row">
-					<div class="col-6"><?php echo 'NORM : '.$norm.'<br> NAMA : '.$nama.'<br> TGL LAHIR : '.$tgllahir; ?></div>
-					<div class="col-6"><?php echo 'L/P : '.$kelamin.'<br> UMUR : '.$umur.'<br> ALAMAT : '.$alamatpasien; ?></div>
+				<?php 
+				$qe="
+				SELECT resume20,resume21,resume22
+				FROM ERM_RI_RESUME
+				where noreg='$noreg'";
+				$he  = sqlsrv_query($conn, $qe);        
+				$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
+				$tglresume = $de['tglresume'];
+
+				$resume20= $de['resume20'];
+				$resume21= $de['resume21'];
+				$resume22= $de['resume22'];
+
+				if(!empty($resume20)){
+					$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20;		
+				}
+				if(!empty($resume21)){
+					$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21;		
+				}
+				if(!empty($resume22)){
+					$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21.'<br>Diagnosis Akhir (Sekunder) : '.$resume22;		
+				}
+
+				?>
+				<div class="row">
+					<div class="col-6">
+						<b>Diagnosa</b>
+						<br>
+						<?php echo $diagnosa;?>
+						<br>
+					</div>
 				</div>
-			-->
-			<?php 
-			$qe="
-			SELECT resume20,resume21,resume22
-			FROM ERM_RI_RESUME
-			where noreg='$noreg'";
-			$he  = sqlsrv_query($conn, $qe);        
-			$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
-			$tglresume = $de['tglresume'];
+				<hr>
+				<div class="row">
+					<div class="col-6">
+						<b>Anamnesis</b>
+						<br>
+						Keluhan Utama :<br>
+						<?php echo nl2br($am1);?>
+						<br><br>
+						Riwayat Penyakit : <br>
+						<?php echo nl2br($am2);?>
+						<br><br>
+						Riwayat Alergi : <br>
+						<?php echo nl2br($am3);?>
+						<br><br>
+						Riwayat Pengobatan : <br>
+						<?php echo nl2br($am4);?>
+						<br><br>
 
-			$resume20= $de['resume20'];
-			$resume21= $de['resume21'];
-			$resume22= $de['resume22'];
+						<hr>
+						<b>Keadaan Umum</b><br>
+						Tingkat Kesadaran : <br>
+						<?php 
+						$keadaan_umum="
+						Kesadaran : $am5<br>
+						GCS (Eye : $am6 - Verbal : $am7 - Movement : $am8) <br>
+						Tekanan Darah : $am9 - Nadi : $am10 / $am11 - Suhu : $am12 <br>
+						Pernafasan : $am13 - Nyeri : $am14 - Berat Badan : $am15 <br>
+						";
+						echo nl2br($keadaan_umum);
+						?>
+						<br><br>
 
-			if(!empty($resume20)){
-				$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20;		
-			}
-			if(!empty($resume21)){
-				$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21;		
-			}
-			if(!empty($resume22)){
-				$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21.'<br>Diagnosis Akhir (Sekunder) : '.$resume22;		
-			}
+						<hr>
+						<b>Anamnesa Psikologi/Sosial/Ekonomi</b><br>
+						<label for="" class="col-3">Kondisi Kejiwaan : </label>												
+						<?php echo nl2br($am16);?> 
+						<br>
+						<label for="" class="col-3">Sosial Ekonomi : </label>
+						<?php echo nl2br($am17);?> 
+						<br>
+						<label for="" class="col-3">Spiritual : </label>
+						<?php echo nl2br($am18);?> <br>
+						<br>
 
-			?>
-			<div class="row">
-				<div class="col-6">
-					<b>Diagnosa</b>
-					<br>
-					<?php echo $diagnosa;?>
-					<br>
-				</div>
-			</div>
 
-			<div class="row">
-				<div class="col-6">
-					<b>Anamnesis</b>
-					<br>
-					<label for="" class="">Keluhan Utama : </label>
-					<!-- <input class="form-control form-control-sm" name="am1" value="<?php echo $am1;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder=""> -->
-					<textarea class="form-control" name="am1" cols="100%" onfocus="nextfield ='';" style="min-height:30px;" disabled><?php echo $am1;?></textarea>
-
-					<label for="" class="">Riwayat Penyakit : </label>
-					<!-- <input class="form-control form-control-sm" name="am2" value="<?php echo $am2;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
-					<textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:30px;" disabled><?php echo $am2;?></textarea>
-
-					<label for="" class="">Riwayat Alergi : </label>
-					<!-- <input class="form-control form-control-sm" name="am3" value="<?php echo $am3;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
-					<textarea class="form-control" name="am3" cols="100%" onfocus="nextfield ='';" style="min-height:30px;" disabled><?php echo $am3;?></textarea>
-
-					<label for="" class="">Riwayat Pengobatan : </label>
-					<!-- <input class="form-control form-control-sm" name="am4" value="<?php echo $am4;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
-					<textarea class="form-control" name="am4" cols="100%" onfocus="nextfield ='';" style="min-height:30px;" disabled><?php echo $am4;?></textarea>
-
-					<hr>
-					<b>Keadaan Umum</b><br>
-					<label for="" class="">Tingkat Kesadaran : </label>
-					<!-- <input class="form-control form-control-sm" name="am5" value="<?php echo $am5;?>" id="" type="text" size='' onfocus="nextfield ='kesadaran';" placeholder=""> -->
-					<textarea class="form-control" name="am5" cols="100%" onfocus="nextfield ='';" style="min-height:30px;" disabled><?php echo $am5;?></textarea>
-
-					<br>
-
-					<div class="card">
-						<div class="card-header">
-							Vital Sign
-						</div>
-						<div class="card-body">
-							<div class="card">
-								<div class="card-header">
-									Glassow Comma Scale (GCS)
-								</div>
-								<div class="card-body">
-									<label for="" class="col-3">Eye : </label>
-									<input class="form-control-sm" name="am6" value="<?php echo $am6;?>" id="" type="text" disabled size='' onfocus="nextfield ='verbal';" placeholder="">
-									<br>
-									<label for="" class="col-3">Verbal : </label>
-									<input class="form-control-sm" name="am7" value="<?php echo $am7;?>" id="" type="text" disabled size='' onfocus="nextfield ='movement';" placeholder="">
-									<br>
-									<label for="" class="col-3">Movement : </label>
-									<input class="form-control-sm" name="am8" value="<?php echo $am8;?>" id="" type="text" disabled size='' onfocus="nextfield ='tekanan_darah';" placeholder="">
-								</div>
+					</div>
+					<div class="col-6">					
+						<div class="card">
+							<div class="card-header">
+								Pemeriksaan Fisik
 							</div>
-							<br>
-							<label for="" class="col-3">Tekanan Darah : </label>
-							<input class="form-control-sm" name="am9" value="<?php echo $am9;?>" id="" type="text" disabled size='' onfocus="nextfield ='nadi';" placeholder="">mmHg<br>
-							<label for="" class="col-3">Nadi : </label>
-							<input class="form-control-sm" name="am10" value="<?php echo $am10;?>" id="" type="text" disabled size='' onfocus="nextfield ='suhu';" placeholder="">x/menit<br>
-							<label for="" class="col-3">&nbsp;</label>
-							<input type='checkbox' disabled name='am11' value='Teratur' <?php if ($am11=="Teratur"){echo "checked";}?>>Teratur
-							<input type='checkbox' disabled name='am11' value='Tidak Teratur' <?php if ($am11=="Abnormal"){echo "checked";}?>>Tidak Teratur
-							<br>
-							<label for="" class="col-3">Suhu : </label>
-							<input class="form-control-sm" name="am12" value="<?php echo $am12;?>" id="" type="text" disabled size='' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="">C<br>								
-							<label for="" class="col-3">Frekuensi Pernafasan : </label>
-							<input class="form-control-sm" name="am13" value="<?php echo $am13;?>" id="" type="text" disabled size='' onfocus="nextfield ='skala_nyeri';" placeholder="">x/menit<br>
-							<label for="" class="col-3">Skala Nyeri : </label>
-							<input class="form-control-sm" name="am14" value="<?php echo $am14;?>" id="" type="text" disabled size='' onfocus="nextfield ='berat_badan';" placeholder=""><br>
-							<label for="" class="col-3">Berat Badan : </label>
-							<input class="form-control-sm" name="am15" value="<?php echo $am15;?>" id="" type="text" disabled size='' onfocus="nextfield ='status_lokalis';" placeholder="">Kg<br>							
+							<div class="card-body">						
+								<div class="card">
+									<div class="card-body">
+										<?php 
 
-						</div>
-					</div>
+										$keadaan_umum="
+										Kesadaran : $am5<br>
+										GCS (Eye : $am6 - Verbal : $am7 - Movement : $am8) <br>
+										Tekanan Darah : $am9 - Nadi : $am10 / $am11 - Suhu : $am12 <br>
+										Pernafasan : $am13 - Nyeri : $am14 - Berat Badan : $am15 <br>
+										";
 
-					<br>
-					<div class="card">
-						<div class="card-header">
-							Anamnesa Psikologi/Sosial/Ekonomi : 
-						</div>
-						<div class="card-body">
-							<label for="" class="col-3">Kondisi Kejiwaan : </label>												
-							<!-- 								<input class="form-control form-control-sm" name="anamnesa" value="<?php echo $anamnesa;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder="Isikan Tenang/Gelisah/Takut/Bingung/Stres">  -->
-							<input type='checkbox' disabled name='am16' value='Tenang' <?php if ($am16=="Tenang"){echo "checked";}?>>Tenang
-							<input type='checkbox' disabled name='am16' value='Gelisah/Takut' <?php if ($am16=="Gelisah/Takut"){echo "checked";}?>>Gelisah/Takut
-							<input type='checkbox' disabled name='am16' value='Bingung' <?php if ($am16=="Bingung"){echo "checked";}?>>Bingung
-							<input type='checkbox' disabled name='am16' value='Stres' <?php if ($am16=="Stres"){echo "checked";}?>>Stres
-							<br>
-							<label for="" class="col-3">Sosial Ekonomi : </label>
-							<input class="form-control-sm" name="am17" value="<?php echo $am17 ;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder=""> <br>
-							<label for="" class="col-3">Spiritual : </label>
-							<input class="form-control-sm" name="am18" value="<?php echo $am18 ;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder=""> <br>
-						</div>
-					</div>
-
-					<div class="card">
-						<div class="card-body">						
-
-							<label for="" class="col-3">Verifikasi Dokter Pemeriksa : </label>							
-							<input class="form-control-sm" name="am75" value="<?php echo $am75;?>" id="dokter" type="text" disabled size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter">
-
-							<br>
-
-							<?php 
-							if($am75){
-								$verif_dokter="Resume medis ini telah diVerifikasi Oleh : ".$am75."Pada Tanggal : ".$tgl; 
-
-								// QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
-								// echo "<center><img src='image.png'></center>";
+										$penunjang=nl2br($am76);
+										$rencana_terapi=nl2br($am77);
 
 
-								$verif_dokter;
-							}
-							?>
+										$kondisi_kejiwaan = $am16;
 
-							<br>
+										if($am19){
+											if($am19=='Normal'){
+												$fisik="Kepala : $am19 , ";																
+											}else{
+												$fisik="Kepala : $am19 : $am20 , ";																	
+											}
+										}
+										if($am21){
+											if($am21=='Normal'){
+												$fisik=$fisik."Mata : $am21 , ";																
+											}else{
+												$fisik=$fisik."Mata : $am21 : $am22 , ";																	
+											}
+										}
+										if($am23){
+											if($am23=='Normal'){
+												$fisik=$fisik."Telinga : $am23 , ";																
+											}else{
+												$fisik=$fisik."Telinga : $am23 : $am24 , ";																	
+											}
 
-							<!-- <button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> simpan</button>  -->
-							<br><br>
-						</div>
-					</div>
+										}
+										if($am25){
+											if($am25=='Normal'){
+												$fisik=$fisik."Hidung : $am25 ,<br> ";																
+											}else{
+												$fisik=$fisik."Hidung : $am25 : $am26 ,<br> ";																	
+											}
 
-				</div>
-				<div class="col-6">					
-					<div class="card">
-						<div class="card-header">
-							Pemeriksaan Fisik
-						</div>
-						<div class="card-body">						
-							<div class="card">
-								<div class="card-body">
-									<label for="" class="col-3">Kepala : </label>
-									<input type='checkbox' disabled name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>
-									<label for="" class="col-3">Mata : </label>
-									<input type='checkbox' disabled name='am21' value='Normal' <?php if ($am21=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am21' value='Abnormal' <?php if ($am21=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am22" value="<?php $am22;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Telinga : </label>
-									<input type='checkbox' disabled name='am23' value='Normal' <?php if ($am23=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am23' value='Abnormal' <?php if ($am23=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am24" value="<?php $am24;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>								
-									<label for="" class="col-3">Hidung : </label>
-									<input type='checkbox' disabled name='am25' value='Normal' <?php if ($am25=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am25' value='Abnormal' <?php if ($am25=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am26" value="<?php $am26;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>							
-									<label for="" class="col-3">Rambut : </label>
-									<input type='checkbox' disabled name='am27' value='Normal' <?php if ($am27=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am27' value='Abnormal' <?php if ($am27=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am28" value="<?php $am28;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Bibir : </label>
-									<input type='checkbox' disabled name='am29' value='Normal' <?php if ($am29=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am29' value='Abnormal' <?php if ($am29=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am30" value="<?php $am30;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Gigi Geligi : </label>
-									<input type='checkbox' disabled name='am31' value='Normal' <?php if ($am31=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am31' value='Abnormal' <?php if ($am31=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am32" value="<?php $am32;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Lidah : </label>
-									<input type='checkbox' disabled name='am33' value='Normal' <?php if ($am33=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am33' value='Abnormal' <?php if ($am33=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am34" value="<?php $am34;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Langit-langit : </label>
-									<input type='checkbox' disabled name='am35' value='Normal' <?php if ($am35=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am35' value='Abnormal' <?php if ($am35=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am36" value="<?php $am36;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Leher : </label>
-									<input type='checkbox' disabled name='am37' value='Normal' <?php if ($am37=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am37' value='Abnormal' <?php if ($am37=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am38" value="<?php $am38;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Tenggorokan : </label>
-									<input type='checkbox' disabled name='am39' value='Normal' <?php if ($am39=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox'disabled  name='am39' value='Abnormal' <?php if ($am39=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am40" value="<?php $am40;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Tonsil : </label>
-									<input type='checkbox' disabled name='am41' value='Normal' <?php if ($am41=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am41' value='Abnormal' <?php if ($am41=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am42" value="<?php $am42;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Dada : </label>
-									<input type='checkbox' disabled name='am43' value='Normal' <?php if ($am43=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am43' value='Abnormal' <?php if ($am43=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am44" value="<?php $am44;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Payudara : </label>
-									<input type='checkbox' disabled name='am45' value='Normal' <?php if ($am45=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am45' value='Abnormal' <?php if ($am45=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am46" value="<?php $am46;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Punggung : </label>
-									<input type='checkbox' disabled name='am47' value='Normal' <?php if ($am47=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am47' value='Abnormal' <?php if ($am47=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am48" value="<?php $am48;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Perut : </label>
-									<input type='checkbox' disabled name='am49' value='Normal' <?php if ($am49=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am49' value='Abnormal' <?php if ($am49=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am50" value="<?php $am50;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Genital : </label>
-									<input type='checkbox' disabled name='am51' value='Normal' <?php if ($am51=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am51' value='Abnormal' <?php if ($am51=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am52" value="<?php $am52;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Anus/Dubur : </label>
-									<input type='checkbox' disabled name='am53' value='Normal' <?php if ($am53=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am53' value='Abnormal' <?php if ($am53=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am54" value="<?php $am54;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Lengan Atas : </label>
-									<input type='checkbox' disabled name='am55' value='Normal' <?php if ($am55=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am55' value='Abnormal' <?php if ($am55=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am56" value="<?php $am56;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Lengan Bawah : </label>
-									<input type='checkbox' disabled name='am57' value='Normal' <?php if ($am57=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am57' value='Abnormal' <?php if ($am57=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am58" value="<?php $am58;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Jari Tangan : </label>
-									<input type='checkbox' disabled name='am59' value='Normal' <?php if ($am59=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am59' value='Abnormal' <?php if ($am59=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am60" value="<?php $am60;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Kuku Tangan : </label>
-									<input type='checkbox' disabled name='am61' value='Normal' <?php if ($am61=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am61' value='Abnormal' <?php if ($am61=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am62" value="<?php $am62;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Persendian Tangan : </label>
-									<input type='checkbox' disabled name='am63' value='Normal' <?php if ($am63=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am63' value='Abnormal' <?php if ($am63=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am64" value="<?php $am64;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Tungkai Atas : </label>
-									<input type='checkbox' disabled name='am65' value='Normal' <?php if ($am65=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am65' value='Abnormal' <?php if ($am65=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am66" value="<?php $am66;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Tungkai Bawah : </label>
-									<input type='checkbox' disabled name='am67' value='Normal' <?php if ($am67=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am67' value='Abnormal' <?php if ($am67=="fisik49"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am68" value="<?php $am68;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Jari Kaki : </label>
-									<input type='checkbox' disabled name='am69' value='Normal' <?php if ($am69=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am69' value='Abnormal' <?php if ($am69=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am70" value="<?php $am70;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Kuku Kaki : </label>
-									<input type='checkbox' disabled name='am71' value='Normal' <?php if ($am71=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am71' value='Abnormal' <?php if ($am71=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am72" value="<?php $am72;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>	
-									<label for="" class="col-3">Persendian Kaki : </label>
-									<input type='checkbox' disabled name='am73' value='Normal' <?php if ($am73=="Normal"){echo "checked";}?>>Normal
-									<input type='checkbox' disabled name='am73' value='Abnormal' <?php if ($am73=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am74" value="<?php $am74;?>" id="" type="text" disabled size='' onfocus="nextfield ='';" placeholder="Keterangan">
-									<br>
+										}
+										if($am27){
+											if($am25=='Normal'){
+												$fisik=$fisik."Rambut : $am27 , ";																
+											}else{
+												$fisik=$fisik."Rambut : $am27 : $am28 , ";																	
+											}
 
-									<!-- <label for="" class="col-3">THT : </label>
-									<input class="" name="fisik_tht" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_tht" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>										
-									<label for="" class="col-3">Leher : </label>
-									<input class="" name="fisik_leher" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_leher" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>
-									<label for="" class="col-3">Paru : </label>
-									<input class="" name="fisik_paru" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_paru" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>
-									<label for="" class="col-3">Jantung : </label>
-									<input class="" name="fisik_jantung" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_jantung" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>
+										}
+										if($am29){
+											if($am29=='Normal'){
+												$fisik=$fisik."Bibir : $am29 , ";																
+											}else{
+												$fisik=$fisik."Bibir : $am29 : $am30 , ";																	
+											}
 
-									<label for="" class="col-3">Abomen : </label>
-									<input class="" name="fisik_abdomen" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_abdomen" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>
+										}
+										if($am31){
+											if($am31=='Normal'){
+												$fisik=$fisik."Gigi Geligi : $am31 , ";																
+											}else{
+												$fisik=$fisik."Gigi Geligi : $am31 : $am32 , ";																	
+											}
 
-									<label for="" class="col-3">Extrimitas : </label>
-									<input class="" name="fisik_ekstermitas" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_ekstermitas" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br>
+										}
+										if($am33){
+											if($am33=='Normal'){
+												$fisik=$fisik."Lidah : $am33 , <br>";																
+											}else{
+												$fisik=$fisik."Lidah : $am33 : $am34 , <br>";																	
+											}
 
-									<label for="" class="col-3">Uro Gental : </label>
-									<input class="" name="fisik_urogenital" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="" checked>Normal
-									<input class="" name="fisik_urogenital" value="normal" id="" type="radio" size='' onfocus="nextfield ='';" placeholder="">Abnormal
-									<br> -->
+										}
+										if($am35){
+											if($am35=='Normal'){
+												$fisik=$fisik."Langit-langit : $am35 , ";																
+											}else{
+												$fisik=$fisik."Langit-langit : $am35 : $am36 , ";																	
+											}
+
+										}
+										if($am37){
+											if($am37=='Normal'){
+												$fisik=$fisik."Leher : $am37 , ";																
+											}else{
+												$fisik=$fisik."Leher : $am37 : $am38 , ";																	
+											}
+
+										}
+										if($am39){
+											if($am39=='Normal'){
+												$fisik=$fisik."Tenggorokan : $am39 , <br>";																
+											}else{
+												$fisik=$fisik."Tenggorokan : $am39 : $am40 , <br>";																	
+											}
+
+										}
+										if($am40){
+											if($am40=='Normal'){
+												$fisik=$fisik."Tonsil : $am40 , ";																
+											}else{
+												$fisik=$fisik."Tonsil : $am40 : $am41 , ";																	
+											}
+
+										}
+										if($am42){
+											if($am42=='Normal'){
+												$fisik=$fisik."Dada : $am42 , ";																
+											}else{
+												$fisik=$fisik."Dada : $am42 : $am43 , ";																	
+											}
+
+										}
+										if($am45){
+											if($am45=='Normal'){
+												$fisik=$fisik."Payudara : $am45 , ";																
+											}else{
+												$fisik=$fisik."Payudara : $am45 : $am46 , ";																	
+											}
+
+										}
+										if($am47){
+											if($am47=='Normal'){
+												$fisik=$fisik."Punggung : $am47 , ";																
+											}else{
+												$fisik=$fisik."Punggung : $am47 : $am48 , ";																	
+											}
+
+										}
+										if($am49){
+											if($am49=='Normal'){
+												$fisik=$fisik."Perut : $am49 , ";																
+											}else{
+												$fisik=$fisik."Perut : $am49 : $am50 , ";																	
+											}
+
+										}
+										if($am51){
+											if($am51=='Normal'){
+												$fisik=$fisik."Genital : $am51 , <br>";																
+											}else{
+												$fisik=$fisik."Genital : $am51 : $am52 , <br>";																	
+											}
+
+										}
+										if($am53){
+											if($am53=='Normal'){
+												$fisik=$fisik."Anus/Dubur : $am53 , ";																
+											}else{
+												$fisik=$fisik."Anus/Dubur : $am53 : $am54 , ";																	
+											}
+
+										}
+										if($am55){
+											if($am55=='Normal'){
+												$fisik=$fisik."Lengan Atas : $am55 , ";																
+											}else{
+												$fisik=$fisik."Lengan Atas : $am55 : $am56 , ";																	
+											}
+
+										}
+										if($am57){
+											if($am57=='Normal'){
+												$fisik=$fisik."Lengan Bawah : $am57 , <br>";																
+											}else{
+												$fisik=$fisik."Lengan Bawah : $am57 : $am58 , <br>";																	
+											}
+
+										}
+										if($am59){
+											if($am59=='Normal'){
+												$fisik=$fisik."Jari Tangan : $am59 , ";																
+											}else{
+												$fisik=$fisik."Jari Tangan : $am59 : $am60 , ";																	
+											}
+
+										}
+										if($am61){
+											if($am61=='Normal'){
+												$fisik=$fisik."Kuku Tangan : $am61 , ";																
+											}else{
+												$fisik=$fisik."Kuku Tangan : $am61 : $am62 , ";																	
+											}
+
+										}
+										if($am63){
+											if($am63=='Normal'){
+												$fisik=$fisik."Persendian Tangan : $am63 , <br>";																
+											}else{
+												$fisik=$fisik."Persendian Tangan : $am63 : $am64 , <br>";																	
+											}
+
+										}
+										if($am65){
+											if($am65=='Normal'){
+												$fisik=$fisik."Tungkai Atas : $am65 , ";																
+											}else{
+												$fisik=$fisik."Tungkai Atas : $am65 : $am66 , ";																	
+											}
+
+										}
+										if($am67){
+											if($am67=='Normal'){
+												$fisik=$fisik."Tungkai Bawah : $am67 , ";																
+											}else{
+												$fisik=$fisik."Tungkai Bawah : $am67 : $am68 , ";																	
+											}
+
+										}
+										if($am69){
+											if($am69=='Normal'){
+												$fisik=$fisik."Jari Kaki : $am69 , <br>";																
+											}else{
+												$fisik=$fisik."Jari Kaki : $am69 : $am70 , <br>";																	
+											}
+
+										}
+										if($am71){
+											if($am71=='Normal'){
+												$fisik=$fisik."Kuku Kaki : $am71 , ";																
+											}else{
+												$fisik=$fisik."Kuku Kaki : $am71 : $am72 , ";																	
+											}
+
+										}
+										if($am73){
+											if($am73=='Normal'){
+												$fisik=$fisik."Persendian Kaki : $am73 , ";																
+											}else{
+												$fisik=$fisik."Persendian Kaki : $am73 : $am74 , ";																	
+											}
+
+										}
+
+
+										?>
+										<?php echo$fisik; ?>
+
+									</div>
 
 								</div>
+								<br>
+								<div class="card">
+									<div class="card-body">
+										<b>Penunjang : </b><br>							
+										<?php echo nl2br($am76); ?>
+										<hr>
+										<b>Rencana Terapi : </b><br>							
+										<?php echo nl2br($am77); ?>
+										<br>
 
-							</div>
-							<br>
-							<div class="card">
-								<div class="card-body">
-									<label for="" class="col-3">Penunjang : </label>							
-									<!-- <input class="form-control-sm" name="am76" value="<?php echo $am76;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Pemeriksaan Peunjang"> -->
-									<textarea class="form-control" name="am76" cols="100%" onfocus="nextfield ='';" style="min-height:80px;" disabled><?php echo $am76;?></textarea>
-									<br>
-									<label for="" class="col-3">Rencana Terapi : </label>							
-									<!-- <input class="form-control-sm" name="am77" value="<?php echo $am77;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Rencana Terapi"> -->
-									<textarea class="form-control" name="am77" cols="100%" onfocus="nextfield ='';" style="min-height:180px;" disabled><?php echo $am77;?></textarea>
-									<br>
-
+									</div>
 								</div>
+
+
 							</div>
 
-
 						</div>
+					</div>				
+				</div>
+				<hr>
+				<div class="row">
+					<div class="col-12 text-center">
+						<div class="card">
+							<div class="card-body">						
 
+								<label for="" class="col-3">Verifikasi Dokter Pemeriksa : </label><br>	
+								<?php echo nl2br($am75);?> 						
+								<br>
+
+								<?php 
+								if($am75){
+									$verif_dokter="Resume medis ini telah diVerifikasi Oleh : ".$am75."Pada Tanggal : ".$tgl; 
+
+									QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
+									echo "<center><img src='image.png'></center>";
+
+
+									$verif_dokter;
+									echo $tgl_assesment.' '.$jam_assesment;
+								}
+								?>
+							</div>
+						</div>
 					</div>
-				</div>				
-			</div>
-			<hr>
+				</div>
 
-			<br><br><br>
-		</form>
-	</font>
-</body>
+				<br><br><br>
+			</form>
+		</font>
+	</body>
 </div>
 
 <?php

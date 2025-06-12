@@ -13,6 +13,7 @@ $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglentry		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
+
 $id = $_GET["id"];
 $row = explode('|',$id);
 $id  = $row[0];
@@ -112,6 +113,8 @@ if(empty($regcek)){
 	$he  = sqlsrv_query($conn, $qe);        
 	$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
 	$tglrawat = $de['tglrawat'];
+	$jamrawat = $de['jamrawat'];
+
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
@@ -501,6 +504,44 @@ if(empty($regcek)){
 		});
 	</script> 
 
+	<style>
+		.mst-table {
+			width: 100%;
+			border-collapse: collapse;
+			background-color: #f9f9f9;
+			font-family: Arial, sans-serif;
+		}
+		.mst-table th, .mst-table td {
+			border: 1px solid #ccc;
+			padding: 8px 12px;
+			text-align: left;
+		}
+		.mst-table th {
+			background-color: #66CDAA;
+			color: white;
+		}
+		.mst-table tr:nth-child(even) {
+			background-color: #f2f2f2;
+		}
+		.mst-table input[type="checkbox"] {
+			margin-left: 10px;
+		}
+		.mst-table h1 {
+			font-size: 24px;
+			color: #2E8B57;
+			margin: 0;
+		}
+		.submit-btn {
+			padding: 8px 12px;
+			background-color: #66CDAA;
+			border: none;
+			color: white;
+			font-size: 16px;
+			cursor: pointer;
+			border-radius: 5px;
+		}
+	</style>
+
 
 </head> 
 
@@ -521,45 +562,44 @@ if(empty($regcek)){
 						<!-- <a href='#' class='btn btn-info btn-sm'><i class="bi bi-printer-fill"></i></a> -->
 						<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
 						<a href='form_assesmen_dewasa_print.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a>		
-						&nbsp;&nbsp;
-						<i class="bi bi-window-plus"> &nbsp; <b>ASESMEN AWAL KEPERAWATAN DEWASA</b></i>
-
 					</div>
 				</div>
 
-				<br>
-<!-- 				<div class="row">
-					<div class="col-12">
-						<table class="table table-bordered">
-							<tr>
-								<td>Nama</td><td>: <?php echo $nama;?></td><td>No. RM</td><td>: <?php echo $norm;?></td>
-							</tr>
-							<tr>
-								<td>Tanggal Lahir</td><td>: <?php echo $tgllahir;?></td><td>NIK</td><td>: <?php echo $noktp;?></td>
-							</tr>
-							<tr>
-								<td>Umur</td><td>: <?php echo $umur;?></td><td>Jenis Kelamin</td><td>: <?php echo $kelamin;?></td>
-							</tr>
-							<tr>
-								<td>Riwayat Alergi</td><td>: <?php echo $alergi;?></td><td>Diet</td><td>: <?php echo $diet;?></td>
-							</tr>
-						</table>
+				<!-- Title -->
+				<div class="text-center mb-4">
+					<h5><i class="bi bi-window-plus"></i> ASESMEN AWAL KEPERAWATAN DEWASA</h5>
+				</div>
+
+				<!-- Input DPJP -->
+				<div class="card shadow-sm mb-4">
+					<div class="card-body">
+						<h6 class="card-title text-primary"><i class="bi bi-person-lines-fill"></i>DIISI OLEH PERAWAT</h6>
+						<div class="row g-3">
+							<div class="col-md-4">
+								<label for="tglinput" class="form-label">Tanggal Input</label>
+								<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput; ?>">
+							</div>
+							<div class="col-md-8">
+								<label for="dpjp" class="form-label">DPJP (Dokter Penanggung Jawab)</label>
+								<input type="text" class="form-control" id="dokter" name="dpjp" value="<?php echo $dpjp;?>" placeholder="Nama atau Kode Dokter" required>
+							</div>
+						</div>
 					</div>
-				</div> -->
+				</div>
 
 				<div class="col-12">
 					<table  class="table table-bordered">
 						<tr>
-							<td colspan='2'>
-								<b>DIISI OLEH PERAWAT</b> 
-								&nbsp;&nbsp;&nbsp;<input class="" name="tglinput" value="<?php echo $tglinput;?>" type="text" >
-								<b>DPJP</b> : <input class="" name="dpjp" value="<?php echo $dpjp;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter" required>&nbsp;&nbsp;&nbsp;
-							</td>
-						</tr>
-						<tr>
 							<td  colspan='2'>
 								Masuk di Ruang Rawat Tanggal : <input type='date' name='tglrawat' value='<?php echo $tglrawat;?>'>
-								<input type='submit' name='simpan' value='simpan'>
+								<?php 
+								$waktusekarang		= gmdate("H:i:s", time()+60*60*7);
+								if(empty($jamrawat)){
+									$jamrawat=$waktusekarang;
+								}
+								?>
+								Jam : <input type='text' name='jamrawat' value='<?php echo $jamrawat;?>'>
+								<input class="submit-btn" type='submit' name='simpan' value='simpan'>
 							</td>
 
 						</tr>
@@ -621,71 +661,55 @@ if(empty($regcek)){
 								</table>
 								<input type='submit' name='simpan' value='simpan'>								
 							</td>
-<!-- 							<td>
-								AlatBantu : &nbsp;&nbsp;&nbsp;<input type='text' name='alatbantu' value='<?php echo $alatbantu;?>'><br>
-								Prothesis : &nbsp;&nbsp;&nbsp;&nbsp;<input type='text' name='prothesis' value='<?php echo $Prothesis;?>'><br>
-								CacatTubuh : <input type='text' name='cacat_tubuh' value='<?php echo $cacat_tubuh;?>'><br>
-							</td>
-						-->							
-					</tr>	
-					<tr>
-						<td colspan='2'>RIWAYAT KESEHATAN</td>
-					</tr>
-					<tr>
-						<td colspan='2'>
-							<table border="0">
-								<tr>
-									<td>Keluhan pasien (alasan masuk rumah sakit) </td>
-									<td>: 
-										<!-- <input type='text' name='keluhan_pasien' value='<?php echo $keluhan_pasien;?>'> -->
-										<textarea name= "keluhan_pasien" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $keluhan_pasien;?></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>Riwayat penyakit sekarang</td>
-									<td>: 
-										<!-- <input type='text' name='riwayat_penyakit_sekarang' value='<?php echo $riwayat_penyakit_sekarang;?>' size='80'> -->
-										<textarea name= "riwayat_penyakit_sekarang" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $riwayat_penyakit_sekarang;?></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>Riwayat penyakit dahulu</td>
-									<td>: 
-										<!-- <input type='text' name='riwayat_penyakit_dahulu' value='<?php echo $riwayat_penyakit_dahulu;?>'> -->
-										<textarea name= "riwayat_penyakit_dahulu" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $riwayat_penyakit_dahulu;?></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>Riwayat penyakit keluarga</td>
-									<td>: 
-										<!-- <input type='text' name='riwayat_penyakit_keluarga' value='<?php echo $riwayat_penyakit_keluarga;?>'> -->
-										<textarea name= "riwayat_penyakit_keluarga" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $riwayat_penyakit_keluarga;?></textarea>
-									</td>
-								</tr>
-								<tr>
-									<td>Obat yang sedang dikonsumsi</td>
-									<td>: <input type='radio' name='obat_sedang_dikonsumsi' value='Tidak ada' <?php if ($obat_sedang_dikonsumsi=="Tidak ada"){echo "checked";}?>>Tidak ada <input type='radio' name='obat_sedang_dikonsumsi' value='Ada' <?php if ($obat_sedang_dikonsumsi=="Ada"){echo "checked";}?>>Ada, tulis di form, <a href='rekon_obat.php?id=<?php echo $id.'|'.$user;?>'>Rekonsiliasi Obat</a></td>
-								</tr>
-								<tr>
-									<td>Riwayat alergi </td>
-									<td>: <input type='radio' name='riwayat_alergi' value='Tidak' <?php if ($riwayat_alergi=="Tidak"){echo "checked";}?>>Tidak
-										<input type='radio' name='riwayat_alergi' value='Ya' <?php if ($riwayat_alergi=="Ya"){echo "checked";}?>>Ya, 
-										Keterangan Alergi : <input type='text' name='riwayat_alergi_alergi' value='<?php echo $riwayat_alergi_alergi;?>'>
-									</td>
-								</tr>
-								<tr>
-									<td>Riwayat transfusi darah</td>
-									<td>: <input type='radio' name='riwayat_tranfusi_darah' value='Tidak' <?php if ($riwayat_tranfusi_darah=="Tidak"){echo "checked";}?>>Tidak
-										<input type='radio' name='riwayat_tranfusi_darah' value='Ya' <?php if ($riwayat_tranfusi_darah=="Ya"){echo "checked";}?>>Ya
-									</td>
-								</tr>
-<!-- 									<tr>
-										<td>Reaksi Alergi</td>
-										<td>: <input type='checkbox' name='reaksi_alergi' value='Tidak' <?php if ($reaksi_alergi=="Tidak"){echo "checked";}?>>Tidak 
-											<input type='checkbox' name='reaksi_alergi' value='Ya' <?php if ($reaksi_alergi=="Ya"){echo "checked";}?>>Ya 
-											<input type='text' name='ket_reaksi_alergi' value='<?php echo $ket_reaksi_alergi;?>'>
+						</tr>	
+						<tr>
+							<td colspan='2'>RIWAYAT KESEHATAN</td>
+						</tr>
+						<tr>
+							<td colspan='2'>
+								<table border="0">
+									<tr>
+										<td>Keluhan pasien (alasan masuk rumah sakit) </td>
+										<td>: 
+											<!-- <input type='text' name='keluhan_pasien' value='<?php echo $keluhan_pasien;?>'> -->
+											<textarea name= "keluhan_pasien" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $keluhan_pasien;?></textarea>
 										</td>
-									</tr> -->
+									</tr>
+									<tr>
+										<td>Riwayat penyakit sekarang</td>
+										<td>: 
+											<textarea name= "riwayat_penyakit_sekarang" id="fisik" style="min-width:630px; min-height:150px;"><?php echo $riwayat_penyakit_sekarang;?></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td>Riwayat penyakit dahulu</td>
+										<td>: 
+											<textarea name= "riwayat_penyakit_dahulu" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $riwayat_penyakit_dahulu;?></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td>Riwayat penyakit keluarga</td>
+										<td>: 
+											<textarea name= "riwayat_penyakit_keluarga" id="fisik" style="min-width:630px; min-height:80px;"><?php echo $riwayat_penyakit_keluarga;?></textarea>
+										</td>
+									</tr>
+									<tr>
+										<td>Obat yang sedang dikonsumsi</td>
+										<td>: <input type='radio' name='obat_sedang_dikonsumsi' value='Tidak ada' <?php if ($obat_sedang_dikonsumsi=="Tidak ada"){echo "checked";}?>>Tidak ada <input type='radio' name='obat_sedang_dikonsumsi' value='Ada' <?php if ($obat_sedang_dikonsumsi=="Ada"){echo "checked";}?>>Ada, tulis di form, <a href='rekon_obat.php?id=<?php echo $id.'|'.$user;?>'>Rekonsiliasi Obat</a></td>
+									</tr>
+									<tr>
+										<td>Riwayat alergi </td>
+										<td>: <input type='radio' name='riwayat_alergi' value='Tidak' <?php if ($riwayat_alergi=="Tidak"){echo "checked";}?>>Tidak
+											<input type='radio' name='riwayat_alergi' value='Ya' <?php if ($riwayat_alergi=="Ya"){echo "checked";}?>>Ya, 
+											Keterangan Alergi : <input type='text' name='riwayat_alergi_alergi' value='<?php echo $riwayat_alergi_alergi;?>'>
+										</td>
+									</tr>
+									<tr>
+										<td>Riwayat transfusi darah</td>
+										<td>: <input type='radio' name='riwayat_tranfusi_darah' value='Tidak' <?php if ($riwayat_tranfusi_darah=="Tidak"){echo "checked";}?>>Tidak
+											<input type='radio' name='riwayat_tranfusi_darah' value='Ya' <?php if ($riwayat_tranfusi_darah=="Ya"){echo "checked";}?>>Ya
+										</td>
+									</tr>
 									<tr>
 										<td>Riwayat merokok</td>
 										<td>: <input type='radio' name='riwayat_merokok' value='Tidak' <?php if ($riwayat_merokok=="Tidak"){echo "checked";}?>>Tidak 
@@ -1167,16 +1191,16 @@ if(empty($regcek)){
 								<br>
 								<input type='submit' name='simpan' value='simpan'><br>
 								Pemeriksaan Nyeri – FLACC PAIN SCALE / DIGUNAKAN UNTUK PASIEN TIDAK SADAR<br>
-								<table class="">
+								<table class="mst-table">
 									<tr>
-										<td style="border: 1px solid;" rowspan='2'>Katagori</td>
-										<td style="border: 1px solid;" colspan='3'>Skor</td>
-										<td style="border: 1px solid;" rowspan='2'>Total</td>
+										<th rowspan='2'>Katagori</th>
+										<th colspan='3'>Skor</th>
+										<th rowspan='2'>Total</th>
 									</tr>
 									<tr>
-										<td style="border: 1px solid;">0</td>
-										<td style="border: 1px solid;">1</td>
-										<td style="border: 1px solid;">2</td>
+										<th>0</th>
+										<th>1</th>
+										<th>2</th>
 									</tr>
 									<tr>
 										<td style="border: 1px solid;">FACE  (WAJAH)</td>
@@ -1272,7 +1296,10 @@ if(empty($regcek)){
 										</td>
 									</tr>
 								</table>
-								<input type='submit' name='simpan' value='simpan'><br>
+								<input type='submit' name='simpan' class='submit-btn' value='simpan'>
+								&nbsp;&nbsp;&nbsp;
+								<input type='submit' name='edit' value='edit'>
+								<br>
 								<br>
 							</td>
 							<td>
@@ -1401,11 +1428,11 @@ if(empty($regcek)){
 								Ket penggunaan alat medis <input type='text' name='ku_nutrisi8' value='<?php echo $ku_nutrisi8;?>'> <br>
 								<input type='submit' name='simpan' value='simpan'><br><br>
 								Lakukan skrining nutrisi dengan Malnutrition Screening Tools (MST)<br>
-								<table>
+								<table class='mst-table'>
 									<tr>
-										<td style="border: 1px solid;">No</td>
-										<td style="border: 1px solid;">Uraian</td>
-										<td style="border: 1px solid;">Skor</td>
+										<th>No</th>
+										<th>Uraian</th>
+										<th>Skor</th>
 									</tr>
 									<tr>
 										<td style="border: 1px solid;">1</td>
@@ -1543,7 +1570,7 @@ if(empty($regcek)){
 									</tr>
 								</table>
 								<br>
-								<input type='submit' name='simpan' value='simpan'><br>
+								<input class='submit-btn' type='submit' name='simpan' value='simpan'><br>
 								Bila skor ≥ 2 dan/atau pasien dengan diagnosis/kondisi khusus dilakukan pengkajian lanjut oleh nutrisionis/dietisien<br>
 							</td>
 							<td>
@@ -1584,1510 +1611,1511 @@ if(empty($regcek)){
 						<tr>
 							<td>
 								G. AKTIVITAS DAN LATIHAN (dengan menggunakan barthel indeks)<br>
-<!-- 								<input type='radio' name='aktivitas1' value='Tidur/istirahat' <?php if ($aktivitas1=="Tidur/istirahat"){echo "checked";}?>>Tidur/istirahat   
-	<input type='radio' name='aktivitas1' value='Tidak ada keluhan' <?php if ($aktivitas1=="Tidak ada keluhan"){echo "checked";}?>>Tidak ada keluhan<br>  -->
-
-	<table>
-		<tr>
-			<td style="border: 1px solid;">No</td>
-			<td style="border: 1px solid;">Fungsi</td>
-			<td style="border: 1px solid;">Nilai</td>
-			<td style="border: 1px solid;">Keterangan</td>
-			<td style="border: 1px solid;">Skor</td>
-		</tr>
-
-		<tr>
-			<td style="border: 1px solid;">1</td>
-			<td style="border: 1px solid;">Buang Air Besar</td>
-			<td style="border: 1px solid;">0</td>
-			<td style="border: 1px solid;"><input type='checkbox' name='taktivitas1' value='Tak Terkendali/Tak Teratur (Perlu Pencahar)' <?php if ($taktivitas1=="Tak Terkendali/Tak Teratur (Perlu Pencahar)"){echo "checked";}?>>
-				Tak Terkendali/Tak Teratur (Perlu Pencahar)
-			</td>
-			<td style="border: 1px solid;">
-				<?php 
-				if($taktivitas1){
-					echo $taktivitas1_skor='0';
-				}
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;">1</td>
-			<td style="border: 1px solid;"><input type='checkbox' name='taktivitas2' value='Kadang-Kadang Tak Terkendali (1 X Seminggu)' <?php if ($taktivitas2=="Kadang-Kadang Tak Terkendali (1 X Seminggu)"){echo "checked";}?>>
-				Kadang-Kadang Tak Terkendali (1 X Seminggu)
-			</td>
-			<td style="border: 1px solid;">
-				<?php 
-				if($taktivitas2){
-					echo $taktivitas2_skor='1';
-				}
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;">2</td>
-			<td style="border: 1px solid;"><input type='checkbox' name='taktivitas3' value='Terkendali/Teratur' <?php if ($taktivitas3=="Terkendali/Teratur"){echo "checked";}?>>
-			Terkendali/Teratur</td>
-			<td style="border: 1px solid;">
-				<?php 
-				if($taktivitas3){
-					echo $taktivitas3_skor='2';
-				}
-				?>
-			</td>
-		</tr>
-
-		<tr>
-			<td style="border: 1px solid;">2</td>
-			<td style="border: 1px solid;">Buang Air Kecil</td>
-			<td style="border: 1px solid;">0</td>
-			<td style="border: 1px solid;"><input type='checkbox' name='taktivitas4' value='Tak Terkendali Atau Pakai Kateter' <?php if ($taktivitas4=="Tak Terkendali Atau Pakai Kateter"){echo "checked";}?>>
-			Tak Terkendali Atau Pakai Kateter</td>
-			<td style="border: 1px solid;">
-				<?php 
-				if($taktivitas4){
-					echo $taktivitas4_skor='0';
-				}
-				?>
-			</td>
-		</tr>
-		<tr>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;"></td>
-			<td style="border: 1px solid;">1</td>
-			<td style="border: 1px solid;"><input type='checkbox' name='taktivitas5' value='Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)' <?php if ($taktivitas5=="Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)"){echo "checked";}?>>
-			Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)</td>
-			<td style="border: 1px solid;"><?php 
-			if($taktivitas5){
-				echo $taktivitas5_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas6' value='YA' <?php if ($taktivitas6=="YA"){echo "checked";}?>>
-		Terkendali/Teratur</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas6){
-				echo $taktivitas6_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">3</td>
-		<td style="border: 1px solid;">Perawatan Diri</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas7' value='YA' <?php if ($taktivitas7=="YA"){echo "checked";}?>>
-		Butuh Pertolongan Orang Lain</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas7){
-				echo $taktivitas7_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas8' value='YA' <?php if ($taktivitas8=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas8){
-				echo $taktivitas8_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">4</td>
-		<td style="border: 1px solid;">Penggunaan Toilet</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas9' value='YA' <?php if ($taktivitas9=="YA"){echo "checked";}?>>
-		Tergantung Pertolongan Orang Lain</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas9){
-				echo $taktivitas9_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas10' value='YA' <?php if ($taktivitas10=="YA"){echo "checked";}?>>
-		Perlu Pertolongan Pada Beberapa Kegiatan Tetapi Dapat Mengerjakan Sendiri Beberapa Kegiatan Yang Lain</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas10){
-				echo $taktivitas10_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas11' value='YA' <?php if ($taktivitas11=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas11){
-				echo $taktivitas11_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">5</td>
-		<td style="border: 1px solid;">Makan</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas12' value='YA' <?php if ($taktivitas12=="YA"){echo "checked";}?>>
-		Tidak Mampu</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas12){
-				echo $taktivitas12_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas13' value='YA' <?php if ($taktivitas13=="YA"){echo "checked";}?>>
-		Perlu Di Tolong Memotong Makanan</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas13){
-				echo $taktivitas13_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas14' value='YA' <?php if ($taktivitas14=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas14){
-				echo $taktivitas14_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">6</td>
-		<td style="border: 1px solid;">Transfer</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas15' value='YA' <?php if ($taktivitas15=="YA"){echo "checked";}?>>
-		Tidak Mampu</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas15){
-				echo $taktivitas15_skor='6';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas16' value='YA' <?php if ($taktivitas16=="YA"){echo "checked";}?>>
-		Perlu Banyak Bantuan Untuk Biasa Duduk</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas16){
-				echo $taktivitas16_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas17' value='YA' <?php if ($taktivitas17=="YA"){echo "checked";}?>>
-		Bantuan Minimal 1 Orang</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas17){
-				echo $taktivitas17_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">3</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas18' value='YA' <?php if ($taktivitas18=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas18){
-				echo $taktivitas18_skor='3';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">7</td>
-		<td style="border: 1px solid;">Mobilitas</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas19' value='YA' <?php if ($taktivitas19=="YA"){echo "checked";}?>>
-		Tidak Mampu</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas19){
-				echo $taktivitas19_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas20' value='YA' <?php if ($taktivitas20=="YA"){echo "checked";}?>>
-		Bisa (Pindah) Dengan Kursi Roda</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas20){
-				echo $taktivitas20_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas21' value='YA' <?php if ($taktivitas21=="YA"){echo "checked";}?>>
-		Berjalan Dengan Bantuan 1 Orang</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas21){
-				echo $taktivitas21_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">3</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas22' value='YA' <?php if ($taktivitas22=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas22){
-				echo $taktivitas22_skor='3';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">8</td>
-		<td style="border: 1px solid;">Berpakaian</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas23' value='YA' <?php if ($taktivitas23=="YA"){echo "checked";}?>>
-		Tergantung Orang Lain</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas23){
-				echo $taktivitas23_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas24' value='YA' <?php if ($taktivitas24=="YA"){echo "checked";}?>>
-		Sebagian Dibantu (Misal : Memakai Baju)</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas24){
-				echo $taktivitas24_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas25' value='YA' <?php if ($taktivitas25=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas25){
-				echo $taktivitas25_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">9</td>
-		<td style="border: 1px solid;">Naik Turun Tangga</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas26' value='YA' <?php if ($taktivitas26=="YA"){echo "checked";}?>>
-		Tidak Mampu</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas26){
-				echo $taktivitas26_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas27' value='YA' <?php if ($taktivitas27=="YA"){echo "checked";}?>>
-		Butuh Pertolongan</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas27){
-				echo $taktivitas27_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">2</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas28' value='YA' <?php if ($taktivitas28=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas28){
-				echo $taktivitas28_skor='2';
-			}
-			?>
-		</td>
-	</tr>
-
-	<tr>
-		<td style="border: 1px solid;">10</td>
-		<td style="border: 1px solid;">Mandi</td>
-		<td style="border: 1px solid;">0</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas29' value='YA' <?php if ($taktivitas29=="YA"){echo "checked";}?>>
-		Tergantung Orang Lain</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas29){
-				echo $taktivitas29_skor='0';
-			}
-			?>
-		</td>
-	</tr>
-	<tr>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;"></td>
-		<td style="border: 1px solid;">1</td>
-		<td style="border: 1px solid;"><input type='checkbox' name='taktivitas30' value='YA' <?php if ($taktivitas30=="YA"){echo "checked";}?>>
-		Mandiri</td>
-		<td style="border: 1px solid;">
-			<?php 
-			if($taktivitas30){
-				echo $taktivitas30_skor='1';
-			}
-			?>
-		</td>
-	</tr>
-
-
-</table>
-<br>
-[]12 – 20 : Minimal Care [] 9 – 11 : Partial Care [] 0 – 8 : Total Care
-<input type='submit' name='simpan' value='simpan'>&nbsp;
-<?php 
-echo "<h5>";
-echo "[";
-echo $taktivitas_skor_total=$taktivitas1_skor+$taktivitas2_skor+$taktivitas3_skor+$taktivitas4_skor+$taktivitas5_skor+$taktivitas6_skor+$taktivitas7_skor+$taktivitas8_skor+$taktivitas9_skor+$taktivitas10_skor+$taktivitas11_skor+$taktivitas12_skor+$taktivitas13_skor+$taktivitas14_skor+$taktivitas15_skor+$taktivitas16_skor+$taktivitas17_skor+$taktivitas18_skor+$taktivitas19_skor+$taktivitas20_skor+$taktivitas21_skor+$taktivitas22_skor+$taktivitas23_skor+$taktivitas24_skor+$taktivitas25_skor+$taktivitas26_skor+$taktivitas27_skor+$taktivitas28_skor+$taktivitas29_skor+$taktivitas30_skor;
-echo "] - ";
-
-if($taktivitas_skor_total >= 12 and $taktivitas_skor_total <=20 ){echo $ket_taktivitas_skor="Minimal Care";}
-if($taktivitas_skor_total >= 9 and $taktivitas_skor_total <=11 ){echo $ket_taktivitas_skor="Partial Care";}
-if($taktivitas_skor_total >= 0 and $taktivitas_skor_total <=8 ){echo $ket_taktivitas_skor="Total Care";}
-echo "</h5>";
-?>
-<br>
-</td>
-<td>
-
-	<br>
-	<input type='checkbox' name='m7' value='Y' <?php if ($m7=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-	<?php
-	$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-	WHERE     kolom='AKTIVITAS'";
-	$hasil  = sqlsrv_query($conn, $q);	
-	$no=1;
-	while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-		$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-		$h1u  = sqlsrv_query($conn, $qu);        
-		$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-		$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-		$nm_field = 'masalah_aktivitas'.$no;	
-		if($cek_kode_diagnosa){
-			$checked = 'checked';
-		}else{
-			$checked='';
-		}
-
-		echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-		$no+=1;
-	}
-	?>
-	<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-
-</td>
-</tr>
-
-
-<tr>
-	<td>
-		H. INTEGRITAS KULIT DAN HYGIENE<br>
-		Warna :  
-		<input type='checkbox' name='kulit1' value='Normal' <?php if ($kulit1=="Normal"){echo "checked";}?>>Normal  
-		<input type='checkbox' name='kulit1' value='Ikterik' <?php if ($kulit1=="Ikterik"){echo "checked";}?>>Ikterik    
-		<input type='checkbox' name='kulit1' value='Sianosis' <?php if ($kulit1=="Sianosis"){echo "checked";}?>>Sianosis 
-		<br> 
-		Oedem:    
-		<input type='checkbox' name='kulit2' value='Tidak' <?php if ($kulit2=="Tidak"){echo "checked";}?>>Tidak      
-		<input type='checkbox' name='kulit2' value='Ya' <?php if ($kulit2=="Ya"){echo "checked";}?>>Ya, 
-		lokasi : <input type='text' name='kulit3' value='<?php echo $kulit3;?>'><br>
-		Turgor :   
-		<input type='checkbox' name='kulit4' value='Tidak ada kelainan' <?php if ($kulit4=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan 
-		<input type='checkbox' name='kulit4' value='Ada kelainan' <?php if ($kulit4=="Ada kelainan"){echo "checked";}?>>Ada kelainan     
-		<br>
-		Luka :  
-		<input type='checkbox' name='kulit5' value='Tidak' <?php if ($kulit5=="Tidak"){echo "checked";}?>>Tidak    
-		<input type='checkbox' name='kulit5' value='Ya' <?php if ($kulit6=="Ya"){echo "checked";}?>>Ya, 
-		lokasi : (lengkapi form assesmen luka)<br>
-		<input type='submit' name='simpan' value='simpan'>
-		<br>
-		Asesmen Risiko Dekubitus (dengan skala norton)<br>
-
-		<table>
-			<tr>
-				<td style="border: 1px solid;">No</td>
-				<td style="border: 1px solid;">Parameter</td>
-				<td style="border: 1px solid;">Kondisi</td>
-				<td style="border: 1px solid;">Skor</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">1</td>
-				<td style="border: 1px solid;">Kondisi Fisik</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit1' value='YA' <?php if ($tkulit1=="YA"){echo "checked";}?>>
-				Baik, pasien tidak mengalami cacat atau kelemahan fisik</td>
-				<td style="border: 1px solid;">4</td>
-				<?php 
-				if($tkulit1){
-					$tkulit1_skor='1';
-				}
-				?>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit2' value='YA' <?php if ($tkulit2=="YA"){echo "checked";}?>>
-				Cukup</td>
-				<td style="border: 1px solid;">3</td>
-				<?php 
-				if($tkulit2){
-					$tkulit2_skor='3';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit3' value='YA' <?php if ($tkulit3=="YA"){echo "checked";}?>>
-				Buruk</td>
-				<td style="border: 1px solid;">2</td>
-				<?php 
-				if($tkulit3){
-					$tkulit3_skor='2';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit4' value='YA' <?php if ($tkulit4=="YA"){echo "checked";}?>>
-				Sangat Buruk</td>
-				<td style="border: 1px solid;">1</td>
-				<?php 
-				if($tkulit4){
-					$tkulit4_skor='1';
-				}
-				?>
-
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">2</td>
-				<td style="border: 1px solid;">Kondisi mental</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit5' value='YA' <?php if ($tkulit5=="YA"){echo "checked";}?>>
-				Composmentis</td>
-				<td style="border: 1px solid;">4</td>
-				<?php 
-				if($tkulit5){
-					$tkulit5_skor='4';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit6' value='YA' <?php if ($tkulit6=="YA"){echo "checked";}?>>
-				Apatis</td>
-				<td style="border: 1px solid;">3</td>
-				<?php 
-				if($tkulit6){
-					$tkulit6_skor='3';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit7' value='YA' <?php if ($tkulit7=="YA"){echo "checked";}?>>
-				Gelisah, disorientasi, sopor</td>
-				<td style="border: 1px solid;">2</td>
-				<?php 
-				if($tkulit7){
-					$tkulit7_skor='2';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit8' value='YA' <?php if ($tkulit8=="YA"){echo "checked";}?>>
-				Koma/stupor</td>
-				<td style="border: 1px solid;">1</td>
-				<?php 
-				if($tkulit8){
-					$tkulit8_skor='1';
-				}
-				?>
-
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">3</td>
-				<td style="border: 1px solid;">Rentang aktifitas</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit9' value='YA' <?php if ($tkulit9=="YA"){echo "checked";}?>>
-				Ambulasi /pasien bisa bergerak bebas</td>
-				<td style="border: 1px solid;">4</td>
-				<?php 
-				if($tkulit9){
-					$tkulit9_skor='4';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit10' value='YA' <?php if ($tkulit10=="YA"){echo "checked";}?>>
-				Berjalan dengan alat bantu, misal kruk, tripot, dll</td>
-				<td style="border: 1px solid;">3</td>
-				<?php 
-				if($tkulit10){
-					$tkulit10_skor='3';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit11' value='YA' <?php if ($tkulit11=="YA"){echo "checked";}?>>
-				Hanya bisa beraktifitas duduk</td>
-				<td style="border: 1px solid;">2</td>
-				<?php 
-				if($tkulit11){
-					$tkulit11_skor='2';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit12' value='YA' <?php if ($tkulit12=="YA"){echo "checked";}?>>
-				Pasien bedrest</td>
-				<td style="border: 1px solid;">1</td>
-				<?php 
-				if($tkulit12){
-					$tkulit12_skor='1';
-				}
-				?>
-
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">4</td>
-				<td style="border: 1px solid;">Mobilitas</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit13' value='YA' <?php if ($tkulit13=="YA"){echo "checked";}?>>
-				Masih bergerak bebas</td>
-				<td style="border: 1px solid;">4</td>
-				<?php 
-				if($tkulit13){
-					$tkulit13_skor='4';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit14' value='YA' <?php if ($tkulit14=="YA"){echo "checked";}?>>
-				Ada keterbatasan gerak tetapi tidak memerlukan bantuan</td>
-				<td style="border: 1px solid;">3</td>
-				<?php 
-				if($tkulit14){
-					$tkulit14_skor='3';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit15' value='YA' <?php if ($tkulit15=="YA"){echo "checked";}?>>
-				Bergerak sangat terbatas dan memerlukan bantuan minimal</td>
-				<td style="border: 1px solid;">2</td>
-				<?php 
-				if($tkulit15){
-					$tkulit15_skor='2';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit16' value='YA' <?php if ($tkulit16=="YA"){echo "checked";}?>>
-				Imobilitas (bantuan penuh)</td>
-				<td style="border: 1px solid;">1</td>
-				<?php 
-				if($tkulit16){
-					$tkulit16_skor='1';
-				}
-				?>
-
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">5</td>
-				<td style="border: 1px solid;">Inkotinentia</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit17' value='YA' <?php if ($tkulit17=="YA"){echo "checked";}?>>
-				BAB dan BAK normal</td>
-				<td style="border: 1px solid;">4</td>
-				<?php 
-				if($tkulit17){
-					$tkulit17_skor='4';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit18' value='YA' <?php if ($tkulit18=="YA"){echo "checked";}?>>
-				Kadang kesulitan BAB dan BAK</td>
-				<td style="border: 1px solid;">3</td>
-				<?php 
-				if($tkulit18){
-					$tkulit18_skor='3';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit19' value='YA' <?php if ($tkulit19=="YA"){echo "checked";}?>>
-				Pasien mengalami inkontinentia berkemih</td>
-				<td style="border: 1px solid;">2</td>
-				<?php 
-				if($tkulit19){
-					$tkulit19_skor='2';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tkulit20' value='YA' <?php if ($tkulit20=="YA"){echo "checked";}?>>
-				Pasien mengalami inkontinentia BAB</td>
-				<td style="border: 1px solid;">1</td>
-				<?php 
-				if($tkulit20){
-					$tkulit20_skor='1';
-				}
-				?>
-
-			</tr>
-			<tr>
-				<td style="border: 1px solid;" colspan="3">Total Skor</td>
-				<td style="border: 1px solid;">
-					<?php
-					echo										$tkulit_skor_total=$tkulit1_skor+$tkulit2_skor+$tkulit3_skor+$tkulit4_skor+$tkulit5_skor+$tkulit6_skor+$tkulit7_skor+$tkulit8_skor+$tkulit9_skor+$tkulit10_skor+$tkulit11_skor+$tkulit12_skor+$tkulit13_skor+$tkulit14_skor+$tkulit15_skor+$tkulit16_skor+$tkulit17_skor+$tkulit18_skor+$tkulit19_skor+$tkulit20_skor;
-					?>
-
-				</td>
-			</tr>
-
-		</table>
-		<input type='submit' name='simpan' value='simpan'>&nbsp;
-		<br>
-		Total Skor :   []5 – 10 : Risiko tinggi       []11 – 15 : Risiko sedang      []16 – 20 : Risiko rendah
-		<?php 
-		echo "<h5>";
-		echo "[".$tkulit_skor_total."]";
-
-		if($tkulit_skor_total >= 5 and $tkulit_skor_total <=10 ){echo $tkulit6_skor_ket="Risiko tinggi";}
-		if($tkulit_skor_total >= 11 and $tkulit_skor_total <=15 ){echo $tkulit6_skor_ket="Risiko sedang";}
-		if($tkulit_skor_total >= 16 and $tkulit_skor_total <=20 ){echo $tkulit6_skor_ket="Risiko rendah";}
-		echo "</h5>";
-		?>
-		<br>
-		(jika total skor kurang dari 15 lakukan tindakan pencegahan dekubitus dan jika sudah ada luka maka lanjutkan dengan form asesmen luka).
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m8' value='Y' <?php if ($m8=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='KULIT'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_kulit'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-
-	</td>
-</tr>
-
-<tr>
-	<td>
-
-		I. ENDOKRIN<br>
-
-		Pembesaran kel. Thyroid       :   
-		<input type='radio' name='endokrin1' value='Tidak' <?php if ($endokrin1=="Tidak"){echo "checked";}?>> Tidak     
-		<input type='radio' name='endokrin1' value='Ya' <?php if ($endokrin1=="Ya"){echo "checked";}?>> Ya<br>
-		Pembesaran kel. Getah bening :     
-		<input type='radio' name='endokrin2' value='Tidak' <?php if ($endokrin2=="Tidak"){echo "checked";}?>>Tidak      
-		<input type='radio' name='endokrin2' value='Ya' <?php if ($endokrin2=="Ya"){echo "checked";}?>>Ya<br>
-		Hiperglikemi   :  
-		<input type='radio' name='endokrin3' value='Tidak' <?php if ($endokrin3=="Tidak"){echo "checked";}?>>Tidak      
-		<input type='radio' name='endokrin3' value='Ya' <?php if ($endokrin3=="Ya"){echo "checked";}?>>Ya,
-		sebutkan : <input type='text' name='' value='<?php echo $endokrin4;?>'><br>
-		Hipoglikemi   :  
-		<input type='radio' name='endokrin4' value='Tidak' <?php if ($endokrin4=="Tidak"){echo "checked";}?>>Tidak      
-		<input type='radio' name='endokrin4' value='Ya' <?php if ($endokrin4=="Ya"){echo "checked";}?>>Ya,
-		sebutkan : <input type='text' name='' value='<?php echo $endokrin4;?>'><br>
-		<input type='submit' name='simpan' value='simpan'>&nbsp;
-
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m9' value='Y' <?php if ($m9=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='ENDOKTRIN'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_endoktrin'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-
-	</td>
-</tr>
-
-<tr>
-	<td>
-		J. REPRODUKSI<br>
-		Wanita    : 
-		<input type='radio' name='reproduksi1' value='Tidak ada kelainan' <?php if ($reproduksi1=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan
-		<input type='radio' name='reproduksi1' value='Sedang Hamil' <?php if ($reproduksi1=="Sedang Hamil"){echo "checked";}?>>Sedang Hamil<br>
-		Menstruasi pertama :   
-		<input type='radio' name='reproduksi2' value='Teratur' <?php if ($reproduksi2=="Teratur"){echo "checked";}?>>Teratur  
-		<input type='radio' name='reproduksi2' value='Tidak Teratur' <?php if ($reproduksi2=="Tidak Teratur"){echo "checked";}?>>Tidak Teratur<br>
-		Laki – Laki : 
-		<input type='radio' name='reproduksi3' value='Tidak ada kelainan' <?php if ($reproduksi3=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan   
-		<input type='radio' name='reproduksi3' value='Ada kelainan' <?php if ($reproduksi3=="Ada kelainan"){echo "checked";}?>>Ada Kelainan<br>
-		<input type='submit' name='simpan' value='simpan'>&nbsp;
-
-	</td>
-	<td>
-		&nbsp;
-	</td>
-</tr>
-
-
-<tr>
-	<td>
-		K. KEAMANAN DAN KENYAMANAN<br>
-
-		1. Risiko Jatuh<br>
-		(dewasa dengan skala Morse)<br>
-
-		<table>
-			<tr>
-				<td style="border: 1px solid;">Faktor Risiko</td>
-				<td style="border: 1px solid;">skala</td>
-				<td style="border: 1px solid;">poin</td>
-				<td style="border: 1px solid;">Skor pasien</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">Riwayat jatuh</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh1' value='YA' <?php if ($tjatuh1=="YA"){echo "checked";}?>>Ya</td>
-				<td style="border: 1px solid;">25</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh1){
-						echo $tjatuh1_skor='25';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh2' value='YA' <?php if ($tjatuh2=="YA"){echo "checked";}?>>Tidak</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh2){
-						echo $tjatuh2_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">Diagnosis skunder (≥diagnosis medis)</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh3' value='YA' <?php if ($tjatuh3=="YA"){echo "checked";}?>>Ya</td>
-				<td style="border: 1px solid;">15</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh3){
-						echo $tjatuh3_skor='15';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh4' value='YA' <?php if ($tjatuh4=="YA"){echo "checked";}?>>Tidak</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh4){
-						echo $tjatuh4_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">Alat bantu</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh5' value='YA' <?php if ($tjatuh5=="YA"){echo "checked";}?>>Berpegangan pada perabot, kursi roda</td>
-				<td style="border: 1px solid;">30</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh5){
-						echo $tjatuh5_skor='30';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh6' value='YA' <?php if ($tjatuh6=="YA"){echo "checked";}?>>Tongkat/walker</td>
-				<td style="border: 1px solid;">15</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh6){
-						echo $tjatuh6_skor='15';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh7' value='YA' <?php if ($tjatuh7=="YA"){echo "checked";}?>>Tidak ada/perawat/tirah baring</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh7){
-						echo $tjatuh7_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">Terpasang infus/terapi intravena </td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh8' value='YA' <?php if ($tjatuh8=="YA"){echo "checked";}?>>Ya</td>
-				<td style="border: 1px solid;">20</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh8){
-						echo $tjatuh8_skor='20';
-					}
-					?>
-				</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh9' value='YA' <?php if ($tjatuh9=="YA"){echo "checked";}?>>Tidak</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh9){
-						echo $tjatuh9_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">Gaya berjalan</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh10' value='YA' <?php if ($tjatuh10=="YA"){echo "checked";}?>>Kerusakan</td>
-				<td style="border: 1px solid;">20</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh10){
-						echo $tjatuh10_skor='20';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh11' value='YA' <?php if ($tjatuh11=="YA"){echo "checked";}?>>Kelemahan</td>
-				<td style="border: 1px solid;">10</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh11){
-						echo $tjatuh11_skor='10';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh12' value='YA' <?php if ($tjatuh12=="YA"){echo "checked";}?>>Normal /tirah baring/imobilisasi</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh12){
-						echo $tjatuh12_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">Status mental</td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh13' value='YA' <?php if ($tjatuh13=="YA"){echo "checked";}?>>Tidak konsisten dengan perintah</td>
-				<td style="border: 1px solid;">15</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh13){
-						echo $tjatuh13_skor='15';
-					}
-					?>
-				</td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;"></td>
-				<td style="border: 1px solid;"><input type='checkbox' name='tjatuh14' value='YA' <?php if ($tjatuh14=="YA"){echo "checked";}?>>Sadar akan kemampuan diri sendiri</td>
-				<td style="border: 1px solid;">0</td>
-				<td style="border: 1px solid;">
-					<?php 
-					if($tjatuh14){
-						echo $tjatuh14_skor='0';
-					}
-					?>
-				</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;" colspan="3">Total Skor</td>
-				<td style="border: 1px solid;">
-					<?php 
-					echo $tjatuh_skor_total=$tjatuh1_skor+$tjatuh2_skor+$tjatuh3_skor+$tjatuh4_skor+$tjatuh5_skor+$tjatuh6_skor+$tjatuh7_skor+$tjatuh8_skor+$tjatuh9_skor+$tjatuh10_skor+$tjatuh11_skor+$tjatuh12_skor+$tjatuh13_skor+$tjatuh14_skor; 
-					?>
-				</td>
-			</tr>
-
-		</table>
-		<input type='submit' name='simpan' value='simpan'>&nbsp;
-
-		<br>
-		[] >45 : Risiko tinggi ;         [] 25-44 : Risiko sedang ;         [] 0 -24 : Risiko rendah
-		<br>
-		<?php 
-		echo "<h5>";
-		echo "[".$tjatuh_skor_total."]";
-
-		if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total="Risiko rendah";}
-		if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total="Risiko sedang";}
-		if($tjatuh_skor_total >= 45){echo $tjatuh_skor_total="Risiko tinggi";}
-		echo "</h5>";
-
-		?>
-
-		<br>
-		2. Restrain :<br>
-		Pernah menggunakan restrain sebelumnya : 
-		<input type='radio' name='asdewasa1' value='Tidak' <?php if ($asdewasa1=="Tidak"){echo "checked";}?>>Tidak    
-		<input type='radio' name='asdewasa1' value='Ya' <?php if ($asdewasa1=="Ya"){echo "checked";}?>>Ya<br>
-		Kondisi Pasien  :   
-		<input type='checkbox' name='asdewasa2' value='Kooperatif' <?php if ($asdewasa2=="Kooperatif"){echo "checked";}?>>Kooperatif
-		<input type='checkbox' name='asdewasa2' value='Gelisah' <?php if ($asdewasa2=="Gelisah"){echo "checked";}?>>Gelisah     
-		<input type='checkbox' name='asdewasa2' value='Delirium' <?php if ($asdewasa2=="Delirium"){echo "checked";}?>>Delirium    
-		<input type='checkbox' name='asdewasa2' value='Berontak' <?php if ($asdewasa2=="Berontak"){echo "checked";}?>>Berontak<br>
-		<!-- pasien kooperatif :   
-		<input type='radio' name='asdewasa3' value='Ya' <?php if ($asdewasa3=="Ya"){echo "checked";}?>>Ya       
-		<input type='radio' name='asdewasa3' value='Tidak' <?php if ($asdewasa3=="Tidak"){echo "checked";}?>>Tidak<br> -->
-		Kondisi saat ini berisiko :   
-		<input type='radio' name='asdewasa4' value='Tidak' <?php if ($asdewasa4=="Tidak"){echo "checked";}?>>Tidak     
-		<input type='radio' name='asdewasa4' value='Ya' <?php if ($asdewasa4=="Ya"){echo "checked";}?>>Ya, lanjutan dengan pengkajian restrain.<br>
-		<input type='submit' name='simpan' value='simpan'>
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m10' value='Y' <?php if ($m10=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='JATUH'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_jatuh'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-	</td>
-</tr>
-
-<tr>
-	<td>
-		L. ISTIRAHAT DAN TIDUR<br>
-		Lama tidur          :    
-		<input type='radio' name='asdewasa5' value='Tidak ada kelainan' <?php if ($asdewasa5=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan     
-		<input type='radio' name='asdewasa5' value='Ada kelainan' <?php if ($asdewasa5=="Ada kelainan"){echo "checked";}?>>Ada kelainan :
-		<input type='text' name='asdewasa3' value='<?php echo $asdewasa3;?>' placeholder='Kelainan Istirahat / Tidur'>
-		<br>
-		Gangguan istirahat    :    
-		<input type='radio' name='asdewasa6' value='Tidak ada kelainan' <?php if ($asdewasa6=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan     
-		<input type='radio' name='asdewasa6' value='Ada kelainan' <?php if ($asdewasa6=="Ada kelainan"){echo "checked";}?>>Ada kelainan :<br>
-		Penggunaan obat tidur  :    
-		<input type='radio' name='asdewasa7' value='Tidak ada kelainan' <?php if ($asdewasa7=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan    
-		<input type='radio' name='asdewasa7' value='Ada kelainan' <?php if ($asdewasa7=="Ada kelainan"){echo "checked";}?>>Ada kelainan :<br>
-		<input type='submit' name='simpan' value='simpan'>
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m11' value='Y' <?php if ($m11=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='TIDUR'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_tidur'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-	</td>
-</tr>
-
-
-<tr>
-	<td>
-		M. KEBUTUHAN KOMUNIKASI, KOGNISI DAN EDUKASI<br>
-		Bicara :   
-		<input type='radio' name='asdewasa8' value='Normal' <?php if ($asdewasa8=="Normal"){echo "checked";}?>>Normal      
-		<input type='radio' name='asdewasa8' value='Gangguan Bicara' <?php if ($asdewasa8=="Gangguan Bicara"){echo "checked";}?>>Gangguan Bicara :<br>
-		Mulai kapan : <input type='text' name='asdewasa9' value='<?php echo $asdewasa9;?>'><br>
-		Memerlukan Bahasa Isyarat :    
-		<input type='radio' name='asdewasa10' value='Tidak' <?php if ($asdewasa10=="Tidak"){echo "checked";}?>>Tidak     
-		<input type='radio' name='asdewasa10' value='Ya' <?php if ($asdewasa10=="Ya"){echo "checked";}?>>Ya<br>
-		Hambatan Belajar : 
-		<input type='checkbox' name='asdewasa11' value='Bahasa' <?php if ($asdewasa11=="Bahasa"){echo "checked";}?>>Bahasa     
-		<input type='checkbox' name='asdewasa11' value='Pendengaran' <?php if ($asdewasa11=="Pendengaran"){echo "checked";}?>>Pendengaran    
-		<input type='checkbox' name='asdewasa11' value='Hilang Memori' <?php if ($asdewasa11=="Hilang Memori"){echo "checked";}?>>Hilang Memori<br>
-		<input type='submit' name='simpan' value='simpan'>
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m12' value='Y' <?php if ($m12=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='KOMUNIKASI'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_komunikasi'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-
-
-	</td>
-</tr>
-
-<tr>
-	<td>
-		N. PSIKOSOSIAL, SPIRITUAL DAN EKONOMI<br>
-		Keadaan Psikologis   :    
-		<input type='radio' name='asdewasa12' value='Kooperatif' <?php if ($asdewasa12=="Kooperatif"){echo "checked";}?>>Kooperatif      
-		<input type='radio' name='asdewasa12' value='Sedih' <?php if ($asdewasa12=="Sedih"){echo "checked";}?>>Sedih   
-		<input type='radio' name='asdewasa12' value='Marah' <?php if ($asdewasa12=="Marah"){echo "checked";}?>>Marah
-		<input type='radio' name='asdewasa12' value='Agitasi' <?php if ($asdewasa12=="Agitasi"){echo "checked";}?>>Agitasi        
-		<input type='radio' name='asdewasa12' value='Cemas' <?php if ($asdewasa12=="Cemas"){echo "checked";}?>>Cemas   
-		<input type='radio' name='asdewasa12' value='Gelisah' <?php if ($asdewasa12=="Gelisah"){echo "checked";}?>>Gelisah
-		<input type='radio' name='asdewasa12' value='Disorientasi' <?php if ($asdewasa12=="Disorientasi"){echo "checked";}?>>Disorientasi:    
-		<input type='radio' name='asdewasa12' value='Orang' <?php if ($asdewasa12=="Orang"){echo "checked";}?>>Orang   
-		<input type='radio' name='asdewasa12' value='Tempat' <?php if ($asdewasa12=="Tempat"){echo "checked";}?>>Tempat   
-		<input type='radio' name='asdewasa12' value='Waktu' <?php if ($asdewasa12=="Waktu"){echo "checked";}?>>Waktu<br>
-		Tingkat Pendidikan :    
-		<input type='radio' name='asdewasa13' value='Belum Sekolah' <?php if ($asdewasa13=="Belum Sekolah"){echo "checked";}?>>Belum Sekolah   
-		<input type='radio' name='asdewasa13' value='SD' <?php if ($asdewasa13=="SD"){echo "checked";}?>>SD     
-		<input type='radio' name='asdewasa13' value='SMP' <?php if ($asdewasa13=="SMP"){echo "checked";}?>>SMP
-		<input type='radio' name='asdewasa13' value='SMA' <?php if ($asdewasa13=="SMA"){echo "checked";}?>>SMA           
-		<input type='radio' name='asdewasa13' value='Diploma' <?php if ($asdewasa13=="Diploma"){echo "checked";}?>>Diploma  
-		<input type='radio' name='asdewasa13' value='Sarjana' <?php if ($asdewasa13=="Sarjana"){echo "checked";}?>>Sarjana<br>
-		Pekerjaan         :    
-		<input type='radio' name='asdewasa14' value='Wiraswasta' <?php if ($asdewasa14=="Wiraswasta"){echo "checked";}?>>Wiraswasta      
-		<input type='radio' name='asdewasa14' value='Swasta' <?php if ($asdewasa14=="Swasta"){echo "checked";}?>>Swasta   
-		<input type='radio' name='asdewasa14' value='Peg.Negeri' <?php if ($asdewasa14=="Peg.Negeri"){echo "checked";}?>>Peg.Negeri<br>
-		Tinggal Bersama   :    
-		<input type='radio' name='asdewasa15' value='Suami/istri ' <?php if ($asdewasa15=="Suami/istri "){echo "checked";}?>>Suami/istri      
-		<input type='radio' name='asdewasa15' value='Anak' <?php if ($asdewasa15=="Anak"){echo "checked";}?>>Anak   
-		<input type='radio' name='asdewasa15' value='Teman' <?php if ($asdewasa15=="Teman"){echo "checked";}?>>Teman
-		<input type='radio' name='asdewasa15' value='Orang Tua ' <?php if ($asdewasa15=="Orang Tua "){echo "checked";}?>>Orang Tua       
-		<input type='radio' name='asdewasa15' value='Sendiri' <?php if ($asdewasa15=="Sendiri"){echo "checked";}?>>Sendiri  
-		<input type='radio' name='asdewasa15' value='Caregiver' <?php if ($asdewasa15=="Caregiver"){echo "checked";}?>>Caregiver<br>
-		Status Ekonomi    :    
-		<input type='radio' name='asdewasa16' value='Pembayaran Pribadi/Perorangan' <?php if ($asdewasa16=="Pembayaran Pribadi/Perorangan"){echo "checked";}?>>Pembayaran Pribadi/Perorangan
-		<input type='radio' name='asdewasa16' value='Jaminan kesehatan/Asuransi' <?php if ($asdewasa16=="Jaminan kesehatan/Asuransi"){echo "checked";}?>>Jaminan kesehatan/Asuransi<br>
-		Spiritual<br>
-		Menjalankan ibadah    :   
-		<input type='radio' name='asdewasa17' value='Ada Hambatan' <?php if ($asdewasa17=="Ada Hambatan"){echo "checked";}?>>Ada Hambatan    :   
-		<input type='radio' name='asdewasa17' value='Tidak ada hambatan' <?php if ($asdewasa17=="Tidak ada hambatan"){echo "checked";}?>>Tidak ada hambatan<br>
-		Persepsi terhadap Sakit :   
-		<input type='radio' name='asdewasa18' value='Tidak Ada Keluhan' <?php if ($asdewasa18=="Tidak Ada Keluhan"){echo "checked";}?>>Tidak Ada Keluhan     
-		<input type='radio' name='asdewasa18' value='Rasa Bersalah' <?php if ($asdewasa18=="Rasa Bersalah"){echo "checked";}?>>Rasa Bersalah<br>
-		Meminta Pelayanan Spiritual :    
-		<input type='radio' name='asdewasa19' value='Tidak Ada Keluhan' <?php if ($asdewasa19=="Tidak Ada Keluhan"){echo "checked";}?>>Tidak Ada Keluhan      
-		<input type='radio' name='asdewasa19' value='Ya' <?php if ($asdewasa19=="Ya"){echo "checked";}?>>Ya, (lakukan kolaborasi dengan bagian kerohanian)<br>
-		<input type='submit' name='simpan' value='simpan'>
-	</td>
-	<td>
-
-		<br>
-		<input type='checkbox' name='m13' value='Y' <?php if ($m13=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
-		<?php
-		$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
-		WHERE     kolom='PSIKOLOGI'";
-		$hasil  = sqlsrv_query($conn, $q);	
-		$no=1;
-		while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
-
-			$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
-			$h1u  = sqlsrv_query($conn, $qu);        
-			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-			$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
-
-			$nm_field = 'masalah_psikologi'.$no;	
-			if($cek_kode_diagnosa){
-				$checked = 'checked';
-			}else{
-				$checked='';
-			}
-
-			echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
-			$no+=1;
-		}
-		?>
-		<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
-
-
-
-	</td>
-</tr>
-
-<tr>
-	<td>
-		O. DISCHARGE PLANNING<br>
-
-		<table>
-			<tr>
-				<td style="border: 1px solid;">No</td>
-				<td style="border: 1px solid;">Keterangan</td>
-				<td style="border: 1px solid;">Ya</td>
-				<td style="border: 1px solid;">Tidak</td>
-			</tr>
-
-			<tr>
-				<td style="border: 1px solid;">1</td>
-				<td style="border: 1px solid;">Usia ≥60 tahun</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa20' value='Ya' <?php if ($asdewasa20=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa20' value='Tidak' <?php if ($asdewasa20=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">2</td>
-				<td style="border: 1px solid;">Tinggal sendirian tanpa dukungan sosial secara langsung</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa21' value='Ya' <?php if ($asdewasa21=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa21' value='Tidak' <?php if ($asdewasa21=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">3</td>
-				<td style="border: 1px solid;">Stroke, serangan Jantung, PPOK, gagal jantung kongestif, empisema demensia, TB, alzeimer, AIDS, atau penyakit dengan potensi mengancam nyawa lainnya</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa22' value='Ya' <?php if ($asdewasa22=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa22' value='Tidak' <?php if ($asdewasa22=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">4</td>
-				<td style="border: 1px solid;">Korban dari kasus criminal</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa23' value='Ya' <?php if ($asdewasa23=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa23' value='Tidak' <?php if ($asdewasa23=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">5</td>
-				<td style="border: 1px solid;">Trauma Multiple</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa24' value='Ya' <?php if ($asdewasa24=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa24' value='Tidak' <?php if ($asdewasa24=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">6</td>
-				<td style="border: 1px solid;">Memerlukan Perawatan atau pengobatan berkelanjutan</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa25' value='Ya' <?php if ($asdewasa25=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa25' value='Tidak' <?php if ($asdewasa25=="Tidak"){echo "checked";}?>></td>
-			</tr>
-			<tr>
-				<td style="border: 1px solid;">7</td>
-				<td style="border: 1px solid;">Pasien lansia yang ada dilantai atas (saat dirumah)</td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa26' value='Ya' <?php if ($asdewasa26=="Ya"){echo "checked";}?>></td>
-				<td style="border: 1px solid;"><input type='radio' name='asdewasa26' value='Tidak' <?php if ($asdewasa26=="Tidak"){echo "checked";}?>></td>
-			</tr>
-
-
-			<tr>
-				<td style="border: 1px solid;" colspan="4">Bila salah satu jawaban adalah ya, dilanjutkan pengisian rm 18a.10 discharge planning terintegrasi</td>
-			</tr>
-
-		</table>
-		<input type='submit' name='simpan' value='simpan'>
-	</td>
-	<td>
-		&nbsp;
-	</td>
-</tr>
-
-
-<tr>
-	<td>
-		<br>
-
-		<br>
-		<br>
-		<br>
-		Selesai asesmen tanggal :<?php echo $tgl_assesment; ?> , Jam : <?php echo $jam_assesment; ?>
-		<br>
-		<table border='0' width="100%">
-
-			<tr>
-				<td width='50%' align="center">
-					Perawat yang melakukan Asesmen
-				</td>
-				<td align="center">
-					DPJP										
-				</td>
-			</tr>
-			<tr>
-				<td align="center">
-					<?php 
-					$qu="SELECT  NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where [user1] like '%$userid%'";
-					$h1u  = sqlsrv_query($conn, $qu);        
-					$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-					$NamaUser = trim($d1u['NamaUser']);
-					?>
-
-					<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$NamaUser."Pada Tanggal : ".$tgl_assesment;?>
-					<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
-
-					<?php 
-					QRcode::png($verif_perawat, "image.png", "L", 2, 2);   
-					echo "<center><img src='image.png'></center>";
-					?>
-					<br>
-					<?php echo $NamaUser;?>
-				</td>
-				<td align="center">
-					<?php
-					$qreg="SELECT top(1)noreg FROM  ERM_SOAP_VERIF where noreg='$noreg'";
-					$hqreg  = sqlsrv_query($conn, $qreg);        
-					$dhqreg  = sqlsrv_fetch_array($hqreg, SQLSRV_FETCH_ASSOC); 
-					$cek_vnoreg = trim($dhqreg['noreg']);
-					$verif_dpjp="Document ini telah diVerifikasi Oleh : ".$dpjp."Pada Tanggal : ".$tgl_assesment;
-
-					if($cek_vnoreg){
-						QRcode::png($verif_dpjp, "image.png", "L", 2, 2);   
-						echo "<center><img src='image.png'></center>";
-					}
-
-					?>
-					<?php echo $dpjp;?>										
-				</td>
-			</tr>
-		</table>
-		<br>
-		<br>
-	</td>
-	<td>
-		&nbsp;
-	</td>
-</tr>	
-</table>	
-</div>
-</form>
-</font>
+
+								<table class='mst-table'>
+									<tr>
+										<th>No</th>
+										<th>Fungsi</th>
+										<th>Nilai</th>
+										<th>Keterangan</th>
+										<th>Skor</th>
+									</tr>
+
+									<tr>
+										<td style="border: 1px solid;">1</td>
+										<td style="border: 1px solid;">Buang Air Besar</td>
+										<td style="border: 1px solid;">0</td>
+										<td style="border: 1px solid;"><input type='checkbox' name='taktivitas1' value='Tak Terkendali/Tak Teratur (Perlu Pencahar)' <?php if ($taktivitas1=="Tak Terkendali/Tak Teratur (Perlu Pencahar)"){echo "checked";}?>>
+											Tak Terkendali/Tak Teratur (Perlu Pencahar)
+										</td>
+										<td style="border: 1px solid;">
+											<?php 
+											if($taktivitas1){
+												echo $taktivitas1_skor='0';
+											}
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;">1</td>
+										<td style="border: 1px solid;"><input type='checkbox' name='taktivitas2' value='Kadang-Kadang Tak Terkendali (1 X Seminggu)' <?php if ($taktivitas2=="Kadang-Kadang Tak Terkendali (1 X Seminggu)"){echo "checked";}?>>
+											Kadang-Kadang Tak Terkendali (1 X Seminggu)
+										</td>
+										<td style="border: 1px solid;">
+											<?php 
+											if($taktivitas2){
+												echo $taktivitas2_skor='1';
+											}
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;">2</td>
+										<td style="border: 1px solid;"><input type='checkbox' name='taktivitas3' value='Terkendali/Teratur' <?php if ($taktivitas3=="Terkendali/Teratur"){echo "checked";}?>>
+										Terkendali/Teratur</td>
+										<td style="border: 1px solid;">
+											<?php 
+											if($taktivitas3){
+												echo $taktivitas3_skor='2';
+											}
+											?>
+										</td>
+									</tr>
+
+									<tr>
+										<td style="border: 1px solid;">2</td>
+										<td style="border: 1px solid;">Buang Air Kecil</td>
+										<td style="border: 1px solid;">0</td>
+										<td style="border: 1px solid;"><input type='checkbox' name='taktivitas4' value='Tak Terkendali Atau Pakai Kateter' <?php if ($taktivitas4=="Tak Terkendali Atau Pakai Kateter"){echo "checked";}?>>
+										Tak Terkendali Atau Pakai Kateter</td>
+										<td style="border: 1px solid;">
+											<?php 
+											if($taktivitas4){
+												echo $taktivitas4_skor='0';
+											}
+											?>
+										</td>
+									</tr>
+									<tr>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;"></td>
+										<td style="border: 1px solid;">1</td>
+										<td style="border: 1px solid;"><input type='checkbox' name='taktivitas5' value='Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)' <?php if ($taktivitas5=="Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)"){echo "checked";}?>>
+										Kadang-Kadang Tak Terkendali (Hanya 1 X 24 Jam)</td>
+										<td style="border: 1px solid;"><?php 
+										if($taktivitas5){
+											echo $taktivitas5_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas6' value='YA' <?php if ($taktivitas6=="YA"){echo "checked";}?>>
+									Terkendali/Teratur</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas6){
+											echo $taktivitas6_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">3</td>
+									<td style="border: 1px solid;">Perawatan Diri</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas7' value='YA' <?php if ($taktivitas7=="YA"){echo "checked";}?>>
+									Butuh Pertolongan Orang Lain</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas7){
+											echo $taktivitas7_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas8' value='YA' <?php if ($taktivitas8=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas8){
+											echo $taktivitas8_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">4</td>
+									<td style="border: 1px solid;">Penggunaan Toilet</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas9' value='YA' <?php if ($taktivitas9=="YA"){echo "checked";}?>>
+									Tergantung Pertolongan Orang Lain</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas9){
+											echo $taktivitas9_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas10' value='YA' <?php if ($taktivitas10=="YA"){echo "checked";}?>>
+									Perlu Pertolongan Pada Beberapa Kegiatan Tetapi Dapat Mengerjakan Sendiri Beberapa Kegiatan Yang Lain</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas10){
+											echo $taktivitas10_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas11' value='YA' <?php if ($taktivitas11=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas11){
+											echo $taktivitas11_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">5</td>
+									<td style="border: 1px solid;">Makan</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas12' value='YA' <?php if ($taktivitas12=="YA"){echo "checked";}?>>
+									Tidak Mampu</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas12){
+											echo $taktivitas12_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas13' value='YA' <?php if ($taktivitas13=="YA"){echo "checked";}?>>
+									Perlu Di Tolong Memotong Makanan</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas13){
+											echo $taktivitas13_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas14' value='YA' <?php if ($taktivitas14=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas14){
+											echo $taktivitas14_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">6</td>
+									<td style="border: 1px solid;">Transfer</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas15' value='YA' <?php if ($taktivitas15=="YA"){echo "checked";}?>>
+									Tidak Mampu</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas15){
+											echo $taktivitas15_skor='6';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas16' value='YA' <?php if ($taktivitas16=="YA"){echo "checked";}?>>
+									Perlu Banyak Bantuan Untuk Biasa Duduk</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas16){
+											echo $taktivitas16_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas17' value='YA' <?php if ($taktivitas17=="YA"){echo "checked";}?>>
+									Bantuan Minimal 1 Orang</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas17){
+											echo $taktivitas17_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">3</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas18' value='YA' <?php if ($taktivitas18=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas18){
+											echo $taktivitas18_skor='3';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">7</td>
+									<td style="border: 1px solid;">Mobilitas</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas19' value='YA' <?php if ($taktivitas19=="YA"){echo "checked";}?>>
+									Tidak Mampu</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas19){
+											echo $taktivitas19_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas20' value='YA' <?php if ($taktivitas20=="YA"){echo "checked";}?>>
+									Bisa (Pindah) Dengan Kursi Roda</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas20){
+											echo $taktivitas20_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas21' value='YA' <?php if ($taktivitas21=="YA"){echo "checked";}?>>
+									Berjalan Dengan Bantuan 1 Orang</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas21){
+											echo $taktivitas21_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">3</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas22' value='YA' <?php if ($taktivitas22=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas22){
+											echo $taktivitas22_skor='3';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">8</td>
+									<td style="border: 1px solid;">Berpakaian</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas23' value='YA' <?php if ($taktivitas23=="YA"){echo "checked";}?>>
+									Tergantung Orang Lain</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas23){
+											echo $taktivitas23_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas24' value='YA' <?php if ($taktivitas24=="YA"){echo "checked";}?>>
+									Sebagian Dibantu (Misal : Memakai Baju)</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas24){
+											echo $taktivitas24_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas25' value='YA' <?php if ($taktivitas25=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas25){
+											echo $taktivitas25_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">9</td>
+									<td style="border: 1px solid;">Naik Turun Tangga</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas26' value='YA' <?php if ($taktivitas26=="YA"){echo "checked";}?>>
+									Tidak Mampu</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas26){
+											echo $taktivitas26_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas27' value='YA' <?php if ($taktivitas27=="YA"){echo "checked";}?>>
+									Butuh Pertolongan</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas27){
+											echo $taktivitas27_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas28' value='YA' <?php if ($taktivitas28=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas28){
+											echo $taktivitas28_skor='2';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">10</td>
+									<td style="border: 1px solid;">Mandi</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas29' value='YA' <?php if ($taktivitas29=="YA"){echo "checked";}?>>
+									Tergantung Orang Lain</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas29){
+											echo $taktivitas29_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='taktivitas30' value='YA' <?php if ($taktivitas30=="YA"){echo "checked";}?>>
+									Mandiri</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($taktivitas30){
+											echo $taktivitas30_skor='1';
+										}
+										?>
+									</td>
+								</tr>
+
+
+							</table>
+							<br>
+							[]12 – 20 : Minimal Care [] 9 – 11 : Partial Care [] 0 – 8 : Total Care
+							<input type='submit' class='submit-btn' name='simpan' value='simpan'>&nbsp;
+							<?php 
+							echo "<h5>";
+							echo "[";
+							echo $taktivitas_skor_total=$taktivitas1_skor+$taktivitas2_skor+$taktivitas3_skor+$taktivitas4_skor+$taktivitas5_skor+$taktivitas6_skor+$taktivitas7_skor+$taktivitas8_skor+$taktivitas9_skor+$taktivitas10_skor+$taktivitas11_skor+$taktivitas12_skor+$taktivitas13_skor+$taktivitas14_skor+$taktivitas15_skor+$taktivitas16_skor+$taktivitas17_skor+$taktivitas18_skor+$taktivitas19_skor+$taktivitas20_skor+$taktivitas21_skor+$taktivitas22_skor+$taktivitas23_skor+$taktivitas24_skor+$taktivitas25_skor+$taktivitas26_skor+$taktivitas27_skor+$taktivitas28_skor+$taktivitas29_skor+$taktivitas30_skor;
+							echo "] - ";
+
+							if($taktivitas_skor_total >= 12 and $taktivitas_skor_total <=20 ){echo $ket_taktivitas_skor="Minimal Care";}
+							if($taktivitas_skor_total >= 9 and $taktivitas_skor_total <=11 ){echo $ket_taktivitas_skor="Partial Care";}
+							if($taktivitas_skor_total >= 0 and $taktivitas_skor_total <=8 ){echo $ket_taktivitas_skor="Total Care";}
+							echo "</h5>";
+							?>
+							<br>
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m7' value='Y' <?php if ($m7=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='AKTIVITAS'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_aktivitas'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>
+							H. INTEGRITAS KULIT DAN HYGIENE<br>
+							Warna :  
+							<input type='checkbox' name='kulit1' value='Normal' <?php if ($kulit1=="Normal"){echo "checked";}?>>Normal  
+							<input type='checkbox' name='kulit1' value='Ikterik' <?php if ($kulit1=="Ikterik"){echo "checked";}?>>Ikterik    
+							<input type='checkbox' name='kulit1' value='Sianosis' <?php if ($kulit1=="Sianosis"){echo "checked";}?>>Sianosis 
+							<br> 
+							Oedem:    
+							<input type='checkbox' name='kulit2' value='Tidak' <?php if ($kulit2=="Tidak"){echo "checked";}?>>Tidak      
+							<input type='checkbox' name='kulit2' value='Ya' <?php if ($kulit2=="Ya"){echo "checked";}?>>Ya, 
+							lokasi : <input type='text' name='kulit3' value='<?php echo $kulit3;?>'><br>
+							Turgor :   
+							<input type='checkbox' name='kulit4' value='Tidak ada kelainan' <?php if ($kulit4=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan 
+							<input type='checkbox' name='kulit4' value='Ada kelainan' <?php if ($kulit4=="Ada kelainan"){echo "checked";}?>>Ada kelainan     
+							<br>
+							Luka :  
+							<input type='checkbox' name='kulit5' value='Tidak' <?php if ($kulit5=="Tidak"){echo "checked";}?>>Tidak    
+							<input type='checkbox' name='kulit5' value='Ya' <?php if ($kulit6=="Ya"){echo "checked";}?>>Ya, 
+							lokasi : (
+							lengkapi 
+							<a href='asesmen_luka.php?id=<?php echo $id.'|'.$user;?>'>form assesmen luka</a>
+							)
+
+							<br>
+							<input type='submit' name='simpan' value='simpan'>
+							<br>
+							Asesmen Risiko Dekubitus (dengan skala norton)<br>
+
+							<table class="mst-table">
+								<tr>
+									<th>No</th>
+									<th>Parameter</th>
+									<th>Kondisi</th>
+									<th>Skor</th>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;">Kondisi Fisik</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit1' value='YA' <?php if ($tkulit1=="YA"){echo "checked";}?>>
+									Baik, pasien tidak mengalami cacat atau kelemahan fisik</td>
+									<td style="border: 1px solid;">4</td>
+									<?php 
+									if($tkulit1){
+										$tkulit1_skor='1';
+									}
+									?>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit2' value='YA' <?php if ($tkulit2=="YA"){echo "checked";}?>>
+									Cukup</td>
+									<td style="border: 1px solid;">3</td>
+									<?php 
+									if($tkulit2){
+										$tkulit2_skor='3';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit3' value='YA' <?php if ($tkulit3=="YA"){echo "checked";}?>>
+									Buruk</td>
+									<td style="border: 1px solid;">2</td>
+									<?php 
+									if($tkulit3){
+										$tkulit3_skor='2';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit4' value='YA' <?php if ($tkulit4=="YA"){echo "checked";}?>>
+									Sangat Buruk</td>
+									<td style="border: 1px solid;">1</td>
+									<?php 
+									if($tkulit4){
+										$tkulit4_skor='1';
+									}
+									?>
+
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;">Kondisi mental</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit5' value='YA' <?php if ($tkulit5=="YA"){echo "checked";}?>>
+									Composmentis</td>
+									<td style="border: 1px solid;">4</td>
+									<?php 
+									if($tkulit5){
+										$tkulit5_skor='4';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit6' value='YA' <?php if ($tkulit6=="YA"){echo "checked";}?>>
+									Apatis</td>
+									<td style="border: 1px solid;">3</td>
+									<?php 
+									if($tkulit6){
+										$tkulit6_skor='3';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit7' value='YA' <?php if ($tkulit7=="YA"){echo "checked";}?>>
+									Gelisah, disorientasi, sopor</td>
+									<td style="border: 1px solid;">2</td>
+									<?php 
+									if($tkulit7){
+										$tkulit7_skor='2';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit8' value='YA' <?php if ($tkulit8=="YA"){echo "checked";}?>>
+									Koma/stupor</td>
+									<td style="border: 1px solid;">1</td>
+									<?php 
+									if($tkulit8){
+										$tkulit8_skor='1';
+									}
+									?>
+
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">3</td>
+									<td style="border: 1px solid;">Rentang aktifitas</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit9' value='YA' <?php if ($tkulit9=="YA"){echo "checked";}?>>
+									Ambulasi /pasien bisa bergerak bebas</td>
+									<td style="border: 1px solid;">4</td>
+									<?php 
+									if($tkulit9){
+										$tkulit9_skor='4';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit10' value='YA' <?php if ($tkulit10=="YA"){echo "checked";}?>>
+									Berjalan dengan alat bantu, misal kruk, tripot, dll</td>
+									<td style="border: 1px solid;">3</td>
+									<?php 
+									if($tkulit10){
+										$tkulit10_skor='3';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit11' value='YA' <?php if ($tkulit11=="YA"){echo "checked";}?>>
+									Hanya bisa beraktifitas duduk</td>
+									<td style="border: 1px solid;">2</td>
+									<?php 
+									if($tkulit11){
+										$tkulit11_skor='2';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit12' value='YA' <?php if ($tkulit12=="YA"){echo "checked";}?>>
+									Pasien bedrest</td>
+									<td style="border: 1px solid;">1</td>
+									<?php 
+									if($tkulit12){
+										$tkulit12_skor='1';
+									}
+									?>
+
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">4</td>
+									<td style="border: 1px solid;">Mobilitas</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit13' value='YA' <?php if ($tkulit13=="YA"){echo "checked";}?>>
+									Masih bergerak bebas</td>
+									<td style="border: 1px solid;">4</td>
+									<?php 
+									if($tkulit13){
+										$tkulit13_skor='4';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit14' value='YA' <?php if ($tkulit14=="YA"){echo "checked";}?>>
+									Ada keterbatasan gerak tetapi tidak memerlukan bantuan</td>
+									<td style="border: 1px solid;">3</td>
+									<?php 
+									if($tkulit14){
+										$tkulit14_skor='3';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit15' value='YA' <?php if ($tkulit15=="YA"){echo "checked";}?>>
+									Bergerak sangat terbatas dan memerlukan bantuan minimal</td>
+									<td style="border: 1px solid;">2</td>
+									<?php 
+									if($tkulit15){
+										$tkulit15_skor='2';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit16' value='YA' <?php if ($tkulit16=="YA"){echo "checked";}?>>
+									Imobilitas (bantuan penuh)</td>
+									<td style="border: 1px solid;">1</td>
+									<?php 
+									if($tkulit16){
+										$tkulit16_skor='1';
+									}
+									?>
+
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">5</td>
+									<td style="border: 1px solid;">Inkotinentia</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit17' value='YA' <?php if ($tkulit17=="YA"){echo "checked";}?>>
+									BAB dan BAK normal</td>
+									<td style="border: 1px solid;">4</td>
+									<?php 
+									if($tkulit17){
+										$tkulit17_skor='4';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit18' value='YA' <?php if ($tkulit18=="YA"){echo "checked";}?>>
+									Kadang kesulitan BAB dan BAK</td>
+									<td style="border: 1px solid;">3</td>
+									<?php 
+									if($tkulit18){
+										$tkulit18_skor='3';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit19' value='YA' <?php if ($tkulit19=="YA"){echo "checked";}?>>
+									Pasien mengalami inkontinentia berkemih</td>
+									<td style="border: 1px solid;">2</td>
+									<?php 
+									if($tkulit19){
+										$tkulit19_skor='2';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tkulit20' value='YA' <?php if ($tkulit20=="YA"){echo "checked";}?>>
+									Pasien mengalami inkontinentia BAB</td>
+									<td style="border: 1px solid;">1</td>
+									<?php 
+									if($tkulit20){
+										$tkulit20_skor='1';
+									}
+									?>
+
+								</tr>
+								<tr>
+									<td style="border: 1px solid;" colspan="3">Total Skor</td>
+									<td style="border: 1px solid;">
+										<?php
+										echo										$tkulit_skor_total=$tkulit1_skor+$tkulit2_skor+$tkulit3_skor+$tkulit4_skor+$tkulit5_skor+$tkulit6_skor+$tkulit7_skor+$tkulit8_skor+$tkulit9_skor+$tkulit10_skor+$tkulit11_skor+$tkulit12_skor+$tkulit13_skor+$tkulit14_skor+$tkulit15_skor+$tkulit16_skor+$tkulit17_skor+$tkulit18_skor+$tkulit19_skor+$tkulit20_skor;
+										?>
+
+									</td>
+								</tr>
+
+							</table>
+							<input type='submit' class='submit-btn' name='simpan' value='simpan'>&nbsp;
+							<br>
+							Total Skor :   []5 – 10 : Risiko tinggi       []11 – 15 : Risiko sedang      []16 – 20 : Risiko rendah
+							<?php 
+							echo "<h5>";
+							echo "[".$tkulit_skor_total."]";
+
+							if($tkulit_skor_total >= 5 and $tkulit_skor_total <=10 ){echo $tkulit6_skor_ket="Risiko tinggi";}
+							if($tkulit_skor_total >= 11 and $tkulit_skor_total <=15 ){echo $tkulit6_skor_ket="Risiko sedang";}
+							if($tkulit_skor_total >= 16 and $tkulit_skor_total <=20 ){echo $tkulit6_skor_ket="Risiko rendah";}
+							echo "</h5>";
+							?>
+							<br>
+							(jika total skor kurang dari 15 lakukan tindakan pencegahan dekubitus dan jika sudah ada luka maka lanjutkan dengan form asesmen luka).
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m8' value='Y' <?php if ($m8=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='KULIT'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_kulit'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+
+							I. ENDOKRIN<br>
+
+							Pembesaran kel. Thyroid       :   
+							<input type='radio' name='endokrin1' value='Tidak' <?php if ($endokrin1=="Tidak"){echo "checked";}?>> Tidak     
+							<input type='radio' name='endokrin1' value='Ya' <?php if ($endokrin1=="Ya"){echo "checked";}?>> Ya<br>
+							Pembesaran kel. Getah bening :     
+							<input type='radio' name='endokrin2' value='Tidak' <?php if ($endokrin2=="Tidak"){echo "checked";}?>>Tidak      
+							<input type='radio' name='endokrin2' value='Ya' <?php if ($endokrin2=="Ya"){echo "checked";}?>>Ya<br>
+							Hiperglikemi   :  
+							<input type='radio' name='endokrin3' value='Tidak' <?php if ($endokrin3=="Tidak"){echo "checked";}?>>Tidak      
+							<input type='radio' name='endokrin3' value='Ya' <?php if ($endokrin3=="Ya"){echo "checked";}?>>Ya,
+							sebutkan : <input type='text' name='' value='<?php echo $endokrin4;?>'><br>
+							Hipoglikemi   :  
+							<input type='radio' name='endokrin4' value='Tidak' <?php if ($endokrin4=="Tidak"){echo "checked";}?>>Tidak      
+							<input type='radio' name='endokrin4' value='Ya' <?php if ($endokrin4=="Ya"){echo "checked";}?>>Ya,
+							sebutkan : <input type='text' name='' value='<?php echo $endokrin4;?>'><br>
+							<input type='submit' name='simpan' value='simpan'>&nbsp;
+
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m9' value='Y' <?php if ($m9=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='ENDOKTRIN'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_endoktrin'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							J. REPRODUKSI<br>
+							Wanita    : 
+							<input type='radio' name='reproduksi1' value='Tidak ada kelainan' <?php if ($reproduksi1=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan
+							<input type='radio' name='reproduksi1' value='Sedang Hamil' <?php if ($reproduksi1=="Sedang Hamil"){echo "checked";}?>>Sedang Hamil<br>
+							Menstruasi pertama :   
+							<input type='radio' name='reproduksi2' value='Teratur' <?php if ($reproduksi2=="Teratur"){echo "checked";}?>>Teratur  
+							<input type='radio' name='reproduksi2' value='Tidak Teratur' <?php if ($reproduksi2=="Tidak Teratur"){echo "checked";}?>>Tidak Teratur<br>
+							Laki – Laki : 
+							<input type='radio' name='reproduksi3' value='Tidak ada kelainan' <?php if ($reproduksi3=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan   
+							<input type='radio' name='reproduksi3' value='Ada kelainan' <?php if ($reproduksi3=="Ada kelainan"){echo "checked";}?>>Ada Kelainan<br>
+							<input type='submit' name='simpan' value='simpan'>&nbsp;
+
+						</td>
+						<td>
+							&nbsp;
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>
+							K. KEAMANAN DAN KENYAMANAN<br>
+
+							1. Risiko Jatuh<br>
+							(dewasa dengan skala Morse)<br>
+
+							<table class="mst-table">
+								<tr>
+									<th>Faktor Risiko</th>
+									<th>skala</th>
+									<th>poin</th>
+									<th>Skor pasien</th>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">Riwayat jatuh</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh1' value='YA' <?php if ($tjatuh1=="YA"){echo "checked";}?>>Ya</td>
+									<td style="border: 1px solid;">25</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh1){
+											echo $tjatuh1_skor='25';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh2' value='YA' <?php if ($tjatuh2=="YA"){echo "checked";}?>>Tidak</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh2){
+											echo $tjatuh2_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">Diagnosis skunder (≥diagnosis medis)</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh3' value='YA' <?php if ($tjatuh3=="YA"){echo "checked";}?>>Ya</td>
+									<td style="border: 1px solid;">15</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh3){
+											echo $tjatuh3_skor='15';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh4' value='YA' <?php if ($tjatuh4=="YA"){echo "checked";}?>>Tidak</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh4){
+											echo $tjatuh4_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">Alat bantu</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh5' value='YA' <?php if ($tjatuh5=="YA"){echo "checked";}?>>Berpegangan pada perabot, kursi roda</td>
+									<td style="border: 1px solid;">30</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh5){
+											echo $tjatuh5_skor='30';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh6' value='YA' <?php if ($tjatuh6=="YA"){echo "checked";}?>>Tongkat/walker</td>
+									<td style="border: 1px solid;">15</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh6){
+											echo $tjatuh6_skor='15';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh7' value='YA' <?php if ($tjatuh7=="YA"){echo "checked";}?>>Tidak ada/perawat/tirah baring</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh7){
+											echo $tjatuh7_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">Terpasang infus/terapi intravena </td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh8' value='YA' <?php if ($tjatuh8=="YA"){echo "checked";}?>>Ya</td>
+									<td style="border: 1px solid;">20</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh8){
+											echo $tjatuh8_skor='20';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh9' value='YA' <?php if ($tjatuh9=="YA"){echo "checked";}?>>Tidak</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh9){
+											echo $tjatuh9_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">Gaya berjalan</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh10' value='YA' <?php if ($tjatuh10=="YA"){echo "checked";}?>>Kerusakan</td>
+									<td style="border: 1px solid;">20</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh10){
+											echo $tjatuh10_skor='20';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh11' value='YA' <?php if ($tjatuh11=="YA"){echo "checked";}?>>Kelemahan</td>
+									<td style="border: 1px solid;">10</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh11){
+											echo $tjatuh11_skor='10';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh12' value='YA' <?php if ($tjatuh12=="YA"){echo "checked";}?>>Normal /tirah baring/imobilisasi</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh12){
+											echo $tjatuh12_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">Status mental</td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh13' value='YA' <?php if ($tjatuh13=="YA"){echo "checked";}?>>Tidak konsisten dengan perintah</td>
+									<td style="border: 1px solid;">15</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh13){
+											echo $tjatuh13_skor='15';
+										}
+										?>
+									</td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;"></td>
+									<td style="border: 1px solid;"><input type='checkbox' name='tjatuh14' value='YA' <?php if ($tjatuh14=="YA"){echo "checked";}?>>Sadar akan kemampuan diri sendiri</td>
+									<td style="border: 1px solid;">0</td>
+									<td style="border: 1px solid;">
+										<?php 
+										if($tjatuh14){
+											echo $tjatuh14_skor='0';
+										}
+										?>
+									</td>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;" colspan="3">Total Skor</td>
+									<td style="border: 1px solid;">
+										<?php 
+										echo $tjatuh_skor_total=$tjatuh1_skor+$tjatuh2_skor+$tjatuh3_skor+$tjatuh4_skor+$tjatuh5_skor+$tjatuh6_skor+$tjatuh7_skor+$tjatuh8_skor+$tjatuh9_skor+$tjatuh10_skor+$tjatuh11_skor+$tjatuh12_skor+$tjatuh13_skor+$tjatuh14_skor; 
+										?>
+									</td>
+								</tr>
+
+							</table>
+							<input type='submit' class='submit-btn' name='simpan' value='simpan'>&nbsp;
+
+							<br>
+							[] >45 : Risiko tinggi ;         [] 25-44 : Risiko sedang ;         [] 0 -24 : Risiko rendah
+							<br>
+							<?php 
+							echo "<h5>";
+							echo "[".$tjatuh_skor_total."]";
+
+							if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total="Risiko rendah";}
+							if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total="Risiko sedang";}
+							if($tjatuh_skor_total >= 45){echo $tjatuh_skor_total="Risiko tinggi";}
+							echo "</h5>";
+
+							?>
+
+							<br>
+							2. Restrain :<br>
+							Pernah menggunakan restrain sebelumnya : 
+							<input type='radio' name='asdewasa1' value='Tidak' <?php if ($asdewasa1=="Tidak"){echo "checked";}?>>Tidak    
+							<input type='radio' name='asdewasa1' value='Ya' <?php if ($asdewasa1=="Ya"){echo "checked";}?>>Ya<br>
+							Kondisi Pasien  :   
+							<input type='checkbox' name='asdewasa2' value='Kooperatif' <?php if ($asdewasa2=="Kooperatif"){echo "checked";}?>>Kooperatif
+							<input type='checkbox' name='asdewasa2' value='Gelisah' <?php if ($asdewasa2=="Gelisah"){echo "checked";}?>>Gelisah     
+							<input type='checkbox' name='asdewasa2' value='Delirium' <?php if ($asdewasa2=="Delirium"){echo "checked";}?>>Delirium    
+							<input type='checkbox' name='asdewasa2' value='Berontak' <?php if ($asdewasa2=="Berontak"){echo "checked";}?>>Berontak<br>
+							Kondisi saat ini berisiko :   
+							<input type='radio' name='asdewasa4' value='Tidak' <?php if ($asdewasa4=="Tidak"){echo "checked";}?>>Tidak     
+							<input type='radio' name='asdewasa4' value='Ya' <?php if ($asdewasa4=="Ya"){echo "checked";}?>>Ya, lanjutan dengan pengkajian restrain.<br>
+							<input type='submit' name='simpan' value='simpan'>
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m10' value='Y' <?php if ($m10=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='JATUH'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_jatuh'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							L. ISTIRAHAT DAN TIDUR<br>
+							Lama tidur          :    
+							<input type='radio' name='asdewasa5' value='Tidak ada kelainan' <?php if ($asdewasa5=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan     
+							<input type='radio' name='asdewasa5' value='Ada kelainan' <?php if ($asdewasa5=="Ada kelainan"){echo "checked";}?>>Ada kelainan :
+							<input type='text' name='asdewasa3' value='<?php echo $asdewasa3;?>' placeholder='Kelainan Istirahat / Tidur'>
+							<br>
+							Gangguan istirahat    :    
+							<input type='radio' name='asdewasa6' value='Tidak ada kelainan' <?php if ($asdewasa6=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan     
+							<input type='radio' name='asdewasa6' value='Ada kelainan' <?php if ($asdewasa6=="Ada kelainan"){echo "checked";}?>>Ada kelainan :<br>
+							Penggunaan obat tidur  :    
+							<input type='radio' name='asdewasa7' value='Tidak ada kelainan' <?php if ($asdewasa7=="Tidak ada kelainan"){echo "checked";}?>>Tidak ada kelainan    
+							<input type='radio' name='asdewasa7' value='Ada kelainan' <?php if ($asdewasa7=="Ada kelainan"){echo "checked";}?>>Ada kelainan :<br>
+							<input type='submit' name='simpan' value='simpan'>
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m11' value='Y' <?php if ($m11=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='TIDUR'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_tidur'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>
+							M. KEBUTUHAN KOMUNIKASI, KOGNISI DAN EDUKASI<br>
+							Bicara :   
+							<input type='radio' name='asdewasa8' value='Normal' <?php if ($asdewasa8=="Normal"){echo "checked";}?>>Normal      
+							<input type='radio' name='asdewasa8' value='Gangguan Bicara' <?php if ($asdewasa8=="Gangguan Bicara"){echo "checked";}?>>Gangguan Bicara :<br>
+							Mulai kapan : <input type='text' name='asdewasa9' value='<?php echo $asdewasa9;?>'><br>
+							Memerlukan Bahasa Isyarat :    
+							<input type='radio' name='asdewasa10' value='Tidak' <?php if ($asdewasa10=="Tidak"){echo "checked";}?>>Tidak     
+							<input type='radio' name='asdewasa10' value='Ya' <?php if ($asdewasa10=="Ya"){echo "checked";}?>>Ya<br>
+							Hambatan Belajar : 
+							<input type='checkbox' name='asdewasa11' value='Bahasa' <?php if ($asdewasa11=="Bahasa"){echo "checked";}?>>Bahasa     
+							<input type='checkbox' name='asdewasa11' value='Pendengaran' <?php if ($asdewasa11=="Pendengaran"){echo "checked";}?>>Pendengaran    
+							<input type='checkbox' name='asdewasa11' value='Hilang Memori' <?php if ($asdewasa11=="Hilang Memori"){echo "checked";}?>>Hilang Memori<br>
+							<input type='submit' name='simpan' value='simpan'>
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m12' value='Y' <?php if ($m12=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='KOMUNIKASI'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_komunikasi'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							N. PSIKOSOSIAL, SPIRITUAL DAN EKONOMI<br>
+							Keadaan Psikologis   :    
+							<input type='radio' name='asdewasa12' value='Kooperatif' <?php if ($asdewasa12=="Kooperatif"){echo "checked";}?>>Kooperatif      
+							<input type='radio' name='asdewasa12' value='Sedih' <?php if ($asdewasa12=="Sedih"){echo "checked";}?>>Sedih   
+							<input type='radio' name='asdewasa12' value='Marah' <?php if ($asdewasa12=="Marah"){echo "checked";}?>>Marah
+							<input type='radio' name='asdewasa12' value='Agitasi' <?php if ($asdewasa12=="Agitasi"){echo "checked";}?>>Agitasi        
+							<input type='radio' name='asdewasa12' value='Cemas' <?php if ($asdewasa12=="Cemas"){echo "checked";}?>>Cemas   
+							<input type='radio' name='asdewasa12' value='Gelisah' <?php if ($asdewasa12=="Gelisah"){echo "checked";}?>>Gelisah
+							<input type='radio' name='asdewasa12' value='Disorientasi' <?php if ($asdewasa12=="Disorientasi"){echo "checked";}?>>Disorientasi:    
+							<input type='radio' name='asdewasa12' value='Orang' <?php if ($asdewasa12=="Orang"){echo "checked";}?>>Orang   
+							<input type='radio' name='asdewasa12' value='Tempat' <?php if ($asdewasa12=="Tempat"){echo "checked";}?>>Tempat   
+							<input type='radio' name='asdewasa12' value='Waktu' <?php if ($asdewasa12=="Waktu"){echo "checked";}?>>Waktu<br>
+							Tingkat Pendidikan :    
+							<input type='radio' name='asdewasa13' value='Belum Sekolah' <?php if ($asdewasa13=="Belum Sekolah"){echo "checked";}?>>Belum Sekolah   
+							<input type='radio' name='asdewasa13' value='SD' <?php if ($asdewasa13=="SD"){echo "checked";}?>>SD     
+							<input type='radio' name='asdewasa13' value='SMP' <?php if ($asdewasa13=="SMP"){echo "checked";}?>>SMP
+							<input type='radio' name='asdewasa13' value='SMA' <?php if ($asdewasa13=="SMA"){echo "checked";}?>>SMA           
+							<input type='radio' name='asdewasa13' value='Diploma' <?php if ($asdewasa13=="Diploma"){echo "checked";}?>>Diploma  
+							<input type='radio' name='asdewasa13' value='Sarjana' <?php if ($asdewasa13=="Sarjana"){echo "checked";}?>>Sarjana<br>
+							Pekerjaan         :    
+							<input type='radio' name='asdewasa14' value='Wiraswasta' <?php if ($asdewasa14=="Wiraswasta"){echo "checked";}?>>Wiraswasta      
+							<input type='radio' name='asdewasa14' value='Swasta' <?php if ($asdewasa14=="Swasta"){echo "checked";}?>>Swasta   
+							<input type='radio' name='asdewasa14' value='Peg.Negeri' <?php if ($asdewasa14=="Peg.Negeri"){echo "checked";}?>>Peg.Negeri<br>
+							Tinggal Bersama   :    
+							<input type='radio' name='asdewasa15' value='Suami/istri ' <?php if ($asdewasa15=="Suami/istri "){echo "checked";}?>>Suami/istri      
+							<input type='radio' name='asdewasa15' value='Anak' <?php if ($asdewasa15=="Anak"){echo "checked";}?>>Anak   
+							<input type='radio' name='asdewasa15' value='Teman' <?php if ($asdewasa15=="Teman"){echo "checked";}?>>Teman
+							<input type='radio' name='asdewasa15' value='Orang Tua ' <?php if ($asdewasa15=="Orang Tua "){echo "checked";}?>>Orang Tua       
+							<input type='radio' name='asdewasa15' value='Sendiri' <?php if ($asdewasa15=="Sendiri"){echo "checked";}?>>Sendiri  
+							<input type='radio' name='asdewasa15' value='Caregiver' <?php if ($asdewasa15=="Caregiver"){echo "checked";}?>>Caregiver<br>
+							Status Ekonomi    :    
+							<input type='radio' name='asdewasa16' value='Pembayaran Pribadi/Perorangan' <?php if ($asdewasa16=="Pembayaran Pribadi/Perorangan"){echo "checked";}?>>Pembayaran Pribadi/Perorangan
+							<input type='radio' name='asdewasa16' value='Jaminan kesehatan/Asuransi' <?php if ($asdewasa16=="Jaminan kesehatan/Asuransi"){echo "checked";}?>>Jaminan kesehatan/Asuransi<br>
+							Spiritual<br>
+							Menjalankan ibadah    :   
+							<input type='radio' name='asdewasa17' value='Ada Hambatan' <?php if ($asdewasa17=="Ada Hambatan"){echo "checked";}?>>Ada Hambatan    :   
+							<input type='radio' name='asdewasa17' value='Tidak ada hambatan' <?php if ($asdewasa17=="Tidak ada hambatan"){echo "checked";}?>>Tidak ada hambatan<br>
+							Persepsi terhadap Sakit :   
+							<input type='radio' name='asdewasa18' value='Tidak Ada Keluhan' <?php if ($asdewasa18=="Tidak Ada Keluhan"){echo "checked";}?>>Tidak Ada Keluhan     
+							<input type='radio' name='asdewasa18' value='Rasa Bersalah' <?php if ($asdewasa18=="Rasa Bersalah"){echo "checked";}?>>Rasa Bersalah<br>
+							Meminta Pelayanan Spiritual :    
+							<input type='radio' name='asdewasa19' value='Tidak Ada Keluhan' <?php if ($asdewasa19=="Tidak Ada Keluhan"){echo "checked";}?>>Tidak Ada Keluhan      
+							<input type='radio' name='asdewasa19' value='Ya' <?php if ($asdewasa19=="Ya"){echo "checked";}?>>Ya, (lakukan kolaborasi dengan bagian kerohanian)<br>
+							<input type='submit' name='simpan' value='simpan'>
+						</td>
+						<td>
+
+							<br>
+							<input type='checkbox' name='m13' value='Y' <?php if ($m13=='Y'){echo 'checked';}?>> Tidak Ada Masalah<br>
+							<?php
+							$q="SELECT distinct kode_diagnosa,diagnosa_nama FROM ERM_MASTER_ASUHANKEPERAWATAN
+							WHERE     kolom='PSIKOLOGI'";
+							$hasil  = sqlsrv_query($conn, $q);	
+							$no=1;
+							while 	($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)){
+
+								$qu="SELECT diagnosa_keperawatan FROM ERM_ASUHAN_KEPERAWATAN where diagnosa_keperawatan='$data[kode_diagnosa]' and noreg='$noreg' ";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$cek_kode_diagnosa = trim($d1u['diagnosa_keperawatan']);
+
+								$nm_field = 'masalah_psikologi'.$no;	
+								if($cek_kode_diagnosa){
+									$checked = 'checked';
+								}else{
+									$checked='';
+								}
+
+								echo "<input type='checkbox' name='$nm_field' value='$data[kode_diagnosa]' $checked> $data[diagnosa_nama]";echo "<br>";			  
+								$no+=1;
+							}
+							?>
+							<button type='submit' name='update_mas' value='update_mas' class="btn btn-info" type="button" style="height: 40px;width: 270px;"><i class="bi bi-save-fill"></i> simpan masalah keperawatan</button>
+
+
+
+						</td>
+					</tr>
+
+					<tr>
+						<td>
+							O. DISCHARGE PLANNING<br>
+
+							<table class="mst-table">
+								<tr>
+									<th>No</th>
+									<th>Keterangan</th>
+									<th>Ya</th>
+									<th>Tidak</th>
+								</tr>
+
+								<tr>
+									<td style="border: 1px solid;">1</td>
+									<td style="border: 1px solid;">Usia ≥60 tahun</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa20' value='Ya' <?php if ($asdewasa20=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa20' value='Tidak' <?php if ($asdewasa20=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">2</td>
+									<td style="border: 1px solid;">Tinggal sendirian tanpa dukungan sosial secara langsung</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa21' value='Ya' <?php if ($asdewasa21=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa21' value='Tidak' <?php if ($asdewasa21=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">3</td>
+									<td style="border: 1px solid;">Stroke, serangan Jantung, PPOK, gagal jantung kongestif, empisema demensia, TB, alzeimer, AIDS, atau penyakit dengan potensi mengancam nyawa lainnya</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa22' value='Ya' <?php if ($asdewasa22=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa22' value='Tidak' <?php if ($asdewasa22=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">4</td>
+									<td style="border: 1px solid;">Korban dari kasus criminal</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa23' value='Ya' <?php if ($asdewasa23=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa23' value='Tidak' <?php if ($asdewasa23=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">5</td>
+									<td style="border: 1px solid;">Trauma Multiple</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa24' value='Ya' <?php if ($asdewasa24=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa24' value='Tidak' <?php if ($asdewasa24=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">6</td>
+									<td style="border: 1px solid;">Memerlukan Perawatan atau pengobatan berkelanjutan</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa25' value='Ya' <?php if ($asdewasa25=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa25' value='Tidak' <?php if ($asdewasa25=="Tidak"){echo "checked";}?>></td>
+								</tr>
+								<tr>
+									<td style="border: 1px solid;">7</td>
+									<td style="border: 1px solid;">Pasien lansia yang ada dilantai atas (saat dirumah)</td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa26' value='Ya' <?php if ($asdewasa26=="Ya"){echo "checked";}?>></td>
+									<td style="border: 1px solid;"><input type='radio' name='asdewasa26' value='Tidak' <?php if ($asdewasa26=="Tidak"){echo "checked";}?>></td>
+								</tr>
+
+
+								<tr>
+									<td style="border: 1px solid;" colspan="4">Bila salah satu jawaban adalah ya, dilanjutkan pengisian rm 18a.10 discharge planning terintegrasi</td>
+								</tr>
+
+							</table>
+							<input type='submit' class='submit-btn' name='simpan' value='simpan'>
+						</td>
+						<td>
+							&nbsp;
+						</td>
+					</tr>
+
+
+					<tr>
+						<td>
+							<br>
+
+							<br>
+							<br>
+							<br>
+							Selesai asesmen tanggal :<?php echo $tgl_assesment; ?> , Jam : <?php echo $jam_assesment; ?>
+							<br>
+							<table border='0' width="100%">
+
+								<tr>
+									<td width='50%' align="center">
+										Perawat yang melakukan Asesmen
+									</td>
+									<td align="center">
+										DPJP										
+									</td>
+								</tr>
+								<tr>
+									<td align="center">
+										<?php 
+					// $qu="SELECT  NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where [user1] like '%$userid%'";
+										$qu="SELECT  NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where [user1] = '$userid'";
+										$h1u  = sqlsrv_query($conn, $qu);        
+										$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+										$NamaUser = trim($d1u['NamaUser']);
+										?>
+
+										<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$NamaUser."Pada Tanggal : ".$tgl_assesment;?>
+										<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
+
+										<?php 
+										QRcode::png($verif_perawat, "image.png", "L", 2, 2);   
+										echo "<center><img src='image.png'></center>";
+										?>
+										<br>
+										<?php echo $NamaUser;?>
+									</td>
+									<td align="center">
+										<?php
+										$qreg="SELECT top(1)noreg FROM  ERM_SOAP_VERIF where noreg='$noreg'";
+										$hqreg  = sqlsrv_query($conn, $qreg);        
+										$dhqreg  = sqlsrv_fetch_array($hqreg, SQLSRV_FETCH_ASSOC); 
+										$cek_vnoreg = trim($dhqreg['noreg']);
+										$verif_dpjp="Document ini telah diVerifikasi Oleh : ".$dpjp."Pada Tanggal : ".$tgl_assesment;
+
+										if($cek_vnoreg){
+											QRcode::png($verif_dpjp, "image.png", "L", 2, 2);   
+											echo "<center><img src='image.png'></center>";
+										}
+
+										?>
+										<?php echo $dpjp;?>										
+									</td>
+								</tr>
+							</table>
+							<br>
+							<br>
+						</td>
+						<td>
+							&nbsp;
+						</td>
+					</tr>	
+				</table>	
+			</div>
+		</form>
+	</font>
 </body>
 </div>
 
@@ -3613,6 +3641,41 @@ if (isset($_POST["update_mas"])) {
 
 }
 
+if (isset($_POST["edit"])) {
+
+	$ku_tnyeri1= '';
+	$ku_tnyeri2= '';
+	$ku_tnyeri3= '';
+	$ku_tnyeri4= '';
+	$ku_tnyeri5= '';
+
+	$q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
+	ku_tnyeri1= '$ku_tnyeri1',
+	ku_tnyeri2= '$ku_tnyeri2',
+	ku_tnyeri3= '$ku_tnyeri3',
+	ku_tnyeri4= '$ku_tnyeri4',
+	ku_tnyeri5= '$ku_tnyeri5'
+	where noreg='$noreg'
+	";
+	$hs = sqlsrv_query($conn,$q);
+
+	if($hs){
+		$eror = "Success";
+	}else{
+		$eror = "Gagal Insert";
+
+	}
+
+	echo "
+	<script>
+	alert('".$eror."');
+	</script>
+	";
+
+
+}
+
+
 if (isset($_POST["simpan"])) {
 	$lanjut='Y';
 
@@ -3641,14 +3704,17 @@ if (isset($_POST["simpan"])) {
 	if($jam > 24){
 			// $lanjut='T';
 		$eror = 'Sudah lebih dari 24 jam, data tidak bisa dirubah';
-		$lanjut='T';
+		// $lanjut='T';
 
 	}
 
 	if($lanjut=='Y'){
 		$keluhan_pasien	= $_POST["keluhan_pasien"];
 		$dpjp	= $_POST["dpjp"];
+		$dpjp 			= str_replace("'","`",$dpjp);
+
 		$tglrawat	= $_POST["tglrawat"];
+		$jamrawat	= $_POST["jamrawat"];
 		$sumber_data_sendiri= $_POST["sumber_data_sendiri"];
 		$sumber_data_keluarga= $_POST["sumber_data_keluarga"];
 		$sumber_data_keluarga_nama= $_POST["sumber_data_keluarga_nama"];
@@ -3968,7 +4034,7 @@ if (isset($_POST["simpan"])) {
 
 		$q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
 		keluhan_pasien='$keluhan_pasien',
-		tglrawat='$tglrawat',
+		tglrawat='$tglrawat',jamrawat='$jamrawat',
 		sumber_data_sendiri='$sumber_data_sendiri',
 		sumber_data_keluarga='$sumber_data_keluarga',
 		sumber_data_keluarga_nama='$sumber_data_keluarga_nama',
@@ -4253,7 +4319,7 @@ if (isset($_POST["simpan"])) {
 		asdewasa60='$asdewasa60',
 		asdewasa61='$asdewasa61',
 		ket_1='$ket_1',ket_2='$ket_2',ket_3='$ket_3',
-		dpjp='$dpjp',
+		dpjp='$dpjp',userid='$user',
 		m1='$m1',m2='$m2',m3='$m3',m4='$m4',m5='$m5',m6='$m6',m7='$m7',m8='$m8',m9='$m9',m10='$m10',m11='$m11',m12='$m12',m13='$m13',umur='$umur'
 
 		where noreg='$noreg'

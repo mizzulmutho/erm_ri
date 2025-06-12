@@ -409,7 +409,7 @@ $hAdvis = sqlsrv_query($conn, $qAdvis);
                 // $dAdvis = sqlsrv_fetch_array($hAdvis, SQLSRV_FETCH_ASSOC);
 $tr86='';
 while ($dAdvis = sqlsrv_fetch_array($hAdvis, SQLSRV_FETCH_ASSOC)) {
-	$tr86 = $tr86.$dAdvis['NAMADOKTER'].' - '.$dAdvis['KONSULVIA'].' - '.$dAdvis['ADVIS']."\n";
+	$tr86 = $tr86.$dAdvis['NAMADOKTER'].' - '.$dAdvis['KONSULVIA'].' - '.$dAdvis['ADVIS']."<br>";
 
 }
 
@@ -475,6 +475,19 @@ $namaPerawatPenerima = "Perawat Penerima : " . $dqrPerawatPenerima['PERAWATPENER
 $tr102 = $namaPerawatPenerima;
 
 
+//keluhan utama
+$qku = "SELECT keluhanutama,riwayatsekarang from ERM_KELUHAN WHERE idheader = '$de[IDHEADER]'";
+$hqku = sqlsrv_query($conn, $qku);
+$dhqku = sqlsrv_fetch_array($hqku, SQLSRV_FETCH_ASSOC);
+$ku = $dhqku['keluhanutama'];
+$riwayatsekarang = $dhqku['riwayatsekarang'];
+
+//advis
+$qku = "SELECT ADVIS from ERM_IGD_ADVIS WHERE noreg = '$de[IDHEADER]'";
+$hqku = sqlsrv_query($conn, $qku);
+$dhqku = sqlsrv_fetch_array($hqku, SQLSRV_FETCH_ASSOC);
+$ku = $dhqku['keluhanutama'];
+$riwayatsekarang = $dhqku['riwayatsekarang'];
 
 ?>
 
@@ -1231,6 +1244,45 @@ $tr102 = $namaPerawatPenerima;
 							<td>
 								<div class="row">
 									<div class="col-4">
+										<b>Keluhan Pasien</b>
+									</div>
+									<div class="col-8">
+										<!-- <input class="" name="tr10" value="<?php echo $tr10;?>" id="" type="text" size='90' placeholder=""> -->
+										: <?php echo $ku;?>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-4">
+										<b>Riwayat Penyakit Sekarang</b>
+									</div>
+									<div class="col-8">
+										<!-- <input class="" name="tr10" value="<?php echo $tr10;?>" id="" type="text" size='90' placeholder=""> -->
+										: <?php echo $riwayatsekarang;?>
+									</div>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-4">
+										<b>Konsultasi</b>    
+									</div>
+									<div class="col-8">
+										: <?php echo $tr86;?>
+									</div>
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div class="row">
+									<div class="col-4">
 										Alasan Pemindahan
 									</div>
 									<div class="col-8"> 
@@ -1251,7 +1303,7 @@ $tr102 = $namaPerawatPenerima;
 									</div>
 								</div>
 							</td>
-						</tr>
+						</tr>						
 						<tr>
 							<td>
 								<div class="row">
@@ -1649,19 +1701,7 @@ $tr102 = $namaPerawatPenerima;
 							</div>
 						</div>
 					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								Konsultasi    
-							</div>
-							<div class="col-8">
-								: <?php echo $tr86;?>
-							</div>
-						</div>
-					</td>
-				</tr>
+				</tr>				
 				<tr>
 					<td>
 						<div class="row">
