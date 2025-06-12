@@ -51,14 +51,17 @@ $NORM = trim($d1u['NORM']);
 if ($sbu == 'RSPG'){
     $nmrs = "RUMAH SAKIT PETROKIMIA GRESIK";
     $alamat = "Jl. Jend. A. Yani No. 69 Kel. Ngipik, Kec. Ngipik, Kab. Gresik";
+    $logo = "logo/rspg.png";
 };
 if ($sbu == 'GRAHU'){
     $nmrs = "RUMAH SAKIT GRHA HUSADA";
     $alamat = "Komplek Perum PT Petrokimia Gresik, Jalan Padi No.3, Tlogopojok, Kroman, Kec. Gresik";
+    $logo = "logo/grahu.png";
 };
 if ($sbu == 'DRIYO'){
     $nmrs = "RUMAH SAKIT DRIYOREJO";
     $alamat = "Jalan Raya Legundi KM 0.5Driyorejo, Gresik";
+    $logo = "logo/driyo.png";
 };
 
 
@@ -99,7 +102,7 @@ if (isset($_POST["tgl2"])) {
 
 
 if(empty($tgl1)){
-   $tgl1=gmdate("Y-m-d", time()+60*60*7);
+ $tgl1=gmdate("Y-m-d", time()+60*60*7);
 }
 
 if(empty($tgl2)){
@@ -116,17 +119,17 @@ if ($login) {
 }
 
 if (isset($_POST["cari"])) {
-   $textcari = $_POST["textcari"];
+ $textcari = $_POST["textcari"];
 
-   $row = explode('-',$textcari);
-   $noreg  = trim($row[0]);
-   $nama  = trim($row[1]);
+ $row = explode('-',$textcari);
+ $noreg  = trim($row[0]);
+ $nama  = trim($row[1]);
 
-   if($nama){
-       if($noreg){
-          header("Location: cekidheader.php?id=$user|$noreg");
-      }
-  }else{
+ if($nama){
+     if($noreg){
+      header("Location: cekidheader.php?id=$user|$noreg");
+  }
+}else{
     $eror = "Format pencarian salah, tuliskan lagi data pasien !!!";
     echo "
     <script>
@@ -218,60 +221,60 @@ if (isset($_POST["carirm"])) {
 
 <script>
   $(function() {
-   $("#pasien").autocomplete({
+     $("#pasien").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
                     $.ajax({
-                     type: 'POST',
+                       type: 'POST',
                         // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
                         url: 'find_pasien3.php?id=<?php echo $sbu; ?>', //your                         
                         dataType: 'json',
                         data: {
-                         postcode: request.term
-                     },
-                     success: function (data) {
+                           postcode: request.term
+                       },
+                       success: function (data) {
                             //if multiple results are returned
                             if(data.response instanceof Array)
                               response ($.map(data.response, function (item) {
-                               return {
-                                value: item.noreg + ' - ' + item.nama_pasien + ' - Tgl Lahir : ' +  item.tgl_lahir  + ' - Jaminan : ' +  item.NMCUST + ' (' +  item.CUSTNO + ')'
-                            }
-                        }));
+                                 return {
+                                    value: item.noreg + ' - ' + item.nama_pasien + ' - Tgl Lahir : ' +  item.tgl_lahir  + ' - Jaminan : ' +  item.NMCUST + ' (' +  item.CUSTNO + ')'
+                                }
+                            }));
                             //if a single result is returned
                         }           
                     });
                 }
             });
-});
+ });
 </script>    
 
 <script>
   $(function() {
-   $("#pasien2").autocomplete({
+     $("#pasien2").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
                     $.ajax({
-                     type: 'POST',
+                       type: 'POST',
                         // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
                         url: 'find_pasien2.php', //your                         
                         dataType: 'json',
                         data: {
-                         postcode: request.term
-                     },
-                     success: function (data) {
+                           postcode: request.term
+                       },
+                       success: function (data) {
                             //if multiple results are returned
                             if(data.response instanceof Array)
                               response ($.map(data.response, function (item) {
-                               return {
-                                value: item.norm + ' - ' + item.nama_pasien + ' - ' + item.nik 
-                            }
-                        }));
+                                 return {
+                                    value: item.norm + ' - ' + item.nama_pasien + ' - ' + item.nik 
+                                }
+                            }));
                             //if a single result is returned
                         }           
                     });
                 }
             });
-});
+ });
 </script>  
 
 </head>
@@ -279,146 +282,160 @@ if (isset($_POST["carirm"])) {
 <body onLoad="document.myForm.textcari.focus();">
     <form action="<?php echo $halaman;?>" method="post" name="myForm" id="myForm">
 
-        <div class="card">
-          <div class="card-header">
+
+        <div class="card mx-3 mt-3" style="border-left: none; border-right: none; box-shadow: none;">
+
+          <!-- <div class="card-header">
             <h3>
                 <span class='glyphicon glyphicon-edit'></span> 
                 Register Pasien <?php echo $sbu; ?>
             </h3>
-        </div>
+        </div> -->
 
-        <?php 
+        <div class="card-header bg-light d-flex align-items-center">
+          <!-- Logo rumah sakit -->
+          <img src="<?php echo $logo; ?>" alt="Logo Rumah Sakit" style="height: 35px; margin-right: 15px;">
 
-        if($role=='DOKTER'){
-            $kodedokter = substr($user, 0,3);
-            $qu2="SELECT NAMA FROM AFARM_DOKTER where KODEDOKTER='$kodedokter'";
-            $h1u2  = sqlsrv_query($conn, $qu2);        
-            $d1u2  = sqlsrv_fetch_array($h1u2, SQLSRV_FETCH_ASSOC); 
-            $nama_dokter = trim($d1u2['NAMA']);
+          <!-- Judul -->
+          <h4 class="mb-0 text-dark fw-bold" style="font-family: Tahoma, sans-serif; font-size: 24px;">
+            Register Pasien - <?php echo $sbu; ?>
+        </h4>
+
+
+    </div>
+
+    <?php 
+
+    if($role=='DOKTER'){
+        $kodedokter = substr($user, 0,3);
+        $qu2="SELECT NAMA FROM AFARM_DOKTER where KODEDOKTER='$kodedokter'";
+        $h1u2  = sqlsrv_query($conn, $qu2);        
+        $d1u2  = sqlsrv_fetch_array($h1u2, SQLSRV_FETCH_ASSOC); 
+        $nama_dokter = trim($d1u2['NAMA']);
 
     // header("Location: https://www.google.com/");
-            echo "<br>";
+        echo "<br>";
 
-            echo "
-            <div class='container-fluid'>
-            <div class='row'>
-            ";
-            echo "&nbsp;&nbsp;&nbsp;LIST PASIEN DALAM PERAWATAN DOKTER : ",$nama_dokter;
-            echo "&nbsp;&nbsp;&nbsp;<a href='listdokter.php?id=$user|$sbu' class='btn btn-danger'><i class='bi bi-arrow-clockwise'></i> Tampilkan</a>";
-            echo "
-            </div>
-            </div>
+        echo "
+        <div class='container-fluid'>
+        <div class='row'>
+        ";
+        echo "&nbsp;&nbsp;&nbsp;LIST PASIEN DALAM PERAWATAN DOKTER : ",$nama_dokter;
+        echo "&nbsp;&nbsp;&nbsp;<a href='listdokter.php?id=$user|$sbu' class='btn btn-danger'><i class='bi bi-arrow-clockwise'></i> Tampilkan</a>";
+        echo "
+        </div>
+        </div>
 
-            "; 
+        "; 
 
             // exit();
 
-        }
-        ?>
+    }
+    ?>
 
-        <div class='row'>
+    <div class='row'>
 
-        </div>
+    </div>
 
-        <div class="card-body">
-            <div class="row">
-                <div class="col-12">
-                    <a href="rekap.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" class='btn btn-success'><i class="bi bi-file-earmark-text-fill"></i> Rekap </a>
-                    &nbsp;&nbsp;
-                    <a href="listdata.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
-                    &nbsp;&nbsp;
-                    <a href="kunjungan3.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" target='_blank' class='btn btn-success'><i class="bi bi-bar-chart-line-fill"></i> Grafik</a>
-                    <br>
-                    <label> Unit : </label>
-                    <select name="unit"  required>
-                     <?php
+    <div class="card-body">
+        <div class="row">
+            <div class="col-12">
+                <a href="rekap.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" class='btn btn-success'><i class="bi bi-file-earmark-text-fill"></i> Rekap </a>
+                &nbsp;&nbsp;
+                <a href="listdata.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+                &nbsp;&nbsp;
+                <a href="kunjungan3.php?id=<?php echo $user.'|'.$sbu.'|'.$unit; ?>" target='_blank' class='btn btn-success'><i class="bi bi-bar-chart-line-fill"></i> Grafik</a>
+                <br>
+                <label> Unit : </label>
+                <select name="unit"  required>
+                   <?php
 
-                     if($sbu<>'RSPG'){
-                         $q = "
-                         SELECT        TOP (200) KODEUNIT, NAMAUNIT, KET, DEPT, ACCOUNT_FAR, ACCOUNT_TDK, REK_FAR, REK_TDK, BY_TDK, KODEREK, UNITKOMPILATOR, Grp, GRAHU, KALIMANTAN, DRIYO, JENIS, ROWID, JENIS2, JENIS3, KET1, 
-                         KODEUNITBPJS, ONLINE, DIR_HASIL, ARUANG, AUNIT
-                         FROM            Afarm_UnitLayanan
-                         WHERE        (KET = '$sbu') AND (JENIS2 = 'RI')
-                         ";
-                         $hasil  = sqlsrv_query($conn, $q);
-                         while ($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)) {
-                            if($unit==trim($data[KODEUNIT])){
-                                echo "<option value='$data[KODEUNIT]' selected >$data[KODEUNIT] | $data[NAMAUNIT]</option>\n";
-                            }else{
-                                echo "<option value='$data[KODEUNIT]' >$data[KODEUNIT] | $data[NAMAUNIT]</option>\n";
-                            }
+                   if($sbu<>'RSPG'){
+                       $q = "
+                       SELECT        TOP (200) KODEUNIT, NAMAUNIT, KET, DEPT, ACCOUNT_FAR, ACCOUNT_TDK, REK_FAR, REK_TDK, BY_TDK, KODEREK, UNITKOMPILATOR, Grp, GRAHU, KALIMANTAN, DRIYO, JENIS, ROWID, JENIS2, JENIS3, KET1, 
+                       KODEUNITBPJS, ONLINE, DIR_HASIL, ARUANG, AUNIT
+                       FROM            Afarm_UnitLayanan
+                       WHERE        (KET = '$sbu') AND (JENIS2 = 'RI')
+                       ";
+                       $hasil  = sqlsrv_query($conn, $q);
+                       while ($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)) {
+                        if($unit==trim($data[KODEUNIT])){
+                            echo "<option value='$data[KODEUNIT]' selected >$data[KODEUNIT] | $data[NAMAUNIT]</option>\n";
+                        }else{
+                            echo "<option value='$data[KODEUNIT]' >$data[KODEUNIT] | $data[NAMAUNIT]</option>\n";
                         }
+                    }
+                }else{
+
+                    if($unit=='Rawat Inap Lantai 1'){
+                        echo "<option value='Rawat Inap Lantai 1' selected>Rawat Inap Lantai 1</option>\n";                
                     }else{
-
-                        if($unit=='Rawat Inap Lantai 1'){
-                            echo "<option value='Rawat Inap Lantai 1' selected>Rawat Inap Lantai 1</option>\n";                
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 1' >Rawat Inap Lantai 1</option>\n";                
-                        }
-
-                        if($unit=='Rawat Inap Lantai 2 Abhipraya'){
-                            echo "<option value='Rawat Inap Lantai 2 Abhipraya' selected>Rawat Inap Lantai 2 Abhipraya</option>\n";             
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 2 Abhipraya' >Rawat Inap Lantai 2 Abhipraya</option>\n";              
-                        }
-
-                        if($unit=='Rawat Inap Lantai 3 Abhipraya'){
-                            echo "<option value='Rawat Inap Lantai 3 Abhipraya' selected>Rawat Inap Lantai 3 Abhipraya</option>\n";             
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 3 Abhipraya' >Rawat Inap Lantai 3 Abhipraya</option>\n";              
-                        }
-
-                        if($unit=='Rawat Inap Lantai 2 Abhinaya'){
-                            echo "<option value='Rawat Inap Lantai 2 Abhinaya' selected>Rawat Inap Lantai 2 Abhinaya</option>\n";             
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 2 Abhinaya' >Rawat Inap Lantai 2 Abhinaya</option>\n";              
-                        }
-
-                        if($unit=='Rawat Inap Lantai 3 Abhinaya'){
-                            echo "<option value='Rawat Inap Lantai 3 Abhinaya' selected>Rawat Inap Lantai 3 Abhinaya</option>\n";             
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 3 Abhinaya' >Rawat Inap Lantai 3 Abhinaya</option>\n";              
-                        }
-
-                        if($unit=='Rawat Inap Lantai 4 Abhinaya'){
-                            echo "<option value='Rawat Inap Lantai 4 Abhinaya' selected>Rawat Inap Lantai 4 Abhinaya</option>\n";             
-                        }else{
-                            echo "<option value='Rawat Inap Lantai 4 Abhinaya' >Rawat Inap Lantai 4 Abhinaya</option>\n";              
-                        }
-
-
-                        if($unit=='ICU'){
-                            echo "<option value='ICU' selected>ICU</option>\n";             
-                        }else{
-                            echo "<option value='ICU' >ICU</option>\n";              
-                        }
-
-                        if($unit=='NICU'){
-                            echo "<option value='NICU' selected>NICU</option>\n";             
-                        }else{
-                            echo "<option value='NICU' >NICU</option>\n";              
-                        }
-
+                        echo "<option value='Rawat Inap Lantai 1' >Rawat Inap Lantai 1</option>\n";                
                     }
 
-                    ?>
+                    if($unit=='Rawat Inap Lantai 2 Abhipraya'){
+                        echo "<option value='Rawat Inap Lantai 2 Abhipraya' selected>Rawat Inap Lantai 2 Abhipraya</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 2 Abhipraya' >Rawat Inap Lantai 2 Abhipraya</option>\n";              
+                    }
 
-                </select> &nbsp;&nbsp;
-                <input value="Tampil Data" type="submit" class = "btn-success button4" name="login" >
-                &nbsp;&nbsp;
-                Cari Pasien : <input class="" name="textcari" value="<?php echo $textcari;?>" id="pasien" type="text" placeholder="Isikan Nama Pasien / NORM / NOREG" style="width: 300px;order: 0;">
-                <button type='submit' name='cari' value='cari' type="button" style="height: 30px;border: 0;"><i class="bi bi-search">Cari Data</i>
-                </button>
-                <br>Tambah Filter Pencarian<br>
-                <input type='checkbox' name='cektgl' value='Y' style="min-width:20px; min-height:15px;" <?php if($cektgl=='Y'){ echo 'checked'; } ?> >&nbsp;Filter TGL    
-                <input name="tgl1" type="date" size="15" value="<?php echo $tgl1; ?>" style="width:150px;height:30px">
-                s/d
-                <input name="tgl2" type="date" size="15" value="<?php echo $tgl2; ?>" style="width:150px;height:30px">
-                &nbsp;&nbsp;
-                <input type='checkbox' name='cekkrs' value='Y' style="min-width:20px; min-height:15px;" <?php if($cekkrs=='Y'){ echo 'checked'; } ?> >&nbsp;PX.KRS
-                &nbsp;&nbsp;
-                <input type='checkbox' name='transfer_igd' value='Y' style="min-width:20px; min-height:15px;"  <?php if($transfer_igd=='Y'){ echo 'checked'; } ?> >&nbsp;PX.DARI IGD (Transfer Pasien IGD)
-            </div>
+                    if($unit=='Rawat Inap Lantai 3 Abhipraya'){
+                        echo "<option value='Rawat Inap Lantai 3 Abhipraya' selected>Rawat Inap Lantai 3 Abhipraya</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 3 Abhipraya' >Rawat Inap Lantai 3 Abhipraya</option>\n";              
+                    }
+
+                    if($unit=='Rawat Inap Lantai 2 Abhinaya'){
+                        echo "<option value='Rawat Inap Lantai 2 Abhinaya' selected>Rawat Inap Lantai 2 Abhinaya</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 2 Abhinaya' >Rawat Inap Lantai 2 Abhinaya</option>\n";              
+                    }
+
+                    if($unit=='Rawat Inap Lantai 3 Abhinaya'){
+                        echo "<option value='Rawat Inap Lantai 3 Abhinaya' selected>Rawat Inap Lantai 3 Abhinaya</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 3 Abhinaya' >Rawat Inap Lantai 3 Abhinaya</option>\n";              
+                    }
+
+                    if($unit=='Rawat Inap Lantai 4 Abhinaya'){
+                        echo "<option value='Rawat Inap Lantai 4 Abhinaya' selected>Rawat Inap Lantai 4 Abhinaya</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 4 Abhinaya' >Rawat Inap Lantai 4 Abhinaya</option>\n";              
+                    }
+
+
+                    if($unit=='ICU'){
+                        echo "<option value='ICU' selected>ICU</option>\n";             
+                    }else{
+                        echo "<option value='ICU' >ICU</option>\n";              
+                    }
+
+                    if($unit=='NICU'){
+                        echo "<option value='NICU' selected>NICU</option>\n";             
+                    }else{
+                        echo "<option value='NICU' >NICU</option>\n";              
+                    }
+
+                }
+
+                ?>
+
+            </select> &nbsp;&nbsp;
+            <input value="Tampil Data" type="submit" class = "btn-success button4" name="login" >
+            &nbsp;&nbsp;
+            Cari Pasien : <input class="" name="textcari" value="<?php echo $textcari;?>" id="pasien" type="text" placeholder="Isikan Nama Pasien / NORM / NOREG" style="width: 300px;order: 0;">
+            <button type='submit' name='cari' value='cari' type="button" style="height: 30px;border: 0;"><i class="bi bi-search">Cari Data</i>
+            </button>
+            <br>Tambah Filter Pencarian<br>
+            <input type='checkbox' name='cektgl' value='Y' style="min-width:20px; min-height:15px;" <?php if($cektgl=='Y'){ echo 'checked'; } ?> >&nbsp;Filter TGL    
+            <input name="tgl1" type="date" size="15" value="<?php echo $tgl1; ?>" style="width:150px;height:30px">
+            s/d
+            <input name="tgl2" type="date" size="15" value="<?php echo $tgl2; ?>" style="width:150px;height:30px">
+            &nbsp;&nbsp;
+            <input type='checkbox' name='cekkrs' value='Y' style="min-width:20px; min-height:15px;" <?php if($cekkrs=='Y'){ echo 'checked'; } ?> >&nbsp;PX.KRS
+            &nbsp;&nbsp;
+            <input type='checkbox' name='transfer_igd' value='Y' style="min-width:20px; min-height:15px;"  <?php if($transfer_igd=='Y'){ echo 'checked'; } ?> >&nbsp;PX.DARI IGD (Transfer Pasien IGD)
+        </div>
 <!--             <div class="col-4">
                 Grafik
 
@@ -515,25 +532,25 @@ if (isset($_POST["carirm"])) {
                   }
               }else{
                 if($unit=='Rawat Inap Lantai 1'){
-                 $kodeunit = "
-                 'R01',
-                 'R01A',
-                 'R02A', 
-                 'R03A',
-                 'R04',
-                 'R04A',
-                 'R05',
-                 'R05A',
-                 'R06',
-                 'R06A',
-                 'R08',
-                 'R08A',
-                 'R09',
-                 'R09A'
-                 ";
-             }
+                   $kodeunit = "
+                   'R01',
+                   'R01A',
+                   'R02A', 
+                   'R03A',
+                   'R04',
+                   'R04A',
+                   'R05',
+                   'R05A',
+                   'R06',
+                   'R06A',
+                   'R08',
+                   'R08A',
+                   'R09',
+                   'R09A'
+                   ";
+               }
 
-             if($unit=='Rawat Inap Lantai 2 Abhipraya'){
+               if($unit=='Rawat Inap Lantai 2 Abhipraya'){
                 $kodeunit = "
                 'R01D', 
                 'R04D',
@@ -818,13 +835,14 @@ if (isset($_POST["carirm"])) {
 <!-- Total Pasien yang di rawat : </b><?php echo $total_pasien; ?><b><br> -->
 
 </div>
+
 </form>
 </body>
 
 <!-- <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script> -->
 <script src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script>
-   $(document).ready(function() {
+ $(document).ready(function() {
     $('.datatab').DataTable();
 } );
 </script>
