@@ -1075,8 +1075,8 @@ if (isset($_POST["simpan"])) {
 	}
 
 	if(empty($spo2)){
-		$eror='SPO2 Tidak Boleh Kosong !!!';
-		$lanjut='T';
+		// $eror='SPO2 Tidak Boleh Kosong !!!';
+		// $lanjut='T';
 	}
 
 	if($lanjut == 'Y'){
@@ -1195,19 +1195,19 @@ if (isset($_POST["simpan"])) {
 
 	}
 
-	// echo "
-	// <script>
-	// alert('".$eror."');
-	// window.location.replace('anamnesis_medis.php?id=$id|$user');
-	// </script>
-	// ";
-
 	echo "
 	<script>
 	alert('".$eror."');
-	history.go(-1);
+	window.location.replace('anamnesis_medis.php?id=$id|$user');
 	</script>
 	";
+
+	// echo "
+	// <script>
+	// alert('".$eror."');
+	// history.go(-1);
+	// </script>
+	// ";
 
 }
 
