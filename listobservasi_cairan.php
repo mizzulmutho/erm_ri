@@ -286,7 +286,6 @@ $noktp =  $data2[NOKTP];
 		</form>
 
 		<?php
-// Cek apakah filter tanggal sudah ada dan minimal jam awal & jam akhir terisi
 		$filter_tanggal = $_GET['filter_tanggal'] ?? '';
 		$filter_tanggal_akhir = $_GET['filter_tanggal_akhir'] ?? '';
 		$filter_jam_awal = $_GET['filter_jam_awal'] ?? '';
@@ -308,15 +307,33 @@ $noktp =  $data2[NOKTP];
 				<input type="hidden" name="filter_jam_awal" value="<?= htmlspecialchars($filter_jam_awal) ?>">
 				<input type="hidden" name="filter_jam_akhir" value="<?= htmlspecialchars($filter_jam_akhir) ?>">
 				<input type="hidden" name="filter_tanggal_akhir" value="<?= htmlspecialchars($filter_tanggal_akhir) ?>">
-				<button type="submit" class="btn btn-success">Hitung Balance Cairan</button>
-
+				<!-- <button type="submit" class="btn btn-success">Hitung Balance Cairan</button> -->
+				<button type="button" onclick="submitBalance()" class="btn btn-success">Hitung Balance Cairan</button>
 				<input type="hidden" name="keterangan" id="keterangan">
 				<script>
 					function submitBalance() {
+						const checked = document.querySelectorAll('input[name="data_terpilih[]"]:checked');
+						if (checked.length === 0) {
+							alert("Pilih data observasi cairan terlebih dahulu.");
+							return;
+						}
+
 						let ket = prompt("Masukkan keterangan balance cairan:");
 						if (ket !== null && ket.trim() !== "") {
 							document.getElementById("keterangan").value = ket.trim();
-							document.getElementById("balanceForm").submit();
+
+							let form = document.getElementById("balanceForm");
+
+							document.querySelectorAll('#balanceForm input[name="data_terpilih[]"]').forEach(e => e.remove());
+
+							checked.forEach(c => {
+								let input = document.createElement("input");
+								input.type = "hidden";
+								input.name = "data_terpilih[]";
+								input.value = c.value;
+								form.appendChild(input);
+							});
+							form.submit();
 						} else {
 							alert("Keterangan harus diisi untuk menyimpan balance cairan.");
 						}
@@ -370,6 +387,7 @@ $noktp =  $data2[NOKTP];
 			<table class="table table-bordered table-sm align-middle" id="tabel-cairan">
 				<thead>
 					<tr>
+						<th rowspan="3">Pilih</th> <!-- Kolom baru -->
 						<th rowspan="3">No</th>
 						<th rowspan="3">Edit</th>
 						<th rowspan="3">Hapus</th>
@@ -448,11 +466,12 @@ $noktp =  $data2[NOKTP];
 						$tanggal_akhir = date('d-m-Y H:i', strtotime($data1['tanggal_akhir']));
 						$terapi = trim($data1['terapi'] ?? '');
 
-						$balance = intval($data1['ob27']);
+						$balance = intval(trim($data1['ob27']));
 						$balance_table = $data1['balance'];
 						$nomor_transaksi = $data1['nomor_transaksi'];
+						$rowClass='';
 
-						$rowClass = (!is_null($balance) && $balance != '' && $balance != 0  && !is_null($nomor_transaksi)) ? 'table-success' : '';
+						//$rowClass = (!empty($balance_table) && !is_null($nomor_transaksi)) ? 'table-success' : '';
 
 						// $balance = $_POST['balance'];
 
@@ -464,7 +483,7 @@ $noktp =  $data2[NOKTP];
 							$keterangan = "Seimbang";
 						}
 
-						if (!is_null($balance) && $balance != '' && $balance != 0 && !is_null($nomor_transaksi)) {
+						if (!is_null($balance_table) && $balance_table != '' && $balance_table != 0 && !is_null($nomor_transaksi)) {
 							$editBtn = "<a href='e_observasi_cairan.php?id=$id|$user|{$data1['id']}' class='text-primary'><i class='bi bi-pencil-square'></i></a>";
 							$deleteBtn = "<a href='d_observasi_cairan.php?id=$id|$user|{$data1['id']}' class='text-danger'><i class='bi bi-trash'></i></a>";
 						} else {
@@ -472,58 +491,99 @@ $noktp =  $data2[NOKTP];
 							$deleteBtn = "<a href='d_observasi_cairan.php?id=$id|$user|{$data1['id']}' class='text-danger'><i class='bi bi-trash'></i></a>";
 						}
 
+						$userinput = trim($data1['userinput']);
+						$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$userinput'";
+						$h1u  = sqlsrv_query($conn, $qu);        
+						$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+						$nmuserid = trim($d1u['NamaUser']);
+
 						if (!empty($terapi)) {
 							$colspan_terapi = 17; 
 							echo "<tr class='table-warning'>
+							<td><input type='checkbox' name='data_terpilih[]' value='{$data1['id']}'></td>
 							<td>$nox</td>
 							<td>$editBtn</td>
 							<td>$deleteBtn</td>
 							<td>{$tglinput}</td>
 							<td>{$data1['jam']}</td>
 							<td colspan='$colspan_terapi' style='text-align: left;'><strong>Terapi Cairan Infus :</strong> " . htmlspecialchars($terapi) . "</td>
-							<td>{$data1['userinput']}</td>
+							<td>{$nmuserid}</td>
 							<td>{$data1['ob18']}</td>
 							</tr>";
 						}
-						else if (!is_null($balance) && $balance != '' && $balance != 0  && !is_null($nomor_transaksi)) {
+						else if (isset($balance_table) and !empty($nomor_transaksi)) {
 							$colspan = 18;
 
-							echo "<tr class='$rowClass'>
+							echo "<tr class='table-success'>
+							<td><input type='checkbox' name='data_terpilih[]' value='{$data1['id']}'></td>
 							<td>$nox</td>
 							<td>$editBtn</td>
 							<td>$deleteBtn</td>
 							<td colspan='$colspan' style='text-align: left;'><strong>Balance Cairan :</strong> $tanggal_awal s/d $tanggal_akhir</td>
 							<td>{$balance}</td>
-							<td>{$data1['userinput']}</td>
+							<td>{$nmuserid}</td>
 							<td>$keterangan</td>
 							</tr>";
 						} else {
-							echo "<tr class='$rowClass'>
-							<td>$nox</td>
-							<td>$editBtn</td>
-							<td>$deleteBtn</td>
-							<td>{$tglinput}</td>
-							<td>{$data1['jam']}</td>
-							<td>{$data1['ob29']}</td>
-							<td>{$data1['ob12']}</td>
-							<td>{$data1['ob13']}</td>
-							<td>{$data1['jtranfusi']}</td>
-							<td>{$data1['ob15']}</td>
-							<td>{$data1['ob16']}</td>
-							<td>{$data1['ob19']}</td>
-							<td>{$data1['total_input']}</td>
-							<td>{$data1['ob20']}</td>
-							<td>{$data1['ob21']}</td>
-							<td>{$data1['ob22']}</td>
-							<td>{$data1['ob23']}</td>
-							<td>{$data1['ob24']}</td>
-							<td>{$data1['ob25']}</td>
-							<td>{$data1['ob26']}</td>
-							<td>{$data1['total_output']}</td>
-							<td>{$balance}</td>
-							<td>{$data1['userinput']}</td>
-							<td>{$data1['ob18']}</td>
-							</tr>";
+
+							if(is_null($nomor_transaksi)){
+								echo "<tr class='$rowClass'>
+								<td><input type='checkbox' name='data_terpilih[]' value='{$data1['id']}'></td>
+								<td>$nox</td>
+								<td>$editBtn</td>
+								<td>$deleteBtn</td>
+								<td>{$tglinput}</td>
+								<td>{$data1['jam']}</td>
+								<td>{$data1['ob29']}</td>
+								<td>{$data1['ob12']}</td>
+								<td>{$data1['ob13']}</td>
+								<td>{$data1['jtranfusi']}</td>
+								<td>{$data1['ob15']}</td>
+								<td>{$data1['ob16']}</td>
+								<td>{$data1['ob19']}</td>
+								<td>{$data1['total_input']}</td>
+								<td>{$data1['ob20']}</td>
+								<td>{$data1['ob21']}</td>
+								<td>{$data1['ob22']}</td>
+								<td>{$data1['ob23']}</td>
+								<td>{$data1['ob24']}</td>
+								<td>{$data1['ob25']}</td>
+								<td>{$data1['ob26']}</td>
+								<td>{$data1['total_output']}</td>
+								<td>{$balance}</td>
+								<td>{$nmuserid}</td>
+								<td>{$data1['ob18']}</td>
+								</tr>";
+							}else{
+								$rowClass = 'table-info';
+								echo "<tr class='$rowClass'>
+								<td><input type='checkbox' name='data_terpilih[]' value='{$data1['id']}'></td>
+								<td>$nox</td>
+								<td>$editBtn</td>
+								<td>$deleteBtn</td>
+								<td>{$tglinput}</td>
+								<td>{$data1['jam']}</td>
+								<td>{$data1['ob29']}</td>
+								<td>{$data1['ob12']}</td>
+								<td>{$data1['ob13']}</td>
+								<td>{$data1['jtranfusi']}</td>
+								<td>{$data1['ob15']}</td>
+								<td>{$data1['ob16']}</td>
+								<td>{$data1['ob19']}</td>
+								<td>{$data1['total_input']}</td>
+								<td>{$data1['ob20']}</td>
+								<td>{$data1['ob21']}</td>
+								<td>{$data1['ob22']}</td>
+								<td>{$data1['ob23']}</td>
+								<td>{$data1['ob24']}</td>
+								<td>{$data1['ob25']}</td>
+								<td>{$data1['ob26']}</td>
+								<td>{$data1['total_output']}</td>
+								<td>{$balance}</td>
+								<td>{$nmuserid}</td>
+								<td>{$data1['ob18']}</td>
+								</tr>";
+							}
 						}
 
 						$nox += 1;

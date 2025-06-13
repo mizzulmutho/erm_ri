@@ -10,6 +10,15 @@ $jam_awal = $_POST['filter_jam_awal'] ?? '';
 $jam_akhir = $_POST['filter_jam_akhir'] ?? '';
 $tanggal_akhir = $_POST['filter_tanggal_akhir'] ?? '';
 $keterangan = $_POST['keterangan'] ?? '';
+$dataTerpilih = $_POST['data_terpilih'] ?? [];
+// $keterangan = $_POST['keterangan'] ?? '';
+$inList = implode(",", array_map("intval", $dataTerpilih));
+
+
+if (empty($dataTerpilih)) {
+	echo "Tidak ada data terpilih.";
+	exit;
+}
 
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -29,12 +38,15 @@ $tgl_akhir = $tanggal_akhir;
 $filter .= " AND tglinput >= DATEADD(minute, DATEDIFF(minute, 0, '$tgl_awal $jam_awal'), 0)
 AND tglinput <= DATEADD(second, 59, DATEADD(minute, DATEDIFF(minute, 0, '$tgl_akhir $jam_akhir'), 0))";
 
+$filter .= " AND id IN ($inList)";
+
 // Query data
-$query = "SELECT total_input, total_output FROM ERM_RI_OBSERVASI_CAIRAN WHERE $filter";
+$query = "SELECT total_input, total_output FROM ERM_RI_OBSERVASI_CAIRAN WHERE 1=1 and $filter";
 $stmt = sqlsrv_query($conn, $query);
 if ($stmt === false) {
 	die(print_r(sqlsrv_errors(), true));
 }
+
 
 $total_input_sum = 0;
 $total_output_sum = 0;
@@ -45,15 +57,6 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 }
 
 $balance = $total_input_sum - $total_output_sum;
-
-// Simpan ke tabel balance, contoh update di tabel utama kolom balance, atau insert ke tabel baru
-// Contoh update baris terakhir untuk noreg dan tanggal tersebut
-
-// $updateQuery = "UPDATE ERM_RI_OBSERVASI_CAIRAN SET ob27 = ? WHERE $filter ";
-
-// $params = [$balance, $noreg, $tanggal];
-// $stmt2 = sqlsrv_query($conn, $updateQuery, $params);
-
 
 // Buat nomor transaksi
 $prefix = 'TRX';
@@ -74,7 +77,7 @@ if ($cekNomorStmt !== false && $row = sqlsrv_fetch_array($cekNomorStmt, SQLSRV_F
 $nomorTransaksi = $prefix . $tanggalSekarang . str_pad($nomorUrut, 4, '0', STR_PAD_LEFT);
 
 
-$updateQuery = "UPDATE ERM_RI_OBSERVASI_CAIRAN SET ob27 = '', keterangan = ?, nomor_transaksi = ?  WHERE $filter";
+$updateQuery = "UPDATE ERM_RI_OBSERVASI_CAIRAN SET ob27 = '', keterangan = ?, nomor_transaksi = ?  WHERE 1=1 and $filter";
 $params = [$keterangan, $nomorTransaksi];
 $stmt2 = sqlsrv_query($conn, $updateQuery, $params);
 
@@ -90,12 +93,13 @@ $waktu_akhir = "$tgl_akhir $jam_akhir";
 
 // Insert log ke tabel log_balance_cairan
 $insertLogQuery = "INSERT INTO ERM_RI_OBSERVASI_CAIRAN (
-	noreg, tglinput, ob27,tanggal_awal,tanggal_akhir,userinput,nomor_transaksi
-) VALUES (?, ?, ?, ?, ?,?,?)";
+	noreg, tglinput, ob27,balance,tanggal_awal,tanggal_akhir,userinput,nomor_transaksi
+) VALUES (?, ?, ?, ?, ?,?,?,?)";
 
 $paramsLog = [
 	$noreg,
 	$waktu_akhir,
+	$balance,
 	$balance,
 	$waktu_awal,
 	$waktu_akhir,

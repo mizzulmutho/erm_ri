@@ -106,6 +106,7 @@ if(empty($regcek)){
 	$jam_assesment = $de['jam_assesment'];
 	$dpjp = $de['dpjp'];
 	$userid = $de['userid'];
+	$keluhan_pasien = $de['keluhan_pasien'];
 
 	$sumber_data_sendiri = trim($de['sumber_data_sendiri']);
 	$sumber_data_keluarga = $de['sumber_data_keluarga'];
@@ -3758,6 +3759,7 @@ if (isset($_POST["simpan"])) {
 
 
 	if($lanjut=='Y'){
+		$keluhan_pasien	= $_POST["keluhan_pasien"];
 		$dpjp	= $_POST["dpjp"];
 		$tglrawat	= $_POST["tglrawat"];
 		$jamrawat	= $_POST["jamrawat"];
@@ -4070,6 +4072,7 @@ if (isset($_POST["simpan"])) {
 		$ket_3=$_POST['ket_3'];
 
 		echo $q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
+		keluhan_pasien='$keluhan_pasien',
 		tglrawat='$tglrawat',jamrawat='$jamrawat',
 		sumber_data_sendiri='$sumber_data_sendiri',
 		sumber_data_keluarga='$sumber_data_keluarga',

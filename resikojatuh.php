@@ -1162,7 +1162,7 @@ if(!empty($regcek)){
 			while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
 
 				$userid = trim($data[userid]);
-				$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 like '%$userid%'";
+				$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$userid'";
 				$h1u  = sqlsrv_query($conn, $qu);        
 				$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 				$nmuserid = trim($d1u['NamaUser']);
