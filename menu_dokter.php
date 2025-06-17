@@ -156,11 +156,11 @@
                <a href='history_cppt.php?id=$id|$user|advis_igd' class='btn btn-info border border-white'><i class='bi bi-clock-history'></i> History Advis IGD</a>
                <a href='history_cppt.php?id=$id|$user|rencana_terapi_eresep' class='btn btn-info border border-white'><i class='bi bi-clock-history'></i> History Rencana Terapi dari ERESEP</a>
 
-               <a href='riwayat_pasien.php?id=$id|$user' class='btn btn-info border border-white new-link'>
+               <a href='riwayat_pasien.php?id=$id|$user' class='btn btn-info border border-white'>
                <i class='fa fa-bell'></i> Riwayat Hasil Laborat & Radiologi
                </a>
 
-               <a href='rpo_print.php?id=$id|$user' class='btn btn-info border border-white new-link'>
+               <a href='rpo_print.php?id=$id|$user' class='btn btn-info border border-white'>
                <i class='fa fa-bell'></i> Rekam Pemberian Obat (RPO)
                </a>
 

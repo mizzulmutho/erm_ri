@@ -3,10 +3,6 @@ include ("koneksi.php");
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
-// $serverName = "192.168.10.1"; //serverName\instanceName
-// $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
-// $conn = sqlsrv_connect( $serverName, $connectionInfo);
-
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -257,13 +253,6 @@ if (isset($_POST["simpan"])) {
 		</script>
 		";
 
-
-		// echo "
-		// <script>
-		// top.location='index.php?id='$id|$user';
-		// </script>
-		// ";            
-
 	}else{
 		echo "
 		<script>
@@ -318,171 +307,155 @@ if (isset($_POST["simpan"])) {
 <div class="container mt-4">
 	<?php include "header_soap.php"; ?>
 
-	<div class="mb-3">
-		<a href='index.php?id=<?php echo $id."|".$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
-		<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
-		<a href='observasi.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-graph-up"></i> Monitoring EWS</a>
+	<form method="POST" name='myForm' action="" enctype="multipart/form-data">
+		<div class="mb-3">
+			<a href='index.php?id=<?php echo $id."|".$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
+			<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+			<a href='observasi.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-graph-up"></i> Monitoring EWS</a>
 
-		<a href='observasi_cairan2.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-droplet"></i> Monitoring Cairan</a>
-	</div>
-
-	<h4><i class="bi bi-droplet-half text-primary"></i> Monitoring Cairan</h4>
-
-	<div class="form-floating mb-3">
-		<a href='listobservasi_cairan.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-list"></i> List Data</a>
-	</div>
-
-
-	<div class="form-floating mb-3">
-		<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput;?>">
-		<label><i class="bi bi-calendar-event"></i> Tanggal/Jam Input</label>
-	</div>
-	
-	<!-- Input Card -->
-	<div class="card my-3">
-		<div class="card-header bg-primary text-white">
-			<i class="bi bi-input-cursor-text me-2"></i> Input
+			<a href='observasi_cairan2.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-droplet"></i> Monitoring Cairan</a>
 		</div>
-		<div class="card-body">
-			<div class="row g-3 mb-3">
-				<div class="col-md-4">
-					<label class="form-label">Infus (cc)</label>
-					<input type="number" class="form-control input-cairan" name="ob12" id="infus" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">Tetesan (/menit)</label>
-					<input type="text" class="form-control" name="ob13">
-				</div>
-<!-- 				<div class="col-md-4">
-					<label class="form-label">Jam</label>
-					<div class="input-group">
-						<input type="date" class="form-control" name="jam1a">
-						<input type="time" class="form-control" name="jam1b">
+
+		<h4><i class="bi bi-droplet-half text-primary"></i> Monitoring Cairan</h4>
+
+		<div class="form-floating mb-3">
+			<a href='listobservasi_cairan.php?id=<?php echo $id."|".$user;?>' class='btn btn-success btn-sm'><i class="bi bi-list"></i> List Data</a>
+		</div>
+
+
+		<div class="form-floating mb-3">
+			<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput;?>">
+			<label><i class="bi bi-calendar-event"></i> Tanggal/Jam Input</label>
+		</div>
+		
+		<!-- Input Card -->
+		<div class="card my-3">
+			<div class="card-header bg-primary text-white">
+				<i class="bi bi-input-cursor-text me-2"></i> Input
+			</div>
+			<div class="card-body">
+				<div class="row g-3 mb-3">
+					<div class="col-md-4">
+						<label class="form-label">Infus (cc)</label>
+						<input type="number" class="form-control input-cairan" name="ob12" id="infus" placeholder="0" step="any">
 					</div>
-				</div> -->
-			</div>
-
-			<div class="mb-3">
-				<label class="form-label">Nama Infus</label>
-				<input type="text" class="form-control" name="ob29" placeholder="Isikan nama infus">
-			</div>
-
-			<div class="row g-3 mb-3">
-				<div class="col-md-4">
-					<label class="form-label">Transfusi (cc)</label>
-					<input type="number" class="form-control input-cairan" name="ob15" id="transfusi" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">Tetesan (/menit)</label>
-					<input type="text" class="form-control" name="ob16">
-				</div>
-<!-- 				<div class="col-md-4">
-					<label class="form-label">Jam</label>
-					<div class="input-group">
-						<input type="date" class="form-control" name="jam2a">
-						<input type="time" class="form-control" name="jam2b">
+					<div class="col-md-4">
+						<label class="form-label">Tetesan (/menit)</label>
+						<input type="text" class="form-control" name="ob13">
 					</div>
-				</div> -->
-			</div>
-
-			<div class="mb-3">
-				<label class="form-label">Jenis Transfusi</label>
-				<input type="text" class="form-control" name="jtranfusi" list="jenisTransfusiList" placeholder="Pilih atau isikan jenis transfusi">
-				<datalist id="jenisTransfusiList">
-					<option value="WB"></option>
-					<option value="PRC"></option>
-					<option value="TC"></option>
-					<option value="FFP"></option>
-				</datalist>
-			</div>
-
-
-			<div class="row g-3 mb-3">
-				<div class="col-md-6">
-					<label class="form-label">Minum (cc)</label>
-					<input type="number" class="form-control input-cairan" name="ob19" id="minum" placeholder="0" step="any">
-				</div>
-				<div class="col-md-6">
-					<label class="form-label">Keterangan</label>
-					<input type="text" class="form-control" name="ob18">
 				</div>
 
+				<div class="mb-3">
+					<label class="form-label">Nama Infus</label>
+					<input type="text" class="form-control" name="ob29" placeholder="Isikan nama infus">
+				</div>
+
+				<div class="row g-3 mb-3">
+					<div class="col-md-4">
+						<label class="form-label">Transfusi (cc)</label>
+						<input type="number" class="form-control input-cairan" name="ob15" id="transfusi" placeholder="0" step="any">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Tetesan (/menit)</label>
+						<input type="text" class="form-control" name="ob16">
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">Jenis Transfusi</label>
+					<input type="text" class="form-control" name="jtranfusi" list="jenisTransfusiList" placeholder="Pilih atau isikan jenis transfusi">
+					<datalist id="jenisTransfusiList">
+						<option value="WB"></option>
+						<option value="PRC"></option>
+						<option value="TC"></option>
+						<option value="FFP"></option>
+					</datalist>
+				</div>
+
+
+				<div class="row g-3 mb-3">
+					<div class="col-md-6">
+						<label class="form-label">Minum (cc)</label>
+						<input type="number" class="form-control input-cairan" name="ob19" id="minum" placeholder="0" step="any">
+					</div>
+					<div class="col-md-6">
+						<label class="form-label">Keterangan</label>
+						<input type="text" class="form-control" name="ob18">
+					</div>
+
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- Output Card -->
-	<div class="card mb-3">
-		<div class="card-header bg-success text-white">
-			<i class="bi bi-box-arrow-up-right me-2"></i> Output
+		<!-- Output Card -->
+		<div class="card mb-3">
+			<div class="card-header bg-success text-white">
+				<i class="bi bi-box-arrow-up-right me-2"></i> Output
+			</div>
+			<div class="card-body">
+				<div class="row g-3 mb-3">
+					<div class="col-md-4">
+						<label class="form-label">Muntah (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob20" id="muntah" placeholder="0" step="any">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Feses (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob21" id="bab" placeholder="0" step="any">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Urine (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob22" id="urine" placeholder="0" step="any">
+					</div>
+				</div>
+
+				<div class="row g-3 mb-3">
+					<div class="col-md-4">
+						<label class="form-label">IWL (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob23" id="iwl" placeholder="0" step="any">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">NGT (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob24" id="ngt" placeholder="0" step="any">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Drain (cc)</label>
+						<input type="number" class="form-control output-cairan" name="ob25" id="drain" placeholder="0" step="any">
+					</div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">Perdarahan (cc)</label>
+					<input type="number" class="form-control output-cairan" name="ob26" id="perdarahan" placeholder="0" step="any">
+				</div>
+			</div>
 		</div>
-		<div class="card-body">
-			<div class="row g-3 mb-3">
-				<div class="col-md-4">
-					<label class="form-label">Muntah (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob20" id="muntah" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">Feses (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob21" id="bab" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">Urine (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob22" id="urine" placeholder="0" step="any">
-				</div>
-			</div>
 
-			<div class="row g-3 mb-3">
-				<div class="col-md-4">
-					<label class="form-label">IWL (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob23" id="iwl" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">NGT (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob24" id="ngt" placeholder="0" step="any">
-				</div>
-				<div class="col-md-4">
-					<label class="form-label">Drain (cc)</label>
-					<input type="number" class="form-control output-cairan" name="ob25" id="drain" placeholder="0" step="any">
-				</div>
+		<!-- Bagian Balance Cairan -->
+		<div class="card mb-4">
+			<div class="card-header bg-dark text-white">
+				<i class="bi bi-calculator-fill me-2"></i> Total
 			</div>
-
-			<div class="mb-3">
-				<label class="form-label">Perdarahan (cc)</label>
-				<input type="number" class="form-control output-cairan" name="ob26" id="perdarahan" placeholder="0" step="any">
+			<div class="card-body row g-3">
+				<div class="col-md-4">
+					<label class="form-label fw-bold text-primary">Total Input (cc)</label>
+					<input type="number" class="form-control" id="total-input" name="total_input" oninput="updateBalance()" placeholder="otomatis atau manual" step="any" readonly>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label fw-bold text-success">Total Output (cc)</label>
+					<input type="number" class="form-control" id="total-output" name="total_output" oninput="updateBalance()" placeholder="otomatis atau manual" step="any" readonly>
+				</div>
 			</div>
 		</div>
-	</div>
 
-	<!-- Bagian Balance Cairan -->
-	<div class="card mb-4">
-		<div class="card-header bg-dark text-white">
-			<i class="bi bi-calculator-fill me-2"></i> Total
+		<div class="card-footer text-center mt-4">
+			<button type="submit" name="simpan" value="simpan" class="btn btn-info btn-lg px-5">
+				<i class="bi bi-save-fill"></i> Simpan Monitoring Cairan
+			</button>
 		</div>
-		<div class="card-body row g-3">
-			<div class="col-md-4">
-				<label class="form-label fw-bold text-primary">Total Input (cc)</label>
-				<input type="number" class="form-control" id="total-input" name="total_input" oninput="updateBalance()" placeholder="otomatis atau manual" step="any" readonly>
-			</div>
-			<div class="col-md-4">
-				<label class="form-label fw-bold text-success">Total Output (cc)</label>
-				<input type="number" class="form-control" id="total-output" name="total_output" oninput="updateBalance()" placeholder="otomatis atau manual" step="any" readonly>
-			</div>
-<!-- 			<div class="col-md-4">
-				<label class="form-label fw-bold text-danger">Balance Cairan (cc)</label>
-				<input type="number" class="form-control" id="balance" name="ob27" readonly step="any">
-			</div>
-		-->		</div>
-	</div>
+		<br><br>
 
-	<div class="card-footer text-center mt-4">
-		<button type="submit" name="simpan" value="simpan" class="btn btn-info btn-lg px-5">
-			<i class="bi bi-save-fill"></i> Simpan Monitoring Cairan
-		</button>
 	</div>
-	<br><br>
-
-</div>
+</form>
 
 <!-- Script Otomatis -->
 <script>

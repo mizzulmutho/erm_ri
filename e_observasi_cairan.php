@@ -340,18 +340,6 @@ $ob60= $de['ob60'];
 
 						</table>
 						<br>
-						<table border='0' width="100%">
-
-							<tr>
-								<td><b>GDA</b>  </td>
-								<td>
-									: <input class="" name="ob28" value="<?php echo $ob28;?>" id="" type="text" size='20' placeholder=""> 
-
-								</td>
-							</tr>
-
-
-						</table>
 					</div>
 				</div>
 				<br>

@@ -168,15 +168,6 @@ if (isset($_POST["cari"])) {
 
 </head>
 <body>
-     <form method="POST" name='myForm' action="" enctype="multipart/form-data">
-
-          <div class="d-flex" id="wrapper">
-               
-               <div id="page-content-wrapper">
-                    <br>
-                    <div class="container-fluid">
-
-                    </form>
-
-                    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-                    <script src="js/scripts.js"></script>
+     <div class="container-fluid">
+          <!-- Bootstrap core JS-->
+          <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>

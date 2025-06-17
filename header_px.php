@@ -161,9 +161,22 @@ if (isset($_POST["cari"])) {
                          <tr>
                               <td width="10%">Riwayat Alergi</td><td width="40%">: <?php echo nl2br($alergi);?></td><td width="10%">Diet</td><td width="40%">: <?php echo $diet;?></td>
                          </tr>
-                    </table>
-               </div>
+                         <tr>
+                              <?php
+                              $qu3r="SELECT resume4  FROM ERM_RI_RESUME where noreg='$noreg'";
+                              $h1u3r  = sqlsrv_query($conn, $qu3r);        
+                              $d1u3r  = sqlsrv_fetch_array($h1u3r, SQLSRV_FETCH_ASSOC); 
+                              $tglkrs = $d1u3r['resume4'];
+                              ?>
+                              <td width="10%">Tgl KRS</td>
+                              <td colspan="3" 
+                              style="background-color: <?php echo ($tglkrs ? '#FFD95F' : '#FFFFFF'); ?>;">
+                              : <font color='blue' size='5'><b><?php echo nl2br($tglkrs); ?></b></font>
+                         </td>
+                    </tr>
+               </table>
           </div>
-
      </div>
+
+</div>
 </div>

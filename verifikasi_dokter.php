@@ -1159,7 +1159,7 @@ $tglkeluar = $data3[tglkeluar];
                             $namadokter = trim($dd['NAMA']);
 
                             ?>
-                            Mohon bagi DPDP : <b><?php echo $namadokter; ?></b> untuk terlebih dahulu melakukan <br>verifikasi entryan <b>CPPT / TULBAKON</b> oleh perawat/dokter Jaga untuk kelengkapan informasi di ERM
+                            Mohon bagi DPDP : <b><?php echo $namadokter; ?></b> untuk terlebih dahulu melakukan <br>verifikasi entryan <b>CPPT / TULBAKON / ASSESMEN AWAL KEPERAWATAN</b> <br >oleh perawat/dokter Jaga untuk kelengkapan informasi di ERM
                         </div>
                     </div>
                     <hr> 
@@ -1194,8 +1194,37 @@ $tglkeluar = $data3[tglkeluar];
                                 ";
                             }
 
+                            $qa="                           
+                            SELECT TOP (1) dpjp as dokter
+                            FROM ERM_RI_ASSESMEN_AWAL_DEWASA
+                            WHERE tglverif IS NULL 
+                            AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter'
+                            AND tglentry > '2025-03-04'
+                            union
+                            SELECT TOP (1) dpjp as dokter
+                            FROM ERM_RI_ASSESMEN_AWAL_ANAK
+                            WHERE tglverif IS NULL 
+                            AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter'
+                            AND tglentry > '2025-03-04'
+                            union
+                            SELECT TOP (1) dpjp as dokter
+                            FROM ERM_RI_ASSESMEN_AWAL_NEONATUS
+                            WHERE tglverif IS NULL 
+                            AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter'
+                            AND tglentry > '2025-03-04'
+                            ";
+                            $ha  = sqlsrv_query($conn, $qa);        
+                            $da  = sqlsrv_fetch_array($ha, SQLSRV_FETCH_ASSOC); 
+                            $cekverifa = trim($da['dokter']);
+
+                            if($cekverifa){
+                                echo "
+                                <button type='submit' name='verifikasi_asesmen' class='btn btn-info btn-md'>Verifikasi ASSESMEN AWAL KEPERAWATAN</button>
+                                ";
+                            }
+
+
                             ?>
-                            <!-- <button type="submit" name="verifikasi_rpo" class="btn btn-info btn-md" onfocus="nextfield ='';">Verifikasi RPO</button>  -->
                         </div>
                         <br><br>
                     </div>
@@ -1209,6 +1238,42 @@ $tglkeluar = $data3[tglkeluar];
 
 <?php 
 
+if (isset($_POST["verifikasi_asesmen"])) {
+
+    $q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
+    tglverif    ='$tglinput'
+    where tglentry > '2025-03-04' AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter' and tglverif is null
+    ";
+    $hs = sqlsrv_query($conn,$q);
+
+    $q  = "update ERM_RI_ASSESMEN_AWAL_ANAK set
+    tglverif    ='$tglinput'
+    where tglentry > '2025-03-04' AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter' and tglverif is null
+    ";
+    $hs = sqlsrv_query($conn,$q);
+
+    $q  = "update ERM_RI_ASSESMEN_AWAL_NEONATUS set
+    tglverif    ='$tglinput'
+    where tglentry > '2025-03-04' AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter' and tglverif is null
+    ";
+    $hs = sqlsrv_query($conn,$q);
+
+    if($hs){
+        $eror = "Success";
+    }else{
+      $eror = "Gagal Insert";
+
+  }
+
+  echo "
+  <script>
+  window.location.replace('index.php?id=$id|$user');
+  </script>
+  ";
+
+}
+
+
 if (isset($_POST["verifikasi_tulbakon"])) {
 
     $q  = "update ERM_TULBAKON set
@@ -1218,13 +1283,6 @@ if (isset($_POST["verifikasi_tulbakon"])) {
     $hs = sqlsrv_query($conn,$q);
 
     if($hs){
-
-        // $q  = "insert into ERM_SOAP_VERIF
-        // (noreg, tanggal, userid, tglverif, userverif) 
-        // values 
-        // ('$noreg','$tglinput','$kodedokter','$tglinput','$user')";
-        // $hs = sqlsrv_query($conn,$q);
-
         $eror = "Success";
     }else{
       $eror = "Gagal Insert";

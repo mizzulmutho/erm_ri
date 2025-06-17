@@ -107,7 +107,10 @@ if(empty($regcek)){
 	CONVERT(VARCHAR, tglrawat, 23) as tglrawat,
 	CONVERT(VARCHAR, tglentry, 103) as tgl_assesment,
 	CONVERT(VARCHAR, tglentry, 8) as jam_assesment,
-	CONVERT(VARCHAR, tglentry, 20) as tgl4
+	CONVERT(VARCHAR, tglentry, 20) as tgl4,
+	CONVERT(VARCHAR, tglverif, 103) as tgl_verif,
+	CONVERT(VARCHAR, tglverif, 8) as jam_verif
+
 	FROM ERM_RI_ASSESMEN_AWAL_DEWASA 
 	where noreg='$noreg'";
 	$he  = sqlsrv_query($conn, $qe);        
@@ -117,6 +120,10 @@ if(empty($regcek)){
 
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
+
+	$tgl_verif = $de['tgl_verif'];
+	$jam_verif = $de['jam_verif'];
+
 	$dpjp = $de['dpjp'];
 	$userid = $de['userid'];
 	$keluhan_pasien = $de['keluhan_pasien'];
@@ -3081,27 +3088,35 @@ if(empty($regcek)){
 										<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
 
 										<?php 
-										QRcode::png($verif_perawat, "image.png", "L", 2, 2);   
-										echo "<center><img src='image.png'></center>";
+										QRcode::png($verif_perawat, "asdew1.png", "L", 2, 2);   
+										echo "<center><img src='asdew1.png'></center>";
 										?>
 										<br>
 										<?php echo $NamaUser;?>
 									</td>
 									<td align="center">
 										<?php
-										$qreg="SELECT top(1)noreg FROM  ERM_SOAP_VERIF where noreg='$noreg'";
-										$hqreg  = sqlsrv_query($conn, $qreg);        
-										$dhqreg  = sqlsrv_fetch_array($hqreg, SQLSRV_FETCH_ASSOC); 
-										$cek_vnoreg = trim($dhqreg['noreg']);
-										$verif_dpjp="Document ini telah diVerifikasi Oleh : ".$dpjp."Pada Tanggal : ".$tgl_assesment;
+										$qnm="
+										SELECT TOP (1)
+										LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) AS kode,
+										LTRIM(RTRIM(SUBSTRING(dpjp, CHARINDEX('-', dpjp) + 1, LEN(dpjp)))) AS nmdokter
+										FROM ERM_RI_ASSESMEN_AWAL_DEWASA
+										WHERE noreg='$noreg'
+										";
+										$hqnm  = sqlsrv_query($conn, $qnm);
+										$dhqnm  = sqlsrv_fetch_array($hqnm, SQLSRV_FETCH_ASSOC); 
+										$nmdokter = trim($dhqnm['nmdokter']);
 
-										if($cek_vnoreg){
-											QRcode::png($verif_dpjp, "image.png", "L", 2, 2);   
-											echo "<center><img src='image.png'></center>";
+
+										$verif_dpjp="Document ini telah diVerifikasi Oleh : ".$nmdokter."Pada Tanggal : ".$tgl_verif;
+
+										if($tgl_verif){
+											QRcode::png($verif_dpjp, "asdew2.png", "L", 2, 2);   
+											echo "<center><img src='asdew2.png'></center>";
 										}
-
+										echo $dpjp;
 										?>
-										<?php echo $dpjp;?>										
+
 									</td>
 								</tr>
 							</table>

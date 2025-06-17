@@ -84,7 +84,10 @@ if(empty($regcek)){
 	$qe="
 	SELECT *,CONVERT(VARCHAR, tglrawat, 23) as tglrawat,CONVERT(VARCHAR, tglrawat, 103) as tglrawat2,
 	CONVERT(VARCHAR, tglentry, 103) as tgl_assesment,
-	CONVERT(VARCHAR, tglentry, 8) as jam_assesment
+	CONVERT(VARCHAR, tglentry, 8) as jam_assesment,
+	CONVERT(VARCHAR, tglverif, 103) as tgl_verif,
+	CONVERT(VARCHAR, tglverif, 8) as jam_verif
+
 	FROM ERM_RI_ASSESMEN_AWAL_NEONATUS
 	where noreg='$noreg'";
 	$he  = sqlsrv_query($conn, $qe);        
@@ -97,6 +100,10 @@ if(empty($regcek)){
 	
 	$tgl_assesment = $de['tgl_assesment'];
 	$jam_assesment = $de['jam_assesment'];
+
+	$tgl_verif = $de['tgl_verif'];
+	$jam_verif = $de['jam_verif'];
+
 	$dpjp = $de['dpjp'];
 	$userid = $de['userid'];
 	
@@ -1829,15 +1836,35 @@ if(empty($regcek)){
 										<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
 
 										<?php 
-										QRcode::png($verif_perawat, "image.png", "L", 2, 2);   
-										echo "<center><img src='image.png'></center>";
+										QRcode::png($verif_perawat, "asneo1.png", "L", 2, 2);   
+										echo "<center><img src='asneo1.png'></center>";
 										?>
 
 										<br>
 										<?php echo $userid;?>
 									</td>
 									<td align="center">
-										<?php echo $dpjp;?>										
+										<?php
+										$qnm="
+										SELECT TOP (1)
+										LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) AS kode,
+										LTRIM(RTRIM(SUBSTRING(dpjp, CHARINDEX('-', dpjp) + 1, LEN(dpjp)))) AS nmdokter
+										FROM ERM_RI_ASSESMEN_AWAL_NEONATUS
+										WHERE noreg='$noreg'
+										";
+										$hqnm  = sqlsrv_query($conn, $qnm);
+										$dhqnm  = sqlsrv_fetch_array($hqnm, SQLSRV_FETCH_ASSOC); 
+										$nmdokter = trim($dhqnm['nmdokter']);
+
+
+										$verif_dpjp="Document ini telah diVerifikasi Oleh : ".$nmdokter."Pada Tanggal : ".$tgl_verif;
+
+										if($tgl_verif){
+											QRcode::png($verif_dpjp, "asneo2.png", "L", 2, 2);   
+											echo "<center><img src='asneo2.png'></center>";
+										}
+										echo $dpjp;
+										?>													
 									</td>
 								</tr>
 							</table>

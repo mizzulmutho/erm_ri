@@ -180,6 +180,24 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 			SELECT        TOP (1) dokter as dpjp
 			FROM            ERM_TULBAKON
 			WHERE        verif_dpjp is null AND (dokter = '$user2') AND (tglentry > '2025-03-04')
+			union
+			SELECT TOP (1) dpjp as dokter
+			FROM ERM_RI_ASSESMEN_AWAL_DEWASA
+			WHERE tglverif IS NULL 
+			AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$user2'
+			AND tglentry > '2025-03-04'
+			union
+			SELECT TOP (1) dpjp as dokter
+			FROM ERM_RI_ASSESMEN_AWAL_ANAK
+			WHERE tglverif IS NULL 
+			AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$user2'
+			AND tglentry > '2025-03-04'
+			union
+			SELECT TOP (1) dpjp as dokter
+			FROM ERM_RI_ASSESMEN_AWAL_NEONATUS
+			WHERE tglverif IS NULL 
+			AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$user2'
+			AND tglentry > '2025-03-04'
 			";
 			$hv  = sqlsrv_query($conn, $qv);        
 			$dv  = sqlsrv_fetch_array($hv, SQLSRV_FETCH_ASSOC); 

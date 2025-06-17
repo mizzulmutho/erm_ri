@@ -94,9 +94,12 @@ $sbu = trim($row[1]);
 -->
 <div class="row">
     <div class="col-12 text-center">
-        <a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-info"></i> Lanjutkan</a>
+        <a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info'><i class="bi bi-info"></i> Lanjutkan</a>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <a href='listdata.php?id=<?php echo $user.'|'.$sbu;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+
     </div>
 </div>
 

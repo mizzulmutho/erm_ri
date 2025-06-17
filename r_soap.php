@@ -784,15 +784,16 @@ $noktp =  $data2[noktp];
 
 
 						//oper shift
-							$q2		= "select namapetugas,CONVERT(VARCHAR, tglentry, 103) as tgl, CONVERT(VARCHAR, tglentry, 8) as tgl3 
+							$q2		= "select userid,namapetugas,CONVERT(VARCHAR, tglentry, 103) as tgl, CONVERT(VARCHAR, tglentry, 8) as tgl3 
 							from ERM_OPERSHIFT where noreg='$noreg' and idsoap='$dl[id]'";
 							$hasil2  = sqlsrv_query($conn, $q2);			  					
-							$data2	= sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC);				  
+							$data2	= sqlsrv_fetch_array($hasil2, SQLSRV_FETCH_ASSOC);		
+							$useroper	= $data2[userid];			  
 							$namapetugas	= $data2[namapetugas];
 							$tgl	= $data2[tgl];
 							$jam_oper = substr($data2[tgl3],0,5);
 
-							$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 like '%$userid%'";
+							$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 like '%$useroper%'";
 							$h1u  = sqlsrv_query($conn, $qu);        
 							$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
 							$nmuserid = trim($d1u['NamaUser']);
