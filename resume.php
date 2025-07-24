@@ -6,6 +6,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -2279,6 +2281,16 @@ if($jenis=='add_diagnosa_sekunder'){
 		</div>
 	</div> -->
 
+	<div class="row">
+		<div class="col-4">
+			<b>&nbsp;&nbsp;&nbsp;Terapi Tambahan</b>
+		</div>
+		<div class="col-8">
+			: 
+			<textarea name= "resume34" id="resume34" style="min-width:630px; min-height:150px;" placeholder="Isikan Jika ada Terapi Tambahan"><?php echo $resume34;?></textarea>
+		</div>
+	</div>
+	
 	<hr> 
 	<div class="row">
 		<div class="col-4">

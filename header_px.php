@@ -139,44 +139,76 @@ if (isset($_POST["cari"])) {
 
 ?>
 
-<br>
-<!-- Page content-->
+<!-- Tambahkan ini di bagian <head> jika belum -->
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+     <style>
+         body {
+             font-family: 'Poppins', sans-serif;
+        }
+        .info-table td {
+             vertical-align: middle;
+             font-size: 16px;
+        }
+        .highlight-cell {
+          background-color: #FFF3C7 !important;
+     }
+     .highlight-text {
+        color: #1d4ed8;
+        font-size: 20px;
+        font-weight: bold;
+   }
+   .section-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 1rem;
+   }
+</style>
+
+
 <div class="container-fluid">
-
-     <div class="row">
-
-          <div class="row">
-               <div class="col-12">
-                    <table class="table table-bordered">
-                         <tr>
-                              <td>Nama</td><td style="background-color: #FFD95F;">: <font color='blue' size='5'><b><?php echo $nama;?></b></font></td>
-                              <td>No. RM</td><td>: <?php echo $norm;?></td>
-                         </tr>
-                         <tr>
-                              <td>Tanggal Lahir</td><td style="background-color: #FFD95F;">: <font color='blue' size='5'><b><?php echo $tgllahir;?></b></font></td><td>NIK</td><td>: <?php echo $noktp;?></td>
-                         </tr>
-                         <tr>
-                              <td>Umur</td><td>: <?php echo $umur;?></td><td>Jenis Kelamin</td><td>: <?php echo $kelamin;?></td>
-                         </tr>
-                         <tr>
-                              <td width="10%">Riwayat Alergi</td><td width="40%">: <?php echo nl2br($alergi);?></td><td width="10%">Diet</td><td width="40%">: <?php echo $diet;?></td>
-                         </tr>
-                         <tr>
-                              <?php
-                              $qu3r="SELECT resume4  FROM ERM_RI_RESUME where noreg='$noreg'";
-                              $h1u3r  = sqlsrv_query($conn, $qu3r);        
-                              $d1u3r  = sqlsrv_fetch_array($h1u3r, SQLSRV_FETCH_ASSOC); 
-                              $tglkrs = $d1u3r['resume4'];
-                              ?>
-                              <td width="10%">Tgl KRS</td>
-                              <td colspan="3" 
-                              style="background-color: <?php echo ($tglkrs ? '#FFD95F' : '#FFFFFF'); ?>;">
-                              : <font color='blue' size='5'><b><?php echo nl2br($tglkrs); ?></b></font>
-                         </td>
-                    </tr>
-               </table>
-          </div>
-     </div>
-
+ <div class="row">
+  <div class="col-12">
+   <p class="section-title">Informasi Pasien</p>
+   <table class="table table-bordered info-table">
+    <tr>
+     <td>Nama</td>
+     <td class="highlight-cell">: <span class="highlight-text"><?php echo $nama; ?></span></td>
+     <td>No. RM</td>
+     <td>: <?php echo $norm; ?></td>
+</tr>
+<tr>
+     <td>Tanggal Lahir</td>
+     <td class="highlight-cell">: <span class="highlight-text"><?php echo $tgllahir; ?></span></td>
+     <td>NIK</td>
+     <td>: <?php echo $noktp; ?></td>
+</tr>
+<tr>
+     <td>Umur</td>
+     <td>: <?php echo $umur; ?></td>
+     <td>Jenis Kelamin</td>
+     <td>: <?php echo $kelamin; ?></td>
+</tr>
+<tr>
+     <td width="15%">Riwayat Alergi</td>
+     <td width="35%">: <?php echo nl2br($alergi); ?></td>
+     <td width="15%">Diet</td>
+     <td width="35%">: <?php echo $diet; ?></td>
+</tr>
+<tr>
+     <?php
+     $qu3r = "SELECT resume4 FROM ERM_RI_RESUME WHERE noreg='$noreg'";
+     $h1u3r = sqlsrv_query($conn, $qu3r);        
+     $d1u3r = sqlsrv_fetch_array($h1u3r, SQLSRV_FETCH_ASSOC); 
+     $tglkrs = $d1u3r['resume4'];
+     ?>
+     <td>Tgl KRS</td>
+     <td colspan="3" class="<?php echo ($tglkrs ? 'highlight-cell' : ''); ?>">
+      : <span class="highlight-text"><?php echo nl2br($tglkrs); ?></span>
+ </td>
+</tr>
+</table>
+</div>
 </div>
 </div>

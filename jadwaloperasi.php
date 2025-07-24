@@ -715,12 +715,12 @@ if(empty($regcek)){
 
 			<div class="form-group">
 				<label class="form-label">Diagnosa pasca pembedahan(2) <i class="fas fa-stethoscope"></i></label>
-				<input class="form-control" name="ok61" value="<?php echo $ok8;?>" id="icd103" type="text" placeholder="Isikan ICD10" >
+				<input class="form-control" name="ok61" value="<?php echo $ok61;?>" id="icd103" type="text" placeholder="Isikan ICD10" >
 			</div>
 
 			<div class="form-group">
 				<label class="form-label">Diagnosa pasca pembedahan(3) <i class="fas fa-stethoscope"></i></label>
-				<input class="form-control" name="ok62" value="<?php echo $ok8;?>" id="icd104" type="text" placeholder="Isikan ICD10" >
+				<input class="form-control" name="ok62" value="<?php echo $ok62;?>" id="icd104" type="text" placeholder="Isikan ICD10" >
 			</div>
 
 <!-- 			<div class="form-group text-center">

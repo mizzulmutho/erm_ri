@@ -1353,6 +1353,7 @@ $diagnosa10   = $di["diagnosa_sekunder10"];
 				</div>
 			</div>
 			<hr>
+
 			<div class="row">
 				<div class="col-12 text-center">
 					<b>Diagnosis AWAL/MASUK</b><br>

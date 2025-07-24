@@ -319,7 +319,8 @@ $noktp =  $data2[NOKTP];
 						}
 
 						let ket = prompt("Masukkan keterangan balance cairan:");
-						if (ket !== null && ket.trim() !== "") {
+
+						// if (ket !== null && ket.trim() !== "") {
 							document.getElementById("keterangan").value = ket.trim();
 
 							let form = document.getElementById("balanceForm");
@@ -334,9 +335,10 @@ $noktp =  $data2[NOKTP];
 								form.appendChild(input);
 							});
 							form.submit();
-						} else {
-							alert("Keterangan harus diisi untuk menyimpan balance cairan.");
-						}
+							
+						// } else {
+						// 	alert("Keterangan harus diisi untuk menyimpan balance cairan.");
+						// }
 					}
 				</script>
 
@@ -447,7 +449,7 @@ $noktp =  $data2[NOKTP];
 
 					}
 
-					$q1 = "SELECT TOP(50)*, 
+					$q1 = "SELECT TOP(250)*, 
 					CONVERT(VARCHAR, tglinput, 23) as tglinput,
 					CONVERT(VARCHAR, tanggal_awal, 120) as tanggal_awal,
 					CONVERT(VARCHAR, tanggal_akhir, 120) as tanggal_akhir,
@@ -467,6 +469,7 @@ $noktp =  $data2[NOKTP];
 						$terapi = trim($data1['terapi'] ?? '');
 
 						$balance = intval(trim($data1['ob27']));
+						$balance_formatted = $data1['balance'];
 						$balance_table = $data1['balance'];
 						$nomor_transaksi = $data1['nomor_transaksi'];
 						$rowClass='';
@@ -520,7 +523,7 @@ $noktp =  $data2[NOKTP];
 							<td>$editBtn</td>
 							<td>$deleteBtn</td>
 							<td colspan='$colspan' style='text-align: left;'><strong>Balance Cairan :</strong> $tanggal_awal s/d $tanggal_akhir</td>
-							<td>{$balance}</td>
+							<td>{$balance_formatted}</td>
 							<td>{$nmuserid}</td>
 							<td>$keterangan</td>
 							</tr>";
@@ -550,7 +553,7 @@ $noktp =  $data2[NOKTP];
 								<td>{$data1['ob25']}</td>
 								<td>{$data1['ob26']}</td>
 								<td>{$data1['total_output']}</td>
-								<td>{$balance}</td>
+								<td>{$balance_formatted}</td>
 								<td>{$nmuserid}</td>
 								<td>{$data1['ob18']}</td>
 								</tr>";
@@ -579,7 +582,7 @@ $noktp =  $data2[NOKTP];
 								<td>{$data1['ob25']}</td>
 								<td>{$data1['ob26']}</td>
 								<td>{$data1['total_output']}</td>
-								<td>{$balance}</td>
+								<td>{$balance_formatted}</td>
 								<td>{$nmuserid}</td>
 								<td>{$data1['ob18']}</td>
 								</tr>";

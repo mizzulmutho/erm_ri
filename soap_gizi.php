@@ -7,6 +7,7 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
 
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);

@@ -139,6 +139,8 @@ $noktp =  $data2[NOKTP];
 
 				<table  class="table table-bordered">
 					<?php
+					$noreg = substr($noreg, 1,12);
+
 					// $ql="
 					// SELECT TOP(200) id,kodedokter,noreg,userid,dpjp,subjektif,objektif,assesment,planning,instruksi,sbu,
 					// CONVERT(VARCHAR, tanggal, 101) as tgl2,
@@ -159,7 +161,7 @@ $noktp =  $data2[NOKTP];
 					CONVERT(VARCHAR, tanggal, 103) as tgl2,
 					CONVERT(VARCHAR, tglentry, 8) as tgl3, 
 					CONVERT(VARCHAR, tglentry, 20) as tgl4,'SOAP' as jenis,instruksi  
-					FROM ERM_SOAP WHERE norm='$norm' and noreg like '%R%'
+					FROM ERM_SOAP WHERE noreg like '%$noreg%'
 					union
 					select top(200) a.id,'' as kodedokter,a.noreg,a.userid as userinput,'' as dpjp, '' as subjektif, '' as objektif, '' as assesment, '' as planning,'' as instruksi,'' as sbu,
 					CONVERT(VARCHAR, a.tgl, 103) as tgl2, 
@@ -167,7 +169,7 @@ $noktp =  $data2[NOKTP];
 					CONVERT(VARCHAR, a.tgl, 20) as tgl4, 'ASSESMEN' as jenis,'' as instruksi
 					FROM            ERM_RI_ANAMNESIS_MEDIS as a INNER JOIN
 					ARM_REGISTER ON a.noreg = ARM_REGISTER.NOREG
-					WHERE ARM_REGISTER.norm='$norm' and a.noreg like '%R%'
+					WHERE ARM_REGISTER.noreg like '%$noreg%'
 					ORDER BY tgl4 desc
 					";
 
@@ -311,6 +313,7 @@ $noktp =  $data2[NOKTP];
 							$am89= $de['am89'];
 							$am90= $de['am90'];
 							$diagnosa_planning= $de['diagnosa_planning'];
+							$assesment= $de['assesment'];
 
 							$qe="
 							SELECT resume20,resume21,resume22
@@ -361,6 +364,7 @@ $noktp =  $data2[NOKTP];
 
 							$kondisi_kejiwaan = $am16;
 							$diagnosa_planning = $diagnosa_planning;
+							$assesment = $assesment;
 
 							if($am19){
 								if($am19=='Normal'){
@@ -630,6 +634,10 @@ $noktp =  $data2[NOKTP];
 							<td>$penunjang</td>
 							</tr>
 							<tr>
+							<td>Assesment</td>
+							<td>$assesment</td>
+							</tr>
+							<tr>
 							<td>Diagnosa Planning</td>
 							<td>$diagnosa_planning</td>
 							</tr>
@@ -696,6 +704,16 @@ $noktp =  $data2[NOKTP];
 								$namadokter	= $data2[nama];
 								$profesi = 'APOTEKER';
 							}
+
+
+							if(empty($namadokter)){
+								$qrnmUser = "SELECT NamaUser from ROLERSPGENTRY.dbo.tblusererm WHERE nik ='$userid'";
+								$hqrnmUser = sqlsrv_query($conn, $qrnmUser);
+								$dhqrnmUser = sqlsrv_fetch_array($hqrnmUser, SQLSRV_FETCH_ASSOC);
+								$namadokter = $dhqrnmUser['NamaUser'];
+								$profesi='IGD';
+							}
+
 
 						//cek verif dokter...
 							// $q3		= "select userverif,CONVERT(VARCHAR, tglverif, 20) as tanggal from  ERM_SOAP_VERIF where noreg='$noreg' and userverif like '%$dpjp%'";

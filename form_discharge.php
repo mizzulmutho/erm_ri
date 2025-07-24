@@ -522,6 +522,9 @@ $resume22= $de['resume22'];
 					</table>
 					<br>
 					&nbsp;<button type='submit' name='simpan_obat' value='simpan_obat' class="btn btn-info" type="button" style="height: 40px;width: 250px;"><i class="bi bi-save-fill"></i> tambah obat pulang</button>
+					&nbsp;
+					<a href='eresep_list_discharge.php?id=<?php echo $id.'|'.$user; ?>' class='btn btn-info'><i class="bi bi-box-arrow-in-right"></i> Ambil Data dari E-Resep</a>
+
 					<br><br>
 				</div>
 

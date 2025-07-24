@@ -7,6 +7,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglsekarang    = gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -238,6 +240,7 @@ $umur =  $data2[UMUR];
 								$am88= $de['am88'];
 								$am89= $de['am89'];
 								$am90= $de['am90'];
+								$diagnosa_planning= $de['diagnosa_planning'];
 
 								$qe="
 								SELECT resume20,resume21,resume22
@@ -287,6 +290,7 @@ $umur =  $data2[UMUR];
 
 
 								$kondisi_kejiwaan = $am16;
+								$diagnosa_planning = $diagnosa_planning;
 
 								if($am19){
 									if($am19=='Normal'){
@@ -556,6 +560,10 @@ $umur =  $data2[UMUR];
 								<td>$penunjang</td>
 								</tr>
 								<tr>
+								<td>Diagnosa Planning</td>
+								<td>$diagnosa_planning</td>
+								</tr>
+								<tr>
 								<td>Rencana Terapi</td>
 								<td>$rencana_terapi</td>
 								</tr>
@@ -622,6 +630,35 @@ $umur =  $data2[UMUR];
 
 								$subjektif = nl2br($dl[subjektif]);
 								$objektif = nl2br($dl[objektif]);
+								$parts = explode('Status Lokalis :', $objektif, 2);
+								if (count($parts) == 2) {
+    								// Pisahkan Status Lokalis + sisanya
+									$before = $parts[0];
+									$after = $parts[1];
+
+    								// Pisahkan lagi jika ada 'Pemeriksaan Penunjang :'
+									$subparts = explode('Pemeriksaan Penunjang :', $after, 2);
+									if (count($subparts) == 2) {
+										$statusLokalis = trim($subparts[0]);
+										$pemeriksaan = trim($subparts[1]);
+
+        								// Tambahkan <br> setelah koma di masing-masing
+										$statusLokalis = str_replace(', ', ',<br>', $statusLokalis);
+										$pemeriksaan = str_replace(', ', ',<br>', $pemeriksaan);
+
+        								// Gabung lagi
+										$objektif = $before 
+										. 'Status Lokalis :<br>' . $statusLokalis 
+										. '<br>Pemeriksaan Penunjang :<br>' . $pemeriksaan;
+									} else {
+        								// Kalau tidak ada Pemeriksaan Penunjang, hanya Status Lokalis
+										$statusLokalis = str_replace(', ', ',<br>', $after);
+										$objektif = $before . 'Status Lokalis :<br>' . $statusLokalis;
+									}
+								}
+								// Terakhir: pastikan newline juga diubah jadi <br> jika ada
+								$objektif = nl2br($objektif);
+
 								$assesment = nl2br($dl[assesment]);
 								$planning = nl2br($dl[planning]);
 
@@ -697,8 +734,10 @@ $umur =  $data2[UMUR];
 									$gantishift = '<br>Diterima Oleh : <b><br>'.$namapetugas.'</b><br>Tgl:'.$tgl.' - Jam: '.$jam_oper;
 									$petugasoper = 'DiOperkan Oleh: <b><br>'.$nmuserid.'</b><br>Tgl:'.$tgl.' - Jam: '.$jam_oper;
 									$status_oper = "<br><font color='blue'>".$petugasoper.'-'.$gantishift."</font>";
+									$status_oper2 = "<br><font color='black'>".$petugasoper.'-'.$gantishift."</font>";
 								}else{
 									$status_oper ='';
+									$status_oper2='';
 								}
 
 
@@ -733,7 +772,7 @@ $umur =  $data2[UMUR];
 										<td>$dl[instruksi]</td>
 										<td>$userverif<br>$tanggal</td>
 										<td align='center'>-</td>					
-										<td align='center'>-</td>
+										<td align='center'>$status_oper2</td>
 										<td align='center'>
 										sudah 1x24 jam
 										</td>					
@@ -748,14 +787,14 @@ $umur =  $data2[UMUR];
 								if(substr($dl[noreg], 0,1)=="R"){ //jika rawat inap
 									
 									$instruksi = nl2br($dl[instruksi]);
-
+									$instruksi = '<p>' . str_replace("\n", '</p><p>', trim($instruksi)) . '</p>';
 									if($jam < 24){
 										echo "	<tr>
 										<td>$no</td>
 										<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 										<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 										<td>$hasilassesment</td>
-										<td>$dl[instruksi]</td>
+										<td>$instruksi</td>
 										<td>$userverif<br>$tanggal</td>
 										<td align='center'>
 										<a href='tulbakon.php?id=$id|$user|$dl[id]' onclick=\"return confirm('Buka halaman tulbakon untuk data ini?')\">
@@ -784,10 +823,10 @@ $umur =  $data2[UMUR];
 										<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 										<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 										<td>$hasilassesment</td>
-										<td>$dl[instruksi]</td>
+										<td>$instruksi</td>
 										<td>$userverif<br>$tanggal</td>
 										<td align='center'>-</td>	
-										<td align='center'>-</td>		
+										<td align='center'>$status_oper2</td>		
 										<td align='center'>
 										sudah 1x24 jam
 										</td>			
@@ -801,7 +840,7 @@ $umur =  $data2[UMUR];
 									<td>$dl[noreg]<br>$dl[tgl2]<br>$dl[tgl3]</td>
 									<td>$profesi - $namadokter<br>$dl[kodeunit] - $dl[sbu]</td>
 									<td>$hasilassesment</td>
-									<td>$dl[instruksi]</td>
+									<td>$instruksi</td>
 									<td>$userverif<br>$tanggal</td>
 									<td align='center'></td>							
 									<td align='center'>$keterangan</td>												

@@ -1310,31 +1310,32 @@ if (isset($_POST["Print"])) {
 						<div class="col-8">
 							: <?php echo nl2br($resume17); ?>
 						</div>
-						<div class="col-4">
-							&bull; Radiologi
-						</div>
-						<div class="col-8">
-							: <?php 
-							$regigd=substr($noreg,1,12);
-							$qrad="
-							SELECT        HASIL, URAIAN, CONVERT(VARCHAR, TANGGAL, 103) AS TANGGAL,NOREG
-							FROM            HASILRAD_PEMERIKSAAN_RAD
-							WHERE        (NOREG = '$noreg') OR
-							(NOREG = '$regigd')
-							ORDER BY TANGGAL
-							";
-							$hqrad  = sqlsrv_query($conn, $qrad);
+						<?php if($tampil_lab=='Y'){ ?>
+							<div class="col-4">
+								&bull; Radiologi
+							</div>
+							<div class="col-8">
+								: <?php 
+								$regigd=substr($noreg,1,12);
+								$qrad="
+								SELECT        HASIL, URAIAN, CONVERT(VARCHAR, TANGGAL, 103) AS TANGGAL,NOREG
+								FROM            HASILRAD_PEMERIKSAAN_RAD
+								WHERE        (NOREG = '$noreg') OR
+								(NOREG = '$regigd')
+								ORDER BY TANGGAL
+								";
+								$hqrad  = sqlsrv_query($conn, $qrad);
 
-							$i=1;
-							while   ($dhqrad = sqlsrv_fetch_array($hqrad, SQLSRV_FETCH_ASSOC)){     
-								$rad0 = 'TGL : '.$dhqrad[TANGGAL].', REG : '.$dhqrad[NOREG].'<br><u>'.$dhqrad[HASIL].'</u>:'."\n".nl2br($dhqrad[URAIAN])."<hr>";
-								$rad = $rad.'&#13;&#10;'.$rad0;
-							}
+								$i=1;
+								while   ($dhqrad = sqlsrv_fetch_array($hqrad, SQLSRV_FETCH_ASSOC)){     
+									$rad0 = 'TGL : '.$dhqrad[TANGGAL].', REG : '.$dhqrad[NOREG].'<br><u>'.$dhqrad[HASIL].'</u>:'."\n".nl2br($dhqrad[URAIAN])."<hr>";
+									$rad = $rad.'&#13;&#10;'.$rad0;
+								}
 
-							echo $rad;
-							?>
-						</div>
-
+								echo $rad;
+								?>
+							</div>
+						<?php } ?>
 						<div class="col-4">
 							&bull; Hasil Rad Lain
 						</div>

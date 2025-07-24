@@ -2,19 +2,7 @@
 session_start();
 include ("koneksi.php");
 
-
-echo "
-<div class='row'>
-<div class='col-12 text-center'>
-UNTUK MENCEGAH SALAH INPUT DATA<br>
-TERLEBIH DAHULU TOLONG <b></u><font color='red'>DICEK APAKAH PASIEN SUDAH BENAR</font></u></b> SEPERTI DATA DIBAWAH ! 
-<br>
-JIKA BENAR SILAHKAN TEKAN TOMBOL LANJUTKAN
-</div>
-</div>
-";
-
-include ("header_px.php");
+include ("mode.php");
 
 $id = $_GET["id"];
 $row = explode('|',$id);
@@ -61,8 +49,7 @@ if($tr2){
 $qun="SELECT namaunit FROM   Afarm_Unitlayanan where kodeunit='$KODEUNIT'";
 $hqun  = sqlsrv_query($conn, $qun);        
 $dhqun  = sqlsrv_fetch_array($hqun, SQLSRV_FETCH_ASSOC); 
-echo "&nbsp;&nbsp;&nbsp;<font size='4' color='#F93827'><b>Unit : ".$namaunit = $dhqun['namaunit'] .' - '. $KODEUNIT."</b></font>";
-
+$namaunit = $dhqun['namaunit'];
 
 $qu="SELECT dpjp FROM  V_ERM_RI_DPJP_ASESMEN where noreg='$noreg' and dpjp is not null";
 $h1u  = sqlsrv_query($conn, $qu);        
@@ -80,26 +67,66 @@ if(empty($dpjp)){
     $kodedokter  = trim($row[0]);
 
 }
-
-echo '&nbsp;&nbsp;&nbsp;Dokter : '.$dpjp;
-echo "<br>";echo "<hr>";
 ?>
 
 <link rel="icon" href="favicon.ico">  
-<link rel="stylesheet" href="css/bootstrap.min.css" />
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"> 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f9f9f9;
+    }
+    .highlight {
+        color: #e63946;
+        font-weight: bold;
+    }
+    .container-custom {
+        padding: 2rem;
+        /*background: #fff;*/
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .btn-custom {
+        font-weight: 600;
+        padding: 10px 20px;
+        border-radius: 8px;
+    }
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+</style>
 
-<!-- $user = trim($row[0]); 
-$sbu = trim($row[1]); 
--->
-<div class="row">
-    <div class="col-12 text-center">
-        <a href='index.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-info'><i class="bi bi-info"></i> Lanjutkan</a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='listdata.php?id=<?php echo $user.'|'.$sbu;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+<body>
 
+    <div class="container mt-5 container-custom">
+        <div class="text-center mb-4">
+            <p class="section-title">UNTUK MENCEGAH SALAH INPUT DATA</p>
+            <p>Terlebih dahulu tolong <span class="highlight">DICEK APAKAH PASIEN SUDAH BENAR</span></p>
+            <p>Jika benar, silakan tekan tombol <strong>LANJUTKAN</strong></p>
+        </div>
+
+        <?php 
+
+        include ("header_px.php");
+
+        ?>
+        <div class="mb-3">
+            <p><strong>Unit : </strong> <span class="text-primary"><?= $namaunit . " - " . $KODEUNIT ?></span></p>
+            <p><strong>Dokter DPJP : </strong> <?= $dpjp ?: "<em>Belum ditentukan</em>" ?></p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href='index.php?id=<?= $id . '|' . $user ?>' class='btn btn-info btn-custom'><i class="bi bi-info-circle"></i> Lanjutkan</a>
+            &nbsp;&nbsp;
+            <a href='listdata.php?id=<?= $user . '|' . $sbu ?>' class='btn btn-warning btn-custom'><i class="bi bi-x-circle"></i> Close</a>
+            &nbsp;&nbsp;
+            <a href='' class='btn btn-success btn-custom'><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+        </div>
     </div>
-</div>
+
+</body>
+
 

@@ -3,6 +3,8 @@ include ("koneksi.php");
 
 error_reporting(E_ALL ^ (E_NOTICE | E_WARNING));
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -300,6 +302,60 @@ if (isset($_POST["simpan"])) {
 		if (netscape) document.captureEvents(Event.KEYDOWN|Event.KEYUP);
 	</script>
 
+	<style>
+		body.dark-mode {
+			background-color: #121212;
+			color: #ffffff;
+		}
+
+		.dark-mode .card {
+			background-color: #1e1e1e;
+			color: #ffffff;
+			border-color: #444;
+		}
+
+		.dark-mode .card-header {
+			background-color: #2c3e50 !important;
+			color: #ffffff !important;
+			border-bottom: 1px solid #444;
+		}
+
+		.dark-mode .card-body {
+			/*background-color: #1e1e1e;*/
+			color: #ffffff;
+		}
+
+		.dark-mode .text-dark {
+			color: #ffffff !important;
+		}
+
+		.dark-mode .form-control,
+		.dark-mode .table {
+			background-color: #2a2a2a;
+			color: #ffffff;
+		}
+
+		.dark-mode a {
+			color: #90caf9;
+		}
+	</style>
+
+
+	<style>
+		/* Placeholder default untuk semua input/textarea */
+		input::placeholder,
+		textarea::placeholder {
+			color: #6c757d;
+		}
+
+		/* Placeholder khusus saat dark mode aktif */
+		body.dark-mode input::placeholder,
+		body.dark-mode textarea::placeholder {
+			color: #cccccc; /* warna terang agar terlihat */
+			opacity: 1; /* pastikan placeholder tidak terlalu transparan */
+		}
+	</style>
+	
 </head> 
 
 

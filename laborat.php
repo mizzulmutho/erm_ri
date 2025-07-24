@@ -161,288 +161,7 @@ if(empty($regcek)){
             });
         });
     </script>  
-    <script>
-        $(function() {
-            $("#dokter2").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_dokter.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.kodedokter + ' - ' + item.nama + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#karyawan1").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_karyawan.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nik + ' - ' + item.nama
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script>  
-
-    <script>
-        $(function() {
-            $("#karyawan2").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_karyawan.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nik + ' - ' + item.nama
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script>  
-
-    <script>
-        $(function() {
-            $("#karyawan3").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_karyawan.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nik + ' - ' + item.nama
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script>   
-    <script>
-        $(function() {
-            $("#icd101").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd10.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd102").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd10.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd91").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd92").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd93").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd94").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
+    
 </head> 
 <div id="content"> 
     <div class="container">
@@ -495,7 +214,6 @@ if(empty($regcek)){
                                         <?php 
                                         $noreg_igd = substr($noreg, 1,12);
 
-                                //jumlah
                                         $qu="SELECT        TOP (1) DAY(REG_DATE) AS hari
                                         FROM            LINKYAN5.SHARELIS.dbo.hasilLIS
                                         WHERE        (NOLAB_RS = '$noreg_igd')
@@ -541,62 +259,86 @@ if(empty($regcek)){
                                         ";
                                         $hqlab  = sqlsrv_query($conn, $qlab);
 
-                                        echo "<table class='table'>
-                                        <tr>
-                                        <td width='1%'>no</td><td>tarif name</td><td>kel pemeriksaan</td><td>parameter name</td>
-                                        <td>$hari</td>
-                                        <td>$hari2</td>
-                                        <td>$hari3</td>
-                                        <td>$hari4</td>
-                                        <td>$hari5</td>
-                                        <td>$hari6</td>
-                                        <td>$hari7</td>
-                                        <td>$hari8</td>
-                                        <td>$hari9</td>
-                                        <td>$hari10</td>
-                                        </tr>
-                                        ";
-                                        $i=1;
-                                        while   ($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)){     
-                                            $dhqlab[REG_DATE];
-                                            $noreglab = $dhqlab[NOLAB_RS];
-                                    // if(substr($noreglab,0,1)<>'R'){
-                                    //     $labu='IGD';
-                                    // }else{
-                                    //     $labu='';
-                                    // }
-                                            if(substr($dhqlab[PARAMETER_NAME],0,1)=='-'){
-                                                $kethlab=' <i>HITUNG JENIS (DIFF) :<i>';
-                                            }else if(substr($dhqlab[PARAMETER_NAME],0,1)==' '){
-                                                $kethlab=' <i>INDEX ERITROSIT :<i>';
-                                            }else{
-                                                $kethlab='';
-                                            }
-                                            echo "
-                                            <tr>
-                                            <td>$i</td>
-                                            <td>$dhqlab[TARIF_NAME]</td>
-                                            <td>$dhqlab[KEL_PEMERIKSAAN]</td>
-                                            <td>$kethlab $dhqlab[PARAMETER_NAME]</td>
-                                            <td>$dhqlab[$hari]</td>
-                                            <td>$dhqlab[$hari2]</td>
-                                            <td>$dhqlab[$hari3]</td>
-                                            <td>$dhqlab[$hari4]</td>
-                                            <td>$dhqlab[$hari5]</td>
-                                            <td>$dhqlab[$hari6]</td>
-                                            <td>$dhqlab[$hari7]</td>
-                                            <td>$dhqlab[$hari8]</td>
-                                            <td>$dhqlab[$hari9]</td>
-                                            <td>$dhqlab[$hari10]</td>
-                                            </tr>
-                                            ";
-
-
-                                            $i=$i+1;
-                                        }
-
 
                                         ?>
+
+                                        <style>
+                                            body {
+                                                font-family: Arial, sans-serif;
+                                                font-size: 12px;
+                                            }
+                                            table.lab-result {
+                                                border-collapse: collapse;
+                                                width: 100%;
+                                            }
+                                            table.lab-result th, table.lab-result td {
+                                                border: 1px solid #000;
+                                                padding: 4px 6px;
+                                                font-size: 12px;
+                                                vertical-align: top;
+                                            }
+                                            .group-title {
+                                                font-weight: bold;
+                                                background-color: #eee;
+                                                font-style: italic;
+                                            }
+                                        </style>
+
+                                        <table class="lab-result">
+                                            <thead>
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Nama Pemeriksaan</th>
+                                                    <th><?php echo $hari; ?></th>
+                                                    <th><?php echo $hari2; ?></th>
+                                                    <th><?php echo $hari3; ?></th>
+                                                    <th><?php echo $hari4; ?></th>
+                                                    <th><?php echo $hari5; ?></th>
+                                                    <th><?php echo $hari6; ?></th>
+                                                    <th><?php echo $hari7; ?></th>
+                                                    <th><?php echo $hari8; ?></th>
+                                                    <th><?php echo $hari9; ?></th>
+                                                    <th><?php echo $hari10; ?></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                $i = 1;
+                                                $kelompok = "";
+                                                while($dhqlab = sqlsrv_fetch_array($hqlab, SQLSRV_FETCH_ASSOC)) {
+
+                                                    if ($kelompok != $dhqlab['KEL_PEMERIKSAAN']) {
+                                                        $kelompok = $dhqlab['KEL_PEMERIKSAAN'];
+                                                        echo "<tr class='group-title'><td colspan='12'>{$kelompok}</td></tr>";
+                                                    }
+
+                                                    $parameter = $dhqlab['PARAMETER_NAME'];
+                                                    if (substr($parameter, 0, 1) == '-') {
+                                                        $parameter = '<i>HITUNG JENIS (DIFF):</i> ' . substr($parameter, 1);
+                                                    } elseif (substr($parameter, 0, 1) == ' ') {
+                                                        $parameter = '<i>INDEX ERITROSIT:</i> ' . trim($parameter);
+                                                    }
+
+                                                    echo "<tr>
+                                                    <td class='text-center'>{$i}</td>
+                                                    <td>{$parameter}</td>
+                                                    <td>{$dhqlab[$hari]}</td>
+                                                    <td>{$dhqlab[$hari2]}</td>
+                                                    <td>{$dhqlab[$hari3]}</td>
+                                                    <td>{$dhqlab[$hari4]}</td>
+                                                    <td>{$dhqlab[$hari5]}</td>
+                                                    <td>{$dhqlab[$hari6]}</td>
+                                                    <td>{$dhqlab[$hari7]}</td>
+                                                    <td>{$dhqlab[$hari8]}</td>
+                                                    <td>{$dhqlab[$hari9]}</td>
+                                                    <td>{$dhqlab[$hari10]}</td>
+                                                    </tr>";
+                                                    $i++;
+                                                }
+                                                ?>
+                                            </tbody>
+                                        </table>
+
 
                                     </div>
 

@@ -1559,9 +1559,9 @@ if($jenis=='add_diagnosa_sekunder'){
 			<font size='3px'>
 				<form method="POST" name='myForm' action="" enctype="multipart/form-data">
 					<br>
-					<a href='close.php' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
+					<a href="javascript:window.close();" class='btn btn-warning'><i class="bi bi-x-circle"></i> Close Window</a>
 					&nbsp;&nbsp;
-					<a href='resume.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+					<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
 					&nbsp;&nbsp;
 					<!-- <a href='#' class='btn btn-danger'>Pdf</a> -->
 					<!-- <input type='submit' name='Pdf' value='Pdf' class='btn btn-danger'> -->
@@ -3256,6 +3256,14 @@ if (isset($_POST["simpan"])) {
 
 	if($hs){
 		$eror = "Success";
+
+		echo "
+		<script>
+		alert('".$eror."');
+		window.location.replace('edit_soap2.php?id=$id|$user|$idsoap');
+		</script>
+		";
+
 	}else{
 		$eror = "Gagal Insert";
 

@@ -4,6 +4,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $date = new DateTime('@'.strtotime('2016-03-22 14:30'), new DateTimeZone('Australia/Sydney'));
 
 // $textcari = 'R202402121064';
@@ -102,7 +104,7 @@ if (isset($_POST["tgl2"])) {
 
 
 if(empty($tgl1)){
- $tgl1=gmdate("Y-m-d", time()+60*60*7);
+   $tgl1=gmdate("Y-m-d", time()+60*60*7);
 }
 
 if(empty($tgl2)){
@@ -119,17 +121,17 @@ if ($login) {
 }
 
 if (isset($_POST["cari"])) {
- $textcari = $_POST["textcari"];
+   $textcari = $_POST["textcari"];
 
- $row = explode('-',$textcari);
- $noreg  = trim($row[0]);
- $nama  = trim($row[1]);
+   $row = explode('-',$textcari);
+   $noreg  = trim($row[0]);
+   $nama  = trim($row[1]);
 
- if($nama){
-     if($noreg){
-      header("Location: cekidheader.php?id=$user|$noreg");
-  }
-}else{
+   if($nama){
+       if($noreg){
+          header("Location: cekidheader.php?id=$user|$noreg");
+      }
+  }else{
     $eror = "Format pencarian salah, tuliskan lagi data pasien !!!";
     echo "
     <script>
@@ -221,65 +223,104 @@ if (isset($_POST["carirm"])) {
 
 <script>
   $(function() {
-     $("#pasien").autocomplete({
+   $("#pasien").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
                     $.ajax({
-                       type: 'POST',
+                     type: 'POST',
                         // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
                         url: 'find_pasien3.php?id=<?php echo $sbu; ?>', //your                         
                         dataType: 'json',
                         data: {
-                           postcode: request.term
-                       },
-                       success: function (data) {
+                         postcode: request.term
+                     },
+                     success: function (data) {
                             //if multiple results are returned
                             if(data.response instanceof Array)
                               response ($.map(data.response, function (item) {
-                                 return {
-                                    value: item.noreg + ' - ' + item.nama_pasien + ' - Tgl Lahir : ' +  item.tgl_lahir  + ' - Jaminan : ' +  item.NMCUST + ' (' +  item.CUSTNO + ')'
-                                }
-                            }));
+                               return {
+                                value: item.noreg + ' - ' + item.nama_pasien + ' - Tgl Lahir : ' +  item.tgl_lahir  + ' - Jaminan : ' +  item.NMCUST + ' (' +  item.CUSTNO + ')'
+                            }
+                        }));
                             //if a single result is returned
                         }           
                     });
                 }
             });
- });
+});
 </script>    
 
 <script>
   $(function() {
-     $("#pasien2").autocomplete({
+   $("#pasien2").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
                     $.ajax({
-                       type: 'POST',
+                     type: 'POST',
                         // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
                         url: 'find_pasien2.php', //your                         
                         dataType: 'json',
                         data: {
-                           postcode: request.term
-                       },
-                       success: function (data) {
+                         postcode: request.term
+                     },
+                     success: function (data) {
                             //if multiple results are returned
                             if(data.response instanceof Array)
                               response ($.map(data.response, function (item) {
-                                 return {
-                                    value: item.norm + ' - ' + item.nama_pasien + ' - ' + item.nik 
-                                }
-                            }));
+                               return {
+                                value: item.norm + ' - ' + item.nama_pasien + ' - ' + item.nik 
+                            }
+                        }));
                             //if a single result is returned
                         }           
                     });
                 }
             });
- });
+});
 </script>  
+
+<style>
+    .gold-text {
+      position: relative;
+      display: inline-block;
+      color: gold;
+      -webkit-text-stroke: 1px #444;
+      overflow: hidden;
+  }
+
+  .gold-text::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -75%;
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(
+        120deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.6) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+      transform: skewX(-25deg);
+  }
+
+  .gold-text.shine::before {
+      animation: shineSweep 2s infinite;
+  }
+
+  @keyframes shineSweep {
+      0% {
+        left: -75%;
+    }
+    100% {
+        left: 125%;
+    }
+}
+</style>
 
 </head>
 
-<body onLoad="document.myForm.textcari.focus();">
+<body onLoad="document.myForm.textcari.focus();" style="background: linear-gradient(to right, #f7f7f7, #ffffff);">
     <form action="<?php echo $halaman;?>" method="post" name="myForm" id="myForm">
 
 
@@ -294,11 +335,12 @@ if (isset($_POST["carirm"])) {
 
         <div class="card-header bg-light d-flex align-items-center">
           <!-- Logo rumah sakit -->
-          <img src="<?php echo $logo; ?>" alt="Logo Rumah Sakit" style="height: 35px; margin-right: 15px;">
+          <img src="<?php echo $logo; ?>" alt="Logo Rumah Sakit"
+          style="height: 35px; margin-right: 15px; background-color: #ffffff; padding: 2px; border-radius: 2px;">
 
           <!-- Judul -->
-          <h4 class="mb-0 text-dark fw-bold" style="font-family: Tahoma, sans-serif; font-size: 24px;">
-            Register Pasien - <?php echo $sbu; ?>
+          <h4 class="fw-bold text-uppercase mb-1 gold-text shine" style="font-family: Tahoma, sans-serif; font-size: 24px;">
+            Register Pasien - <?php echo $nmrs; ?>
         </h4>
 
 
@@ -321,7 +363,9 @@ if (isset($_POST["carirm"])) {
         <div class='row'>
         ";
         echo "&nbsp;&nbsp;&nbsp;LIST PASIEN DALAM PERAWATAN DOKTER : ",$nama_dokter;
+        echo "<div class='col-6'>";
         echo "&nbsp;&nbsp;&nbsp;<a href='listdokter.php?id=$user|$sbu' class='btn btn-danger'><i class='bi bi-arrow-clockwise'></i> Tampilkan</a>";
+        echo "</div>";
         echo "
         </div>
         </div>
@@ -348,17 +392,17 @@ if (isset($_POST["carirm"])) {
                 <br>
                 <label> Unit : </label>
                 <select name="unit"  required>
-                   <?php
+                 <?php
 
-                   if($sbu<>'RSPG'){
-                       $q = "
-                       SELECT        TOP (200) KODEUNIT, NAMAUNIT, KET, DEPT, ACCOUNT_FAR, ACCOUNT_TDK, REK_FAR, REK_TDK, BY_TDK, KODEREK, UNITKOMPILATOR, Grp, GRAHU, KALIMANTAN, DRIYO, JENIS, ROWID, JENIS2, JENIS3, KET1, 
-                       KODEUNITBPJS, ONLINE, DIR_HASIL, ARUANG, AUNIT
-                       FROM            Afarm_UnitLayanan
-                       WHERE        (KET = '$sbu') AND (JENIS2 = 'RI')
-                       ";
-                       $hasil  = sqlsrv_query($conn, $q);
-                       while ($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)) {
+                 if($sbu<>'RSPG'){
+                     $q = "
+                     SELECT        TOP (200) KODEUNIT, NAMAUNIT, KET, DEPT, ACCOUNT_FAR, ACCOUNT_TDK, REK_FAR, REK_TDK, BY_TDK, KODEREK, UNITKOMPILATOR, Grp, GRAHU, KALIMANTAN, DRIYO, JENIS, ROWID, JENIS2, JENIS3, KET1, 
+                     KODEUNITBPJS, ONLINE, DIR_HASIL, ARUANG, AUNIT
+                     FROM            Afarm_UnitLayanan
+                     WHERE        (KET = '$sbu') AND (JENIS2 = 'RI')
+                     ";
+                     $hasil  = sqlsrv_query($conn, $q);
+                     while ($data = sqlsrv_fetch_array($hasil, SQLSRV_FETCH_ASSOC)) {
                         if($unit==trim($data[KODEUNIT])){
                             echo "<option value='$data[KODEUNIT]' selected >$data[KODEUNIT] | $data[NAMAUNIT]</option>\n";
                         }else{
@@ -402,6 +446,25 @@ if (isset($_POST["carirm"])) {
                     }else{
                         echo "<option value='Rawat Inap Lantai 4 Abhinaya' >Rawat Inap Lantai 4 Abhinaya</option>\n";              
                     }
+
+                    if($unit=='Rawat Inap Lantai 2 Abyakta'){
+                        echo "<option value='Rawat Inap Lantai 2 Abyakta' selected>Rawat Inap Lantai 2 Abyakta</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 2 Abyakta' >Rawat Inap Lantai 2 Abyakta</option>\n";              
+                    }
+
+                    if($unit=='Rawat Inap Lantai 3 Abyakta'){
+                        echo "<option value='Rawat Inap Lantai 3 Abyakta' selected>Rawat Inap Lantai 3 Abyakta</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 3 Abyakta' >Rawat Inap Lantai 3 Abyakta</option>\n";              
+                    }
+
+                    if($unit=='Rawat Inap Lantai 4 Abyakta'){
+                        echo "<option value='Rawat Inap Lantai 4 Abyakta' selected>Rawat Inap Lantai 4 Abyakta</option>\n";             
+                    }else{
+                        echo "<option value='Rawat Inap Lantai 4 Abyakta' >Rawat Inap Lantai 4 Abyakta</option>\n";              
+                    }
+
 
 
                     if($unit=='ICU'){
@@ -532,25 +595,25 @@ if (isset($_POST["carirm"])) {
                   }
               }else{
                 if($unit=='Rawat Inap Lantai 1'){
-                   $kodeunit = "
-                   'R01',
-                   'R01A',
-                   'R02A', 
-                   'R03A',
-                   'R04',
-                   'R04A',
-                   'R05',
-                   'R05A',
-                   'R06',
-                   'R06A',
-                   'R08',
-                   'R08A',
-                   'R09',
-                   'R09A'
-                   ";
-               }
+                 $kodeunit = "
+                 'R01',
+                 'R01A',
+                 'R02A', 
+                 'R03A',
+                 'R04',
+                 'R04A',
+                 'R05',
+                 'R05A',
+                 'R06',
+                 'R06A',
+                 'R08',
+                 'R08A',
+                 'R09',
+                 'R09A'
+                 ";
+             }
 
-               if($unit=='Rawat Inap Lantai 2 Abhipraya'){
+             if($unit=='Rawat Inap Lantai 2 Abhipraya'){
                 $kodeunit = "
                 'R01D', 
                 'R04D',
@@ -596,16 +659,44 @@ if (isset($_POST["carirm"])) {
                 'R03'
                 ";
             }
+            if($unit=='Rawat Inap Lantai 2 Abyakta'){
+                $kodeunit = "
+                'R01F',
+                'R04F',
+                'R05F', 
+                'R06F', 
+                'R09F'
+                ";
+            }
+            if($unit=='Rawat Inap Lantai 3 Abyakta'){
+                $kodeunit = "
+                'R01G',
+                'R04G',
+                'R05G', 
+                'R06G', 
+                'R09G' 
+                ";
+            }
+            if($unit=='Rawat Inap Lantai 4 Abyakta'){
+                $kodeunit = "
+                'R01H',
+                'R02H',
+                'R03H', 
+                'R06H' 
+                ";
+            }
             if($unit=='ICU'){
                 $kodeunit = "
                 'R10', 
-                'R10A'
+                'R10A',
+                'R10B'
                 ";
             }
             if($unit=='NICU'){
                 $kodeunit = "
                 'R10', 
-                'R10A'
+                'R10A',
+                'R10B'
                 ";
             }
             if(empty($noreg)){
@@ -842,7 +933,7 @@ if (isset($_POST["carirm"])) {
 <!-- <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script> -->
 <script src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script>
- $(document).ready(function() {
+   $(document).ready(function() {
     $('.datatab').DataTable();
 } );
 </script>

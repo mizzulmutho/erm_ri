@@ -6,6 +6,7 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
 include "phpqrcode/qrlib.php";
 include "header_px.php";
 
@@ -444,6 +445,8 @@ if(empty($regcek)){
 	$abidan318 = $de['abidan318'];
 	$abidan319 = $de['abidan319'];
 	$abidan320 = $de['abidan320'];
+	$abidan321 = $de['abidan321'];
+	$abidan322 = $de['abidan322'];
 	$ku_tinggibadan= $de['ku_tinggibadan'];
 	$ku_beratbadan= $de['ku_beratbadan'];
 	$jam= $de['jam'];
@@ -521,13 +524,87 @@ if(empty($regcek)){
                             		}
                             	}));
                             //if a single result is returned
-                        }           
-                    });
-                }
+                    }           
             });
+                }
+        });
 	});
 </script> 
 
+<style>
+	body.dark-mode {
+		background-color: #121212;
+		color: #ffffff;
+	}
+
+	.dark-mode .card {
+		background-color: #1e1e1e;
+		color: #ffffff;
+		border-color: #444;
+	}
+
+	.dark-mode .card-header {
+		background-color: #2c3e50 !important;
+		color: #ffffff !important;
+		border-bottom: 1px solid #444;
+	}
+
+	.dark-mode .card-body {
+		/*background-color: #1e1e1e;*/
+		color: #ffffff;
+	}
+
+	.dark-mode .text-dark {
+		color: #ffffff !important;
+	}
+
+	.dark-mode .form-control,
+	.dark-mode .table {
+		background-color: #2a2a2a;
+		color: #ffffff;
+	}
+
+	.dark-mode a {
+		color: #90caf9;
+	}
+
+	.card.bg-dark,
+	.card.bg-dark .card-body,
+	.card.bg-dark .card-title,
+	.card.bg-dark .card-text {
+		color: #fff !important;
+	}
+
+	body.bg-dark .mst-table {
+		color: white;
+		background-color: #212529; /* warna gelap */
+		border-color: #444;
+	}
+
+	body.bg-dark .mst-table th,
+	body.bg-dark .mst-table td {
+		color: white;
+		border-color: #555;
+	}
+
+
+</style>
+
+
+<style>
+	/* Placeholder default untuk semua input/textarea */
+	input::placeholder,
+	textarea::placeholder {
+		color: #6c757d;
+	}
+
+	/* Placeholder khusus saat dark mode aktif */
+	body.dark-mode input::placeholder,
+	body.dark-mode textarea::placeholder {
+		color: #cccccc; /* warna terang agar terlihat */
+		opacity: 1; /* pastikan placeholder tidak terlalu transparan */
+	}
+</style>
 
 </head> 
 
@@ -1134,7 +1211,7 @@ if(empty($regcek)){
         } else {
         	ginekologiCheckboxes.style.display = 'block';
         }
-    }
+}
 
     // Inisialisasi tampilan saat halaman pertama kali dimuat
     toggleGinekologi();
@@ -1199,7 +1276,7 @@ if(empty($regcek)){
         } else {
         	allergyDetails.style.display = 'block';
         }
-    }
+}
 
     // Inisialisasi tampilan saat halaman pertama kali dimuat
     toggleAllergyFields();
@@ -1293,7 +1370,7 @@ if(empty($regcek)){
         } else {
         	transfusionDetails.style.display = 'block';
         }
-    }
+}
 
     // Fungsi untuk mengatur tampilan input terkait merokok berdasarkan pilihan 'Tidak' atau 'Ya'
     function toggleSmokingFields() {
@@ -1306,7 +1383,7 @@ if(empty($regcek)){
         } else {
         	smokingDetails.style.display = 'block';
         }
-    }
+}
 
     // Fungsi untuk mengatur tampilan input terkait minuman keras berdasarkan pilihan 'Tidak' atau 'Ya'
     function toggleAlcoholFields() {
@@ -1319,7 +1396,7 @@ if(empty($regcek)){
         } else {
         	alcoholDetails.style.display = 'block';
         }
-    }
+}
 
     // Inisialisasi tampilan saat halaman pertama kali dimuat
     toggleTransfusionFields();
@@ -2060,7 +2137,7 @@ if(empty($regcek)){
 						<td>Suhu</td>
 						<td>
 							<input type='text' name='abidan232' value='<?php echo $abidan232;?>'> °C (aksila)
-							<input type='text' name='abidan232' value='<?php echo $abidan232;?>'> °C (rectal)
+							<input type='text' name='abidan322' value='<?php echo $abidan322;?>'> °C (rectal)
 						</td>
 					</tr>
 				</table>
@@ -2188,8 +2265,8 @@ if(empty($regcek)){
 							<input type='checkbox' name='abidan263' value='Tidak Ada' <?php if ($abidan263=="Tidak Ada"){echo "checked";}?> >Tidak Ada
 							<br>
 							Denyut Jantung Janin (DJJ) : <input type='text' name='abidan264' value='<?php echo $abidan264;?>'> x/mnt,         
-							<input type='checkbox' name='abidan265' value='Teratur' <?php if ($abidan265=="Teratur"){echo "checked";}?> >Teratur         
-							<input type='checkbox' name='abidan265' value='Tidak Teratur' <?php if ($abidan265=="Tidak Teratur"){echo "checked";}?> >Tidak Teratur
+							<input type='checkbox' name='abidan321' value='Teratur' <?php if ($abidan321=="Teratur"){echo "checked";}?> >Teratur         
+							<input type='checkbox' name='abidan321' value='Tidak Teratur' <?php if ($abidan321=="Tidak Teratur"){echo "checked";}?> >Tidak Teratur
 						</td>
 					</tr>
 					<tr>
@@ -2815,6 +2892,8 @@ if (isset($_POST["simpan"])) {
 		$abidan318 = $_POST['abidan318'];
 		$abidan319 = $_POST['abidan319'];
 		$abidan320 = $_POST['abidan320'];
+		$abidan321 = $_POST['abidan321'];
+		$abidan322 = $_POST['abidan322'];
 		$jam = $_POST['jam'];
 		$bak = $_POST['bak'];
 		$bakwarna = $_POST['bakwarna'];
@@ -3161,7 +3240,7 @@ if (isset($_POST["simpan"])) {
 		abidan317 = '$abidan317',
 		abidan318 = '$abidan318',
 		abidan319 = '$abidan319',
-		abidan320 = '$abidan320',bak='$bak',bakwarna='$bakwarna',
+		abidan320 = '$abidan320',abidan321 = '$abidan321',abidan322 = '$abidan322',bak='$bak',bakwarna='$bakwarna',
 		dpjp = '$dpjp'
 
 		where noreg='$noreg'

@@ -14,6 +14,7 @@ if( $conn ) {
      die( print_r( sqlsrv_errors(), true));
 }
 
+//include ("mode.php");
 
 $id = $_GET["id"];
 $row = explode('|',$id);
@@ -39,6 +40,29 @@ $unit = trim($d1u['KODEUNIT']);
 if (empty($sbu)){
      $sbu = trim($d1u['KET1']);
 }
+
+if ($sbu == 'RSPG'){
+     $nmrs = "RUMAH SAKIT PETROKIMIA GRESIK";
+     $alamat = "
+     Jl. Jend. A. Yani No. 69 Kel. Ngipik, Kec. Ngipik, Kab. Gresik
+     <br>
+     IGD : 031-99100118 Telp : 031-3978658<br>
+     Email : sbu.rspg@gmail.com
+     ";
+     $logo = "logo/rspg.png";
+};
+if ($sbu == 'GRAHU'){
+     $nmrs = "RUMAH SAKIT GRHA HUSADA";
+     $alamat = "Komplek Perum PT Petrokimia Gresik, Jalan Padi No.3, Tlogopojok, Kroman, Kec. Gresik";
+     $logo = "logo/grahu.png";
+};
+if ($sbu == 'DRIYO'){
+     $nmrs = "RUMAH SAKIT DRIYOREJO";
+     $alamat = "Jalan Raya Legundi KM 0.5Driyorejo, Gresik";
+     $logo = "logo/driyo.png";
+};
+
+
 
 $q2       = "select norm,kodedept,nik,nama, CASE WHEN kelamin = 'L' THEN 'Laki-laki' ELSE 'Perempuan' END AS kelamin,alamatpasien,kota,kodekel,tlp,tmptlahir, CONVERT(VARCHAR, tgllahir, 103) as tgllahir, jenispekerjaan,NOKTP,NOBPJS, 
 jabatan, (select umur from umur where norm=afarm_mstpasien.norm) as UMUR from Afarm_MstPasien where norm='$norm'";
@@ -195,15 +219,55 @@ if($cekkrs){
             font-weight: bold;
        }
   </style>
+
+  <style>
+      .gold-text {
+         position: relative;
+         display: inline-block;
+         color: gold;
+         -webkit-text-stroke: 1px #444;
+         overflow: hidden;
+    }
+
+    .gold-text::before {
+         content: '';
+         position: absolute;
+         top: 0;
+         left: -75%;
+         height: 100%;
+         width: 50%;
+         background: linear-gradient(
+            120deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.6) 50%,
+            rgba(255, 255, 255, 0) 100%
+       );
+         transform: skewX(-25deg);
+    }
+
+    .gold-text.shine::before {
+         animation: shineSweep 2s infinite;
+    }
+
+    @keyframes shineSweep {
+         0% {
+            left: -75%;
+       }
+       100% {
+            left: 125%;
+       }
+  }
+</style>
+
 </head>
 <body>
      <div class="container-fluid mt-4">
          <div class="card shadow-lg w-100">
              <div class="card-header bg-primary text-white">
-                 <h4><i class="fas fa-user-injured"></i> Informasi Pasien</h4>
-            </div>
-            <div class="card-body">
-                 <table class="table table-bordered table-striped table-hover">
+                  <h4 class="fw-bold text-uppercase mb-1 gold-text shine" style="font-family: Tahoma, sans-serif; font-size: 24px;"><i class="fas fa-hospital"></i> <?php echo $nmrs; ?></h4>
+             </div>
+             <div class="card-body">
+                 <table class="table table-bordered table-hover">
                      <tr>
                          <td><i class="fas fa-user"></i> Nama</td>
                          <td>: <b><?php echo $nama.$ketkrs; ?><b> <?php if($ketkrs<>''){echo "(Tgl Krs : $tglkrs)";}else{}?></td>

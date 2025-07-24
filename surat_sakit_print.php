@@ -104,6 +104,7 @@ $nomor = $de['NOMOR'];
 $diagnosa = $de['DIAGNOSA'];
 $tglentry = $de['TGLENTRY'];
 $nama = $de['NAMA_PASIEN'];
+$keterangan = $de['KETERANGAN'];
 
 ?>
 
@@ -202,6 +203,16 @@ $nama = $de['NAMA_PASIEN'];
 									<div class="row">
 										<div class="col-12">
 											Perlu beristirahat / membatasi aktivitas fisik, karena sakit selama <font size='4'><?php echo $hari;?></font> Hari, terhitung tanggal : <?php echo $tgl1;?> sampai dengan : <?php echo $tgl2;?>
+										</div>
+									</div>
+
+									<div class="row">
+										<div class="col-4">
+											Keterangan
+										</div>
+										<div class="col-8">
+											: 
+											<?php echo $keterangan;?>
 										</div>
 									</div>
 

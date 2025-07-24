@@ -75,15 +75,15 @@ if ($login) {
 }
 
 if (isset($_POST["cari"])) {
-   $textcari = $_POST["textcari"];
+ $textcari = $_POST["textcari"];
 
-   $row = explode('-',$textcari);
-   $noreg  = trim($row[0]);
+ $row = explode('-',$textcari);
+ $noreg  = trim($row[0]);
 
 
-   if($noreg){
-      header("Location: cekidheader.php?id=$user|$noreg");
-  }
+ if($noreg){
+  header("Location: cekidheader.php?id=$user|$noreg");
+}
 
 }
 
@@ -174,6 +174,19 @@ if (isset($_POST["cari"])) {
 });
 </script>    
 
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    body, table, th, td, button, input, .card, .btn {
+        font-family: 'Poppins', Arial, sans-serif;
+        font-size: 14px;
+    }
+    h3 {
+        font-family: 'Poppins', Arial, sans-serif;
+        font-weight: 600;
+    }
+</style>
+
 </head>
 
 <body onLoad="document.myForm.namaruang.focus();">
@@ -200,11 +213,6 @@ if (isset($_POST["cari"])) {
         </div>
 
         <br>
-        <!-- <br>
-        <input value="T a m p i l" type="submit" name="login" style="width:250;height:40px">
-        <br> -->
-
-        <!-- <br><br> -->
         <table class="table table-stripped table-hover datatab">
             <thead>
                 <tr>
@@ -299,13 +307,6 @@ if (isset($_POST["cari"])) {
                     $dhd = sqlsrv_fetch_array($hd, SQLSRV_FETCH_ASSOC);         
                     $cekass = $dhd[noreg];
 
-                    $font = "<p style='font-size:12px;font-family: Arial,sans-serif;'>";
-                    $font2 = "<p style='font-size:32px;font-family: Arial,sans-serif;'>";
-                    $font3 = "<p style='font-size:18px;font-family: Arial,sans-serif;'>";
-
-    // <tr></tr>
-
-
                     if($cekass){
                         $status = "<a class='btn-warning sm button4'>&nbsp;".'Assesmen Awal'."&nbsp;</a>";
                     }else{
@@ -352,31 +353,31 @@ if (isset($_POST["cari"])) {
             group by YEAR(ARM_PERIKSA.TGLENTRY)
             ";
         }else{
-           $qt = "
-           SELECT COUNT(DISTINCT ARM_PERIKSA.NOREG) as total_pasien
-           FROM            ARM_PERIKSA INNER JOIN
-           AFarm_MstPasien ON ARM_PERIKSA.NORM = AFarm_MstPasien.NORM
-           WHERE        (ARM_PERIKSA.TGLKELUAR is null OR ARM_PERIKSA.TGLKELUAR='') AND (ARM_PERIKSA.KODEUNIT in ($kodeunit)) and  (YEAR(ARM_PERIKSA.TGLENTRY) = '$tahun')
-           group by YEAR(ARM_PERIKSA.TGLENTRY)
-           ";                    
-       }
+         $qt = "
+         SELECT COUNT(DISTINCT ARM_PERIKSA.NOREG) as total_pasien
+         FROM            ARM_PERIKSA INNER JOIN
+         AFarm_MstPasien ON ARM_PERIKSA.NORM = AFarm_MstPasien.NORM
+         WHERE        (ARM_PERIKSA.TGLKELUAR is null OR ARM_PERIKSA.TGLKELUAR='') AND (ARM_PERIKSA.KODEUNIT in ($kodeunit)) and  (YEAR(ARM_PERIKSA.TGLENTRY) = '$tahun')
+         group by YEAR(ARM_PERIKSA.TGLENTRY)
+         ";                    
+     }
 
-       $qth  = sqlsrv_query($conn, $qt);        
-       $dqth = sqlsrv_fetch_array($qth, SQLSRV_FETCH_ASSOC);         
-       $total_pasien = $dqth[total_pasien];
+     $qth  = sqlsrv_query($conn, $qt);        
+     $dqth = sqlsrv_fetch_array($qth, SQLSRV_FETCH_ASSOC);         
+     $total_pasien = $dqth[total_pasien];
 
-       ?>
+     ?>
 
-   Total Pasien yang di rawat : </b><?php echo $total_pasien; ?><b><br>
+ Total Pasien yang di rawat : </b><?php echo $total_pasien; ?><b><br>
 
-   </div>
+ </div>
 </form>
 </body>
 
 <!-- <script src="http://code.jquery.com/jquery-1.12.0.min.js"></script> -->
 <script src="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
 <script>
-   $(document).ready(function() {
+ $(document).ready(function() {
     $('.datatab').DataTable();
 } );
 </script>

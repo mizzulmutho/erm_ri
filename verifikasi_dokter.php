@@ -134,557 +134,6 @@ $tglkeluar = $data3[tglkeluar];
 
     <script>
         $(function() {
-            $("#obat2").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat3").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat4").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat5").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat6").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat7").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat8").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat9").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat10").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat11").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat12").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat13").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat14").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat15").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat16").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat17").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat18").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat19").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
-            $("#obat20").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_obat.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.NAMABARANG + ' - ' + item.NAMASATUAN
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-
-    <script>
-        $(function() {
             $("#dokter").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
@@ -773,36 +222,6 @@ $tglkeluar = $data3[tglkeluar];
 
     <script>
         $(function() {
-            $("#karyawan3").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_karyawan.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nik + ' - ' + item.nama
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script>  
-
-
-    <script>
-        $(function() {
             $("#icd101").autocomplete({
                 minLength:3, //minimum length of characters for type ahead to begin
                 source: function (request, response) {
@@ -829,34 +248,7 @@ $tglkeluar = $data3[tglkeluar];
             });
         });
     </script> 
-    <script>
-        $(function() {
-            $("#icd102").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd10.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
+
     <script>
         $(function() {
             $("#icd103").autocomplete({
@@ -885,230 +277,7 @@ $tglkeluar = $data3[tglkeluar];
             });
         });
     </script> 
-    <script>
-        $(function() {
-            $("#icd91").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd92").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd93").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd94").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd95").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd96").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd97").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
-    <script>
-        $(function() {
-            $("#icd98").autocomplete({
-                minLength:3, //minimum length of characters for type ahead to begin
-                source: function (request, response) {
-                    $.ajax({
-                        type: 'POST',
-                        // url: 'dok.php?id=<?php echo $sbu; ?>', //your server side script
-                        url: 'find_icd9.php', //your                         
-                        dataType: 'json',
-                        data: {
-                            postcode: request.term
-                        },
-                        success: function (data) {
-                            //if multiple results are returned
-                            if(data.response instanceof Array)
-                                response ($.map(data.response, function (item) {
-                                    return {
-                                        value: item.nodaftar + ' - ' + item.keterangan
-                                    }
-                                }));
-                            //if a single result is returned
-                        }           
-                    });
-                }
-            });
-        });
-    </script> 
+
 
 </head> 
 <div id="content"> 
@@ -1168,33 +337,15 @@ $tglkeluar = $data3[tglkeluar];
                             <?php
                             $kodedokter  = substr($user,0,3);
 
-                            $qv="SELECT        TOP (1) dpjp
+                            $qv="
+                            SELECT        TOP (1) dpjp as dokter
                             FROM            ERM_SOAP
-                            WHERE        verif_dpjp is null AND (dpjp = '$kodedokter') AND (tanggal > '2025-03-04')";
-                            $hv  = sqlsrv_query($conn, $qv);        
-                            $dv  = sqlsrv_fetch_array($hv, SQLSRV_FETCH_ASSOC); 
-                            $cekverif = trim($dv['dpjp']);
-
-                            if($cekverif){
-                                echo "
-                                <button type='submit' name='verifikasi_cppt' class='btn btn-info btn-md'>Verifikasi CPPT</button>
-                                ";
-                            }
-
-                            $qt="SELECT        TOP (1) dokter
+                            WHERE        verif_dpjp is null AND (dpjp = '$kodedokter') AND (tanggal > '2025-03-04')
+                            union
+                            SELECT        TOP (1) dokter
                             FROM            ERM_TULBAKON
-                            WHERE        verif_dpjp is null AND (dokter = '$kodedokter') AND (tglentry > '2025-03-04')";
-                            $ht  = sqlsrv_query($conn, $qt);        
-                            $dt  = sqlsrv_fetch_array($ht, SQLSRV_FETCH_ASSOC); 
-                            $cekverift = trim($dt['dokter']);
-
-                            if($cekverift){
-                                echo "
-                                <button type='submit' name='verifikasi_tulbakon' class='btn btn-info btn-md'>Verifikasi TULBAKON</button>
-                                ";
-                            }
-
-                            $qa="                           
+                            WHERE        verif_dpjp is null AND (dokter = '$kodedokter') AND (tglentry > '2025-03-04')
+                            union
                             SELECT TOP (1) dpjp as dokter
                             FROM ERM_RI_ASSESMEN_AWAL_DEWASA
                             WHERE tglverif IS NULL 
@@ -1213,13 +364,13 @@ $tglkeluar = $data3[tglkeluar];
                             AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter'
                             AND tglentry > '2025-03-04'
                             ";
-                            $ha  = sqlsrv_query($conn, $qa);        
-                            $da  = sqlsrv_fetch_array($ha, SQLSRV_FETCH_ASSOC); 
-                            $cekverifa = trim($da['dokter']);
+                            $hv  = sqlsrv_query($conn, $qv);        
+                            $dv  = sqlsrv_fetch_array($hv, SQLSRV_FETCH_ASSOC); 
+                            $cekverif = trim($dv['dokter']);
 
-                            if($cekverifa){
+                            if($cekverif){
                                 echo "
-                                <button type='submit' name='verifikasi_asesmen' class='btn btn-info btn-md'>Verifikasi ASSESMEN AWAL KEPERAWATAN</button>
+                                <button type='submit' name='verifikasi' class='btn btn-danger btn-md'> <i class='bi bi-check-circle-fill'></i> Verifikasi Berkas ERM</button>
                                 ";
                             }
 
@@ -1238,8 +389,9 @@ $tglkeluar = $data3[tglkeluar];
 
 <?php 
 
-if (isset($_POST["verifikasi_asesmen"])) {
+if (isset($_POST["verifikasi"])) {
 
+    //verifikasi assesment awal
     $q  = "update ERM_RI_ASSESMEN_AWAL_DEWASA set
     tglverif    ='$tglinput'
     where tglentry > '2025-03-04' AND LTRIM(RTRIM(LEFT(dpjp, CHARINDEX('-', dpjp + '-') - 1))) = '$kodedokter' and tglverif is null
@@ -1258,62 +410,28 @@ if (isset($_POST["verifikasi_asesmen"])) {
     ";
     $hs = sqlsrv_query($conn,$q);
 
-    if($hs){
-        $eror = "Success";
-    }else{
-      $eror = "Gagal Insert";
-
-  }
-
-  echo "
-  <script>
-  window.location.replace('index.php?id=$id|$user');
-  </script>
-  ";
-
-}
-
-
-if (isset($_POST["verifikasi_tulbakon"])) {
-
+    //verifikasi tulbakon
     $q  = "update ERM_TULBAKON set
     verif_dpjp    ='$tglinput'
     where ERM_TULBAKON.tglentry > '2025-03-04' and dokter='$kodedokter' and verif_dpjp is null
     ";
     $hs = sqlsrv_query($conn,$q);
 
-    if($hs){
-        $eror = "Success";
-    }else{
-      $eror = "Gagal Insert";
-
-  }
-
-  echo "
-  <script>
-  window.location.replace('index.php?id=$id|$user');
-  </script>
-  ";
-
-}
-
-if (isset($_POST["verifikasi_cppt"])) {
-
+    //verifikasi cppt
     $q  = "update ERM_SOAP set
     verif_dpjp    ='$tglinput'
     where ERM_SOAP.tanggal > '2025-03-04' and dpjp='$kodedokter' and verif_dpjp is null
     ";
     $hs = sqlsrv_query($conn,$q);
 
+    $q  = "insert into ERM_SOAP_VERIF
+    (noreg, tanggal, userid, tglverif, userverif) 
+    values 
+    ('$noreg','$tglinput','$kodedokter','$tglinput','$user')";
+    $hs = sqlsrv_query($conn,$q);
+
     if($hs){
-
-        $q  = "insert into ERM_SOAP_VERIF
-        (noreg, tanggal, userid, tglverif, userverif) 
-        values 
-        ('$noreg','$tglinput','$kodedokter','$tglinput','$user')";
-        $hs = sqlsrv_query($conn,$q);
-
-        $eror = "Success";
+        $eror = "Success - Terima kasih telah memverifikasi berkas ERM";
     }else{
       $eror = "Gagal Insert";
 
@@ -1325,13 +443,8 @@ if (isset($_POST["verifikasi_cppt"])) {
   </script>
   ";
 
-  // echo "
-  // <script>
-  // alert('".$eror."');
-  // history.go(-1);
-  // </script>
-  // ";
-
 }
+
+
 
 ?>

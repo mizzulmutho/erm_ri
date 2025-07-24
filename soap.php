@@ -7,6 +7,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -449,7 +451,9 @@ if(empty($skala_nyeri)){
 						<b><font size='5' color='green'>(S)</font>ubject</b>
 						<br>
 						<label for="" class="">Keluhan Sekarang : </label>
-						<input class="form-control form-control-sm" name="ku" value="<?php echo $ku;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder="" required>
+						<!-- <input class="form-control form-control-sm" name="ku" value="<?php echo $ku;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder="" required> -->
+						<textarea class="form-control" name="ku" style="min-width:600px; min-height:100px;" onfocus="nextfield ='';"><?php echo $ku;?></textarea>
+						
 						<?php 
 
 						$ql="
@@ -489,7 +493,8 @@ if(empty($skala_nyeri)){
 						<b><font size='5' color='green'>(O)</font>bject</b>
 						<br>
 						<label for="" class="">Keterangan Object Lainnya : </label>
-						<input class="form-control form-control-sm" name="ket_object" value="<?php echo $ket_object;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" required>
+						<!-- <input class="form-control form-control-sm" name="ket_object" value="<?php echo $ket_object;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" required> -->
+						<textarea class="form-control" name="ket_object" style="min-width:600px; min-height:100px;" onfocus="nextfield ='';"><?php echo $ket_object;?></textarea>
 					</div>
 				</div>
 				<br>

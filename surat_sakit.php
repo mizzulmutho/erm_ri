@@ -4,6 +4,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tgl2		= gmdate("d/m/Y", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
@@ -118,6 +120,7 @@ if(empty($regcek)){
 	$userid = $de['USERID'];
 	$nomor = $de['NOMOR'];
 	$diagnosa = $de['DIAGNOSA'];
+	$keterangan = $de['KETERANGAN'];
 }
 
 
@@ -346,6 +349,17 @@ if(empty($regcek)){
 							</div>
 						</div>
 
+						<div class="row">
+							<div class="col-4">
+								Keterangan
+							</div>
+							<div class="col-8">
+								: 
+								<input class="" name="keterangan" value="<?php echo $keterangan;?>" id="keterangan" type="text" size='50' onfocus="nextfield ='';" placeholder="">
+							</div>
+						</div>
+
+
 
 					</td>
 				</tr>	
@@ -391,8 +405,9 @@ if (isset($_POST["simpan"])) {
 	$alamatpasien	= $_POST["alamatpasien"];
 	$diagnosa	= $_POST["diagnosa"];
 	$hari	= $_POST["hari"];
+	$keterangan	= $_POST["keterangan"];
 
-	echo 	$q  = "update ERM_SURAT_SAKIT set NOREG='$noreg',HARI='$hari',TANGGAL1='$tgl1',TANGGAL2='$tgl2',ALAMAT='$alamatpasien',PEKERJAAN='$pekerjaan',USERID='$user',TGLENTRY='$tglinput',NOMOR='$nomor',DIAGNOSA='$diagnosa',NAMA_PASIEN='$nama' where noreg='$noreg'";
+	echo 	$q  = "update ERM_SURAT_SAKIT set NOREG='$noreg',HARI='$hari',TANGGAL1='$tgl1',TANGGAL2='$tgl2',ALAMAT='$alamatpasien',PEKERJAAN='$pekerjaan',USERID='$user',TGLENTRY='$tglinput',NOMOR='$nomor',DIAGNOSA='$diagnosa',NAMA_PASIEN='$nama',KETERANGAN='$keterangan' where noreg='$noreg'";
 	$hs = sqlsrv_query($conn,$q);
 
 	if($hs){

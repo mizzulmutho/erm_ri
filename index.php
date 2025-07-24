@@ -4,6 +4,8 @@ include ("koneksi.php");
 
 include ("header_px2.php");
 
+include ("mode.php");
+
 $id = $_GET["id"];
 $row = explode('|',$id);
 $id  = $row[0];
@@ -121,7 +123,9 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 	<link rel="stylesheet" href="app/plugins/daterangepicker/daterangepicker.css">
 	<!-- summernote -->
 	<link rel="stylesheet" href="app/plugins/summernote/summernote-bs4.min.css">
-	
+	<!-- Bootstrap 5 JS -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 	<style type="text/css">
 		.new-link {
 			background-color: #b6f8b6; /* Hijau muda */
@@ -571,6 +575,7 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 								<a href="resikojatuh.php?id=<?php echo $id.'|'.$user;?>">Asesmen Ulang Risiko Jatuh</a> <br>
 								<a href="luka.php?id=<?php echo $id.'|'.$user;?>">Asesmen Luka</a> <br>
 								<a href="informconsent.php?id=<?php echo $id.'|'.$user;?>">Persetujuan / Penolakan Tindakan (Informed Consent)</a> <br>
+								<a href="phlebithis.php?id=<?php echo $id.'|'.$user;?>">Surveilans PPI</a> <br>								
 							</span>
 						</div>
 					</div>
@@ -598,7 +603,8 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 								<br>
 								<!-- <a href="http://192.168.10.4:1234/rekam_medik/entry_tindakan/rawat_inap/<?php echo $KODEUNIT; ?>/<?php echo $noreg; ?>/<?php echo $norm; ?>/resep/" target="_blank">Tulis e-Resep</a> <br> -->
 								<a href="rekon_obat.php?id=<?php echo $id.'|'.$user;?>">Rekonsiliasi Obat</a> <br>
-								<a href="form_discharge.php?id=<?php echo $id.'|'.$user;?>">Form Discharge</a>
+								<a href="form_discharge.php?id=<?php echo $id.'|'.$user;?>">Form Discharge</a> <br>
+								<a href="form_discharge_integrasi.php?id=<?php echo $id.'|'.$user;?>">Discharge Planning Terintegrasi</a>
 							</span>
 						</div>
 					</div>

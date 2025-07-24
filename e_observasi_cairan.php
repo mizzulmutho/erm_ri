@@ -41,82 +41,11 @@ $d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC);
 $noreg = $d1u['noreg'];
 
 
-$qe="
-SELECT *,CONVERT(VARCHAR, tglinput, 20) as tglinput
-FROM ERM_RI_OBSERVASI_CAIRAN
-where id='$id_observasi'";
-$he  = sqlsrv_query($conn, $qe);        
-$de  = sqlsrv_fetch_array($he, SQLSRV_FETCH_ASSOC); 
-$tglinput = $de['tglinput'];
-
-$td_sistolik= $de['td_sistolik'];
-$td_diastolik= $de['td_diastolik'];
-$suhu= $de['suhu'];
-$nadi= $de['nadi'];
-$spo2= $de['spo2'];
-$pernafasan= $de['pernafasan'];
-$total_ews = $de['total_ews'];
-
-$ob1 = $de['ob1'];
-$ob2= $de['ob2'];
-$ob3= $de['ob3'];
-$ob4= $de['ob4'];
-$ob5= $de['ob5'];
-$ob6= $de['ob6'];
-$ob7= $de['ob7'];
-$ob8= $de['ob8'];
-$ob9= $de['ob9'];
-$ob10= $de['ob10'];
-$ob11= $de['ob11'];
-$ob12= $de['ob12'];
-$ob13= $de['ob13'];
-$ob14= $de['ob14'];
-$ob15= $de['ob15'];
-$ob16= $de['ob16'];
-$ob17= $de['ob17'];
-$ob18= $de['ob18'];
-$ob19= $de['ob19'];
-$ob20= $de['ob20'];
-$ob21= $de['ob21'];
-$ob22= $de['ob22'];
-$ob23= $de['ob23'];
-$ob24= $de['ob24'];
-$ob25= $de['ob25'];
-$ob26= $de['ob26'];
-$ob27= $de['ob27'];
-$ob28= $de['ob28'];
-$ob29= $de['ob29'];
-$ob30= $de['ob30'];
-$ob31= $de['ob31'];
-$ob32= $de['ob32'];
-$ob33= $de['ob33'];
-$ob34= $de['ob34'];
-$ob35= $de['ob35'];
-$ob36= $de['ob36'];
-$ob37= $de['ob37'];
-$ob38= $de['ob38'];
-$ob39= $de['ob39'];
-$ob40= $de['ob40'];
-$ob41= $de['ob41'];
-$ob42= $de['ob42'];
-$ob43= $de['ob43'];
-$ob44= $de['ob44'];
-$ob45= $de['ob45'];
-$ob46= $de['ob46'];
-$ob47= $de['ob47'];
-$ob48= $de['ob48'];
-$ob49= $de['ob49'];
-$ob50= $de['ob50'];
-$ob51= $de['ob51'];
-$ob52= $de['ob52'];
-$ob53= $de['ob53'];
-$ob54= $de['ob54'];
-$ob55= $de['ob55'];
-$ob56= $de['ob56'];
-$ob57= $de['ob57'];
-$ob58= $de['ob58'];
-$ob59= $de['ob59'];
-$ob60= $de['ob60'];
+// Query data lama
+$id_observasi = $id_observasi  ?? '';
+$query = "SELECT * FROM ERM_RI_OBSERVASI_CAIRAN WHERE id = '$id_observasi'";
+$result = sqlsrv_query($conn, $query);
+$data = sqlsrv_fetch_array($result, SQLSRV_FETCH_ASSOC);
 
 
 ?>
@@ -195,193 +124,164 @@ $ob60= $de['ob60'];
 <div class="container-fluid">
 
 	<body onload="document.myForm.td_sistolik.focus();">
-		<font size='2px'>	
-			<form method="POST" name='myForm' action="" enctype="multipart/form-data">
-				<br>
-				<a href='listobservasi_cairan.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'><i class="bi bi-x-circle"></i> Close</a>
-				&nbsp;&nbsp;
-				<a href='' class='btn btn-success btn-sm'><i class="bi bi-arrow-clockwise"></i></a>
-				&nbsp;&nbsp;
-				<!-- <a href='#' class='btn btn-info' target='_blank'><i class="bi bi-printer-fill"></i></a> -->
-				<!-- <button type='submit' name='print' value='print' class="btn btn-info" type="button"><i class="bi bi-printer-fill"></i></button> -->
 
-				<br>
-
-				<div class="row">
-					<div class="col-12">
-						<?php 
-						include "header_soap.php";
-						?>
-					</div>
-				</div>
-
-				<br>
-
-				<div class="row">
-					<div class="col-12">
-						<center><i class="bi bi-window-plus"> <b>EDIT DATA MONITORING</b></i></center>
-					</div>
-				</div>
-				<hr>
-
-				
-				<div class="row">
-					<div class="col-12">
-						<table border='0' width="100%">
-							<tr><td>Tgl/Jam Input </td>
-								<td>: &nbsp;&nbsp; 
-									<input class="" name="tglinput" value="<?php echo $tglinput;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="">
-								</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				<br>
-				<div class="row">
-					<div class="col-12">
-						<table border='0' width="100%">
-							<tr>
-								<td colspan="6"><b>Monitoring Cairan</b></td>
-							</tr>
-							<tr>
-								<td colspan="6"><b>Input</b></td>
-							</tr>
-							<tr>
-								<td>Infus </td>
-								<td>
-									:<input class="" name="ob12" value="<?php echo $ob12;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>Tetesan </td>
-								<td>
-									:<input class="" name="ob13" value="<?php echo $ob13;?>" id="" type="text" size='20' placeholder=""> /menit 
-								</td>
-								<td>Jam </td>
-								<td>
-									:<input class="" name="ob14" value="<?php echo $ob14;?>" id="" type="text" size='20' placeholder=""> (free text)
-								</td>
-							</tr>
-							<tr>
-								<td>Nama Infus </td>
-								<td>
-									:<input class="" name="ob29" value="<?php echo $ob29;?>" id="" type="text" size='50' placeholder="isikan nama infus"> 
-								</td>
-							</tr>
-							<tr>
-								<td>Transfusi </td>
-								<td>
-									:<input class="" name="ob15" value="<?php echo $ob15;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>Tetesan </td>
-								<td>
-									:<input class="" name="ob16" value="<?php echo $ob16;?>" id="" type="text" size='20' placeholder=""> /menit 
-								</td>
-								<td>Jam </td>
-								<td>
-									:<input class="" name="ob17" value="<?php echo $ob17;?>" id="" type="text" size='20' placeholder=""> (free text)
-								</td>
-							</tr>
-							<tr>
-								<td>Makan </td>
-								<td>
-									:<input class="" name="ob18" value="<?php echo $ob18;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>Minum </td>
-								<td>
-									:<input class="" name="ob19" value="<?php echo $ob19;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-							</tr>
-							<tr>
-								<td colspan="6"><b>Output</b></td>
-							</tr>
-							<tr>
-								<td>Muntah </td>
-								<td>
-									:<input class="" name="ob20" value="<?php echo $ob20;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>BAB </td>
-								<td>
-									:<input class="" name="ob21" value="<?php echo $ob21;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>Urine </td>
-								<td>
-									:<input class="" name="ob22" value="<?php echo $ob22;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-							</tr>
-							<tr>
-								<td>IWL </td>
-								<td>
-									:<input class="" name="ob23" value="<?php echo $ob23;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>NGT </td>
-								<td>
-									:<input class="" name="ob24" value="<?php echo $ob24;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-								<td>Drain </td>
-								<td>
-									:<input class="" name="ob25" value="<?php echo $ob25;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-							</tr>
-							<tr>
-								<td>Perdarahan </td>
-								<td>
-									:<input class="" name="ob26" value="<?php echo $ob26;?>" id="" type="text" size='20' placeholder=""> cc
-								</td>
-							</tr>
-							<tr>
-								<td><b>Balance Cairan</b>  </td>
-								<td colspan="6">
-									<?php 
-									$ob27 = $balance_cairan;
-									?>
-									:<input class="" name="ob27" value="<?php echo $ob27;?>" id="" type="text" size='20' placeholder=""> (total input - total output)
-
-								</td>
-							</tr>
-
-						</table>
-						<br>
-					</div>
-				</div>
-				<br>
-
-				<!-- <input type='submit' name='simpan' value='simpan'>&nbsp; -->
-				<center>
-					<button type='submit' name='simpan' value='simpan' class="btn btn-info" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button>
-				</center>
+		<form method="POST" action="" enctype="multipart/form-data">
+			<input type="hidden" name="id_observasi" value="<?php echo $id_observasi; ?>">
+			<br><br>
+			<div class="mb-3">
+				<a href='listobservasi_cairan.php?id=<?php echo $id . "|" . $user; ?>' class='btn btn-warning btn-sm'>
+					<i class="bi bi-x-circle"></i> Close
+				</a>
+				<a href='' class='btn btn-success btn-sm'>
+					<i class="bi bi-arrow-clockwise"></i> Refresh
+				</a>
 			</div>
-		</div>
+
+			<h4><i class="bi bi-droplet-half text-primary"></i> Edit Monitoring Cairan</h4>
+
+			<div class="form-floating mb-3">
+				<?php
+				$tglinput = !empty($data['tglinput']) ? $data['tglinput']->format('Y-m-d H:i:s') : '';
+				?>
+				<input type="text" class="form-control" name="tglinput" value="<?php echo $tglinput; ?>">
+				<label><i class="bi bi-calendar-event"></i> Tanggal/Jam Input</label>
+			</div>
+
+			<!-- Petugas -->
+			<div class="mb-3">
+				<label class="form-label">Petugas</label>
+				<input type="text" class="form-control" name="userinput" value="<?php echo $data['userinput']; ?>">
+			</div>
+
+			<!-- Input -->
+			<h5>Input</h5>
+			<div class="row g-3 mb-3">
+				<div class="col-md-4">
+					<label>Nama Cairan Infus</label>
+					<input type="text" class="form-control" name="ob29" value="<?php echo $data['ob29']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Jumlah Cairan (Infus cc)</label>
+					<input type="number" class="form-control" name="ob12" value="<?php echo $data['ob12']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Tetesan Infus (/menit)</label>
+					<input type="text" class="form-control" name="ob13" value="<?php echo $data['ob13']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Jenis Transfusi</label>
+					<input type="text" class="form-control" name="jtranfusi" value="<?php echo $data['jtranfusi']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Jumlah Transfusi (cc)</label>
+					<input type="number" class="form-control" name="ob15" value="<?php echo $data['ob15']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Tetesan Transfusi (/menit)</label>
+					<input type="text" class="form-control" name="ob16" value="<?php echo $data['ob16']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Minum (cc)</label>
+					<input type="number" class="form-control" name="ob19" value="<?php echo $data['ob19']; ?>">
+				</div>
+			</div>
+
+			<!-- Output -->
+			<h5>Output</h5>
+			<div class="row g-3 mb-3">
+				<div class="col-md-4">
+					<label>Muntah (cc)</label>
+					<input type="number" class="form-control" name="ob20" value="<?php echo $data['ob20']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Feses (cc)</label>
+					<input type="number" class="form-control" name="ob21" value="<?php echo $data['ob21']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Urine (cc)</label>
+					<input type="number" class="form-control" name="ob22" value="<?php echo $data['ob22']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>IWL (cc)</label>
+					<input type="number" class="form-control" name="ob23" value="<?php echo $data['ob23']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>NGT (cc)</label>
+					<input type="number" class="form-control" name="ob24" value="<?php echo $data['ob24']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Drain (cc)</label>
+					<input type="number" class="form-control" name="ob25" value="<?php echo $data['ob25']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Pendarahan (cc)</label>
+					<input type="number" class="form-control" name="ob26" value="<?php echo $data['ob26']; ?>">
+				</div>
+			</div>
+
+			<!-- Total -->
+			<h5>Balance & Total</h5>
+			<div class="row g-3 mb-3">
+				<div class="col-md-4">
+					<label>Total Input (cc)</label>
+					<input type="number" class="form-control" name="total_input" value="<?php echo $data['total_input']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Total Output (cc)</label>
+					<input type="number" class="form-control" name="total_output" value="<?php echo $data['total_output']; ?>">
+				</div>
+				<div class="col-md-4">
+					<label>Balance (cc)</label>
+					<input type="number" class="form-control" name="balance" value="<?php echo $data['ob27']; ?>">
+				</div>
+			</div>
+
+			<!-- Keterangan -->
+			<div class="mb-3">
+				<label>Keterangan</label>
+				<input type="text" class="form-control" name="keterangan" value="<?php echo $data['keterangan']; ?>">
+			</div>
 
 
+			<!-- Kolom Tambahan -->
+			<div class="card mb-4">
+				<div class="card-header bg-dark text-white">
+					<i class="bi bi-clipboard-data"></i> Kolom Tambahan
+				</div>
+				<div class="card-body row g-3">
+					<div class="col-md-4">
+						<label class="form-label">Total Input (cc)</label>
+						<input type="number" class="form-control" name="total_input" value="<?php echo $data['total_input']; ?>">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Total Output (cc)</label>
+						<input type="number" class="form-control" name="total_output" value="<?php echo $data['total_output']; ?>">
+					</div>
+					<div class="col-md-4">
+						<label class="form-label">Balance (cc)</label>
+						<input type="number" class="form-control" name="balance" value="<?php echo $data['ob27']; ?>">
+					</div>
 
+					<div class="col-md-12">
+						<label class="form-label">Terapi</label>
+						<textarea class="form-control" name="terapi"><?php echo $data['terapi']; ?></textarea>
+					</div>
+				</div>
+			</div>
 
+			<div class="card-footer text-center mt-4">
+				<button type="submit" name="simpan" class="btn btn-info btn-lg px-5">
+					<i class="bi bi-save-fill"></i> Update Data
+				</button>
+			</div>
+		</form>
 
-	</div>
-	<br><br><br>
-</form>
-</font>
-</body>
+	</body>
 </div>
 
 <?php
 
 if (isset($_POST["simpan"])) {
-
-	$td_sistolik	= trim($_POST["td_sistolik"]);
-	$td_diastolik	= trim($_POST["td_diastolik"]);
-	$nadi	= trim($_POST["nadi"]);
-	$nadi = str_replace(",",".",$nadi);
-
-	$suhu	= trim($_POST["suhu"]);
-	$suhu = str_replace(",",".",$suhu);
-
-	$pernafasan	= trim($_POST["pernafasan"]);
-	$pernafasan = str_replace(",",".",$pernafasan);
-
-	$spo2	= trim($_POST["spo2"]);
-	$spo2 = str_replace(",",".",$spo2);
-
-	$tglinput	= trim($_POST["tglinput"]);
-	$userinput	= trim($_POST["userinput"]);
 
 	$ob1	= $_POST["ob1"];
 	$ob2	= $_POST["ob2"];
@@ -396,10 +296,10 @@ if (isset($_POST["simpan"])) {
 	$ob11	= $_POST["ob11"];
 	$ob12	= $_POST["ob12"];
 	$ob13	= $_POST["ob13"];
-	$ob14	= $_POST["ob14"];
+	
 	$ob15	= $_POST["ob15"];
 	$ob16	= $_POST["ob16"];
-	$ob17	= $_POST["ob17"];
+	
 	$ob18	= $_POST["ob18"];
 	$ob19	= $_POST["ob19"];
 	$ob20	= $_POST["ob20"];
@@ -433,112 +333,83 @@ if (isset($_POST["simpan"])) {
 	$ob48	= $_POST["ob48"];
 	$ob49	= $_POST["ob49"];
 	$ob50	= $_POST["ob50"];
+	$total_input= $_POST["total_input"];
+	$total_output= $_POST["total_output"];
+	$jtranfusi= $_POST["jtranfusi"];
+	$keterangan= $_POST["keterangan"];
 
-	$lanjut="Y";
+	$q  = "update ERM_RI_OBSERVASI_CAIRAN set
+	ob1	='$ob1',
+	ob2	='$ob2',
+	ob3	='$ob3',
+	ob4	='$ob4',
+	ob5	='$ob5',
+	ob6	='$ob6',
+	ob7	='$ob7',
+	ob8	='$ob8',
+	ob9	='$ob9',
+	ob10	='$ob10',
+	ob11	='$ob11',
+	ob12	='$ob12',
+	ob13	='$ob13',
+	ob14	='$ob14',
+	ob15	='$ob15',
+	ob16	='$ob16',
+	ob17	='$ob17',
+	ob18	='$ob18',
+	ob19	='$ob19',
+	ob20	='$ob20',
+	ob21	='$ob21',
+	ob22	='$ob22',
+	ob23	='$ob23',
+	ob24	='$ob24',
+	ob25	='$ob25',
+	ob26	='$ob26',
+	ob27	='$ob27',
+	ob28	='$ob28',
+	ob29	='$ob29',
+	ob30	='$ob30',
+	ob31	='$ob31',
+	ob32	='$ob32',
+	ob33	='$ob33',
+	ob34	='$ob34',
+	ob35	='$ob35',
+	ob36	='$ob36',
+	ob37	='$ob37',
+	ob38	='$ob38',
+	ob39	='$ob39',
+	ob40	='$ob40',
+	ob41	='$ob41',
+	ob42	='$ob42',
+	ob43	='$ob43',
+	ob44	='$ob44',
+	ob45	='$ob45',
+	ob46	='$ob46',
+	ob47	='$ob47',
+	ob48	='$ob48',
+	ob49	='$ob49',
+	ob50	='$ob50',
+	total_input = $total_input,
+	total_output = $total_output,
+	jtranfusi = '$jtranfusi',keterangan='$keterangan'
+	where id='$id_observasi'
+	";
 
+	$hs = sqlsrv_query($conn,$q);
 
-	if(empty($user)){
-		$eror='User Tidak Boleh Kosong !!!';
-		$lanjut='T';
-	}
-
-
-	if($lanjut == 'Y'){
-		echo $q  = "update ERM_RI_OBSERVASI_CAIRAN set
-		muntah	='$muntah',
-		muntah_ket	='$muntah_ket',
-		cairan	='$cairan',
-		cairan_ket	='$cairan_ket',
-		bab	='$bab',
-		bab_ket	='$bab_ket',
-		makan	='$makan',
-		makan_ket	='$makan_ket',
-		urine	='$urine',
-		urine_ket	='$urine_ket',
-		minum	='$minum',
-		drain	='$drain',
-		drain_ket	='$drain_ket',
-		pendarahan	='$pendarahan',
-		total_intake	='$total_intake',
-		sisa_cairan_infus	='$sisa_cairan_infus',
-		balance	='$balance',
-		ob1	='$ob1',
-		ob2	='$ob2',
-		ob3	='$ob3',
-		ob4	='$ob4',
-		ob5	='$ob5',
-		ob6	='$ob6',
-		ob7	='$ob7',
-		ob8	='$ob8',
-		ob9	='$ob9',
-		ob10	='$ob10',
-		ob11	='$ob11',
-		ob12	='$ob12',
-		ob13	='$ob13',
-		ob14	='$ob14',
-		ob15	='$ob15',
-		ob16	='$ob16',
-		ob17	='$ob17',
-		ob18	='$ob18',
-		ob19	='$ob19',
-		ob20	='$ob20',
-		ob21	='$ob21',
-		ob22	='$ob22',
-		ob23	='$ob23',
-		ob24	='$ob24',
-		ob25	='$ob25',
-		ob26	='$ob26',
-		ob27	='$ob27',
-		ob28	='$ob28',
-		ob29	='$ob29',
-		ob30	='$ob30',
-		ob31	='$ob31',
-		ob32	='$ob32',
-		ob33	='$ob33',
-		ob34	='$ob34',
-		ob35	='$ob35',
-		ob36	='$ob36',
-		ob37	='$ob37',
-		ob38	='$ob38',
-		ob39	='$ob39',
-		ob40	='$ob40',
-		ob41	='$ob41',
-		ob42	='$ob42',
-		ob43	='$ob43',
-		ob44	='$ob44',
-		ob45	='$ob45',
-		ob46	='$ob46',
-		ob47	='$ob47',
-		ob48	='$ob48',
-		ob49	='$ob49',
-		ob50	='$ob50'
-		where id='$id_observasi'
-		";
-		$hs = sqlsrv_query($conn,$q);
-
-		if($hs){
-			$eror = "Success";
-		}else{
-			$eror = "Gagal Insert";
-
-		}
-
-		echo "
-		<script>
-		alert('".$eror."');
-		history.go(-1);
-		</script>
-		";          
-
+	if($hs){
+		$eror = "Success";
 	}else{
-		echo "
-		<script>
-		alert('".$eror."');
-		history.go(-1);
-		</script>
-		";
+		$eror = "Gagal Insert";
 
 	}
+
+	echo "
+	<script>
+	alert('".$eror."');
+	history.go(-1);
+	</script>
+	";          
 
 }
 

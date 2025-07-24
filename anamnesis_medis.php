@@ -6,6 +6,7 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
 
 include "phpqrcode/qrlib.php";
 
@@ -273,6 +274,7 @@ if(empty($regcek)){
 	$al_rpenyakit= trim($de['al_rpenyakit']);
 	$ob_rpenyakit= trim($de['ob_rpenyakit']);
 	$diagnosa_planning= trim($de['diagnosa_planning']);
+	$assesment= trim($de['assesment']);
 	$spo2= trim($de['spo2']);
 
 	$qe="
@@ -296,25 +298,67 @@ if(empty($regcek)){
 	if(!empty($resume22)){
 		$diagnosa = 'Diagnosis Awal / Masuk : '.$resume20.'<br>Diagnosis Akhir (Primer) : '.$resume21.'<br>Diagnosis Akhir (Sekunder) : '.$resume22;		
 	}
+
+
 }
 
-$qu="SELECT * FROM  V_ERM_RI_KEADAAN_UMUM where noreg='$noreg' and tensi is not null";
-$h1u  = sqlsrv_query($conn, $qu);        
-$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-$kesadaran = $d1u['kesadaran'];
-$e = $d1u['e'];
-$v = $d1u['v'];
-$m = $d1u['m'];
-$suhu = $d1u['suhu'];
-$tensi = $d1u['tensi'];
-$nadi = $d1u['nadi'];
-$ket_nadi = $d1u['ket_nadi'];
-$nafas = $d1u['nafas'];
-$spo = $d1u['spo'];
-$bb = $d1u['bb'];
-$tb = $d1u['tb'];
-$keluhan_utama = $d1u['keluhan_utama'];
-$riwayat_penyakit = $d1u['riwayat_penyakit'];
+//ambil dari igd...
+$noreg_igd = substr($noreg, 1,12);
+$qhi="SELECT id FROM  ERM_ASSESMEN_HEADER where noreg='$noreg_igd'";
+$hqhi  = sqlsrv_query($conn, $qhi);        
+$dhqhi  = sqlsrv_fetch_array($hqhi, SQLSRV_FETCH_ASSOC); 
+$id_header_igd = $dhqhi['id'];
+
+if($id_header_igd){
+	$qu="
+	SELECT TOP (1) ID, IDHEADER, GCS, TD, NADI, RR, SUHU, SPO2, KELUHANHASIL, TGLENTRY, USERID, TINDAKANOBSERVASILANJUT, PERAWATOBSERVASILANJUT, DOKTEROBSERVASILANJUT, JAMOBSERVASILANJUT, 
+	DIKOREKSI, TGLKOREKSI, PERAWATBIDAN, E, V, M, TGLOBSERVASILANJUT
+	FROM            ERM_IGD_OBSERVASI_LANJUT
+	WHERE        (IDHEADER = '$id_header_igd') order by id desc
+	";
+	$h1u  = sqlsrv_query($conn, $qu);        
+	$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+	$kesadaran = $d1u['KELUHANHASIL'];
+	$e = $d1u['E'];
+	$v = $d1u['V'];
+	$m = $d1u['M'];
+	$suhu = $d1u['SUHU'];
+	$tensi = $d1u['TD'];
+	$nadi = $d1u['NADI'];
+	$ket_nadi = '';
+	$nafas = $d1u['RR'];
+	$spo2 = $d1u['SPO2'];
+	$bb = '-';
+	$tb = '-';
+	
+	$qu2="
+	SELECT  id, idheader, keluhanutama, riwayatsekarang, tglentry, userid, ALERGIOBATCEK, KETERANGANALERGIOBAT, ALERGIMAKANANCEK, KETERANGANALERGIMAKANAN, ALERGIUDARACEK, KETERANGANALERGIUDARA, 
+	ANALERGILAINCEK, KETERANGANALERGILAIN, SUMBERDATA, NOREG, NORM, NAMA, HUBUNGAN, keluhanutamadokter, CATATAN, RIWAYATKEHAMILAN, RIWAYATTERAPI, KODEUNIT, riwayatdahulu, RIWAYATKELUARGA, 
+	RIWAYATSOSIAL FROM ERM_KELUHAN WHERE (NOREG = '$noreg_igd') 
+	";
+	$h1u2  = sqlsrv_query($conn, $qu2);        
+	$d1u2  = sqlsrv_fetch_array($h1u2, SQLSRV_FETCH_ASSOC); 
+	$keluhan_utama = $d1u2['kesadaran'];
+	$riwayat_penyakit = $d1u2['riwayatdahulu'];
+}else{
+	$qu="SELECT * FROM  V_ERM_RI_KEADAAN_UMUM where noreg='$noreg' and tensi is not null";
+	$h1u  = sqlsrv_query($conn, $qu);        
+	$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+	$kesadaran = $d1u['kesadaran'];
+	$e = $d1u['e'];
+	$v = $d1u['v'];
+	$m = $d1u['m'];
+	$suhu = $d1u['suhu'];
+	$tensi = $d1u['tensi'];
+	$nadi = $d1u['nadi'];
+	$ket_nadi = $d1u['ket_nadi'];
+	$nafas = $d1u['nafas'];
+	$spo2 = $d1u['spo'];
+	$bb = $d1u['bb'];
+	$tb = $d1u['tb'];
+	$keluhan_utama = $d1u['keluhan_utama'];
+	$riwayat_penyakit = $d1u['riwayat_penyakit'];
+}
 
 
 if($skala_nyeri){
@@ -461,6 +505,23 @@ if(empty($am77)){
 		}
 	</style>
 
+	<style>
+		body.dark-mode .card {
+			background-color: #212529; /* Warna gelap */
+			color: #ffffff;            /* Teks putih */
+		}
+		body.dark-mode .diagnosa-text {
+			color: #ffffff;
+		}
+
+		body:not(.dark-mode) .diagnosa-text {
+			color: #000000;
+		}
+		body.dark-mode .verifikasi-text {
+			color: #cccccc;
+		}
+	</style>
+
 </head> 
 
 
@@ -544,45 +605,73 @@ if(empty($am77)){
 
 				<br>
 				<div class="row">
-					<div class="col-6">
-						<b>Diagnosa</b>
-						<br>
-						<?php echo $diagnosa;?>
-						<br>
-						<br>
-						<b>Anamnesis</b>
-						<br>
-						&bull; Keluhan Utama
-						<?php 
-						if(empty($am1)){
-							$am1=$keluhan_utama;
+
+					<style>
+						.card {
+							font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+							background-color: #f8f9fa;
 						}
-						?>
-						<input type='text' class="form-control" name='am1' value='<?php echo $am1; ?>' size='80'>
-						&bull; Lama Keluhan
-						<input type='text' class="form-control" name='am78' value='<?php echo $am78; ?>' size='80'>
-						&bull; Keluhan Lain
-						<!-- <input type='text' class="form-control" name='am79' value='<?php echo $am79; ?>' size='80'> -->
-						<textarea class="form-control" name="am79" cols="100%" onfocus="nextfield ='';" style="min-height:200px;"><?php echo $am79;?></textarea>
-						<br>
-						<!-- <input class="form-control form-control-sm" name="am1" value="<?php echo $am1;?>" id="" type="text" size='' onfocus="nextfield ='rps';" placeholder=""> -->
-						<!-- <textarea class="form-control" name="am1" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am1;?></textarea> -->
+
+						.text-primary {
+							color: #007bff;
+						}
+
+						.text-dark {
+							color: #343a40;
+						}
+					</style>
 
 
+
+					<div class="col-6">
+
+						<div class="card shadow-sm p-3 mb-3 bg-white rounded">
+							<h5 class="text-primary mb-3"><b>🩺 Diagnosa</b></h5>
+							<div class="diagnosa-text">
+								<?php echo $diagnosa; ?>
+							</div>
+						</div>
+
+						<div class="card shadow-sm p-4 mb-4 bg-white rounded">
+							<h5 class="text-primary mb-4"><b>📝 Anamnesis</b></h5>
+
+							<!-- Keluhan Utama -->
+							<div class="form-group mb-3">
+								<label for="am1" class="form-label">
+									<b>&bull; Keluhan Utama</b>
+								</label>
+								<textarea class="form-control" name="am1" id="am1" rows="4" onfocus="nextfield ='';"><?php 
+								if(empty($am1)){
+									$am1=$keluhan_utama;
+								}
+								echo $am1;
+							?></textarea>
+						</div>
+
+						<!-- Lama Keluhan -->
+						<div class="form-group mb-3">
+							<label for="am78" class="form-label">
+								<b>&bull; Lama Keluhan</b>
+							</label>
+							<input type="text" class="form-control" name="am78" id="am78" value="<?php echo $am78; ?>">
+						</div>
+
+						<!-- Keluhan Lain -->
+						<div class="form-group">
+							<label for="am79" class="form-label">
+								<b>&bull; Keluhan Lain</b>
+							</label>
+							<textarea class="form-control" name="am79" id="am79" rows="4" onfocus="nextfield ='';"><?php echo $am79;?></textarea>
+						</div>
+					</div>
+
+					<div class="">
 						<b>Riwayat Penyakit : </b>
-						<!-- <input class="form-control form-control-sm" name="am2" value="<?php echo $am2;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder=""> -->
-						<!-- <textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am2;?></textarea> -->
 						<br>
 						&bull; Nama Penyakit
 						&nbsp;
 						<input type='radio' name='nm_rpenyakit' value='Tidak Ada' <?php if ($nm_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
 						<input type='radio' name='nm_rpenyakit' value='Ada' <?php if ($nm_rpenyakit=="Ada"){echo "checked";}?>>Ada
-						<?php 
-						if(empty($am2)){
-							// $am2=$riwayat_penyakit;
-							// $am3=$alergi;
-						}
-						?>
 						<textarea class="form-control" name="am2" cols="100%" onfocus="nextfield ='';" style="min-height:80px;"><?php echo $am2;?></textarea>
 						&bull; Lama Penyakit
 						&nbsp;
@@ -606,609 +695,675 @@ if(empty($am77)){
 						&nbsp;
 						<input type='radio' name='ob_rpenyakit' value='Tidak Ada' <?php if ($ob_rpenyakit=="Tidak Ada"){echo "checked";}?>>Tidak Ada
 						<input type='radio' name='ob_rpenyakit' value='Ada' <?php if ($ob_rpenyakit=="Ada"){echo "checked";}?>>Ada
-						<textarea class="form-control" name="am4" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am4;?></textarea>					
-
-						<hr>
-						<b>Keadaan Umum</b><br>
-						<!-- <input class="form-control form-control-sm" name="am5" value="<?php echo $am5;?>" id="" type="text" size='' onfocus="nextfield ='kesadaran';" placeholder=""> -->
-						<?php 
-						if(empty($am5)){
-							$am5='kesadaran : '.$kesadaran;
-						}
-						?>
-						<textarea class="form-control" name="am5" cols="100%" onfocus="nextfield ='';" style="min-height:30px;"><?php echo $am5;?></textarea>
-						<br>
-
-						<div class="card">
-							<div class="card-header">
-								Vital Sign
-							</div>
-							<div class="card-body">
-								<div class="card">
-									<div class="card-header">
-										Glassow Comma Scale (GCS)
-									</div>
-									<div class="card-body">
-										<?php 
-										if(empty($am6)){
-											$am6=$e;$am7=$v;$am8=$m;
-											$am9=$tensi;$am10=$nadi;
-											$am11=$ket_nadi;
-											$am12=$suhu;$am13=$nafas;
-											$am14=$skala_nyeri;$am15=$berat_badan;
-										}
-										?>
-										<label for="" class="col-3">Eye : </label>
-										<input class="form-control-sm" name="am6" value="<?php echo $am6;?>" id="" type="text" size='' onfocus="nextfield ='verbal';" placeholder="" style="min-width:50px; min-height:50px;">
-										<br>
-										<label for="" class="col-3">Verbal : </label>
-										<input class="form-control-sm" name="am7" value="<?php echo $am7;?>" id="" type="text" size='' onfocus="nextfield ='movement';" placeholder="" style="min-width:50px; min-height:50px;">
-										<br>
-										<label for="" class="col-3">Movement : </label>
-										<input class="form-control-sm" name="am8" value="<?php echo $am8;?>" id="" type="text" size='' onfocus="nextfield ='tekanan_darah';" placeholder="" style="min-width:50px; min-height:50px;">
-									</div>
-								</div>
-								<br>
-								<label for="" class="col-3">Tekanan Darah : </label>
-								<input class="form-control-sm" name="am9" value="<?php echo $am9;?>" id="" type="text" size='' onfocus="nextfield ='nadi';" placeholder="" style="min-width:50px; min-height:50px;">mmHg<br>
-								<label for="" class="col-3">Nadi : </label>
-								<input class="form-control-sm" name="am10" value="<?php echo $am10;?>" id="" type="text" size='' onfocus="nextfield ='suhu';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
-								<label for="" class="col-3">&nbsp;</label>
-								<input type='radio' name='am11' value='Teratur' <?php if ($am11=="Teratur"){echo "checked";}?>>Teratur
-								<input type='radio' name='am11' value='Tidak Teratur' <?php if ($am11=="Abnormal"){echo "checked";}?>>Tidak Teratur
-								<br>
-								<label for="" class="col-3">Suhu : </label>
-								<input class="form-control-sm" name="am12" value="<?php echo $am12;?>" id="" type="text" size='' onfocus="nextfield ='frekuansi_pernafasan';" placeholder="" style="min-width:50px; min-height:50px;">C<br>								
-								<label for="" class="col-3">Frekuensi Pernafasan : </label>
-								<input class="form-control-sm" name="am13" value="<?php echo $am13;?>" id="" type="text" size='' onfocus="nextfield ='skala_nyeri';" placeholder="" style="min-width:50px; min-height:50px;">x/menit<br>
-								<label for="" class="col-3">SPO2 : </label>
-								<input class="form-control-sm" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;"><br>
-								<label for="" class="col-3">Skala Nyeri : </label>
-								<input class="form-control-sm" name="am14" value="<?php echo $am14;?>" id="" type="text" size='' onfocus="nextfield ='berat_badan';" placeholder="" style="min-width:50px; min-height:50px;"><br>
-								<label for="" class="col-3">Berat Badan : </label>
-								<input class="form-control-sm" name="am15" value="<?php echo $am15;?>" id="" type="text" size='' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:50px; min-height:50px;">Kg<br>							
-
-							</div>
-						</div>
-
-						<br>
-						<div class="card">
-							<div class="card-header">
-								Anamnesa Psikologi/Sosial/Ekonomi : 
-							</div>
-							<div class="card-body">
-								<label for="" class="col-3">Kondisi Kejiwaan : </label>												
-								<!-- 								<input class="form-control form-control-sm" name="anamnesa" value="<?php echo $anamnesa;?>" id="" type="text" size='' onfocus="nextfield ='rpd';" placeholder="Isikan Tenang/Gelisah/Takut/Bingung/Stres">  -->
-								<input type='radio' name='am16' value='Tenang' <?php if ($am16=="Tenang"){echo "checked";}?>>Tenang
-								<input type='radio' name='am16' value='Gelisah/Takut' <?php if ($am16=="Gelisah/Takut"){echo "checked";}?>>Gelisah/Takut
-								<input type='radio' name='am16' value='Bingung' <?php if ($am16=="Bingung"){echo "checked";}?>>Bingung
-								<input type='radio' name='am16' value='Stres' <?php if ($am16=="Stres"){echo "checked";}?>>Stres
-								<br>
-								<label for="" class="col-3">Sosial Ekonomi : </label>
-								<input class="form-control-sm" name="am17" value="<?php echo $am17 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
-								<label for="" class="col-3">Spiritual : </label>
-								<input class="form-control-sm" name="am18" value="<?php echo $am18 ;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="" style="min-width:300px; min-height:50px;"> <br>
-							</div>
-						</div>
-
-						<div class="card">
-							<div class="card-body">						
-
-								<label for="" class="col-3">Verifikasi Dokter Pemeriksa : </label>							
-								<input class="form-control-sm" name="am75" value="<?php echo $am75;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Nama Dokter atau Kode Dokter">
-
-								<br>
-
-
-								<?php 
-								if($am75){
-									$verif_dokter="Resume medis ini telah diVerifikasi Oleh : ".$am75."Pada Tanggal : ".$tgl; 
-								// echo "<center><img alt='ttd' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_dokter&choe=UTF-8'/></center>";
-								// echo "<br>";
-
-									QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
-									echo "<center><img src='image.png'></center>";
-
-
-									$verif_dokter;
-								}
-								?>
-
-								<br>
-<!-- 
-								<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> simpan</button> 
-								<br><br> -->
-							</div>
-						</div>
-
+						<textarea class="form-control" name="am4" cols="100%" onfocus="nextfield ='';" style="min-height:70px;"><?php echo $am4;?></textarea>
 					</div>
-					<div class="col-6">					
-						<div class="card">
-							<div class="card-header">
-								<b>Pemeriksaan Fisik</b>
-								<br>
-								<i>Isikan pada bagian bagian yang diperiksa!</i>
-							</div>
-							<div class="card-body">						
-								<div class="card">
-									<div class="card-body">
-										<label for="" class="col-3">Kepala : </label>
-										<input type='radio' name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+					<br>
+					<div class="card shadow-sm p-4 mb-4 bg-white rounded">
+						<h5 class="text-primary mb-3"><b>🧍‍♂️ Keadaan Umum</b></h5>
 
-										<script>
-											document.querySelector('[name="am20"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am19"][value="Abnormal"]').checked = true;
-												}
-												else { 
-													document.querySelector('[name="am19"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>
-										<label for="" class="col-3">Mata : </label>
-										<input type='radio' name='am21' value='Normal' <?php if ($am21=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am21' value='Abnormal' <?php if ($am21=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am22" value="<?php echo $am22;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am22"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am21"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am21"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Telinga : </label>
-										<input type='radio' name='am23' value='Normal' <?php if ($am23=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am23' value='Abnormal' <?php if ($am23=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am24" value="<?php echo $am24;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am24"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am23"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am23"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>								
-										<label for="" class="col-3">Hidung : </label>
-										<input type='radio' name='am25' value='Normal' <?php if ($am25=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am25' value='Abnormal' <?php if ($am25=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am26" value="<?php echo $am26;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am26"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am25"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am25"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>							
-										<label for="" class="col-3">Rambut : </label>
-										<input type='radio' name='am27' value='Normal' <?php if ($am27=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am27' value='Abnormal' <?php if ($am27=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am28" value="<?php echo $am28;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am28"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am27"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am27"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Bibir : </label>
-										<input type='radio' name='am29' value='Normal' <?php if ($am29=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am29' value='Abnormal' <?php if ($am29=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am30" value="<?php echo $am30;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am30"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am29"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am29"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Gigi Geligi : </label>
-										<input type='radio' name='am31' value='Normal' <?php if ($am31=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am31' value='Abnormal' <?php if ($am31=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am32" value="<?php echo $am32;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am32"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am31"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am31"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Lidah : </label>
-										<input type='radio' name='am33' value='Normal' <?php if ($am33=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am33' value='Abnormal' <?php if ($am33=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am34" value="<?php echo $am34;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am34"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am33"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am33"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Langit-langit : </label>
-										<input type='radio' name='am35' value='Normal' <?php if ($am35=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am35' value='Abnormal' <?php if ($am35=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am36" value="<?php echo $am36;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am36"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am35"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am35"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Leher : </label>
-										<input type='radio' name='am37' value='Normal' <?php if ($am37=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am37' value='Abnormal' <?php if ($am37=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am38" value="<?php echo $am38;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am38"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am37"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am37"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-										<br>	
-										<label for="" class="col-3">Tenggorokan : </label>
-										<input type='radio' name='am39' value='Normal' <?php if ($am39=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am39' value='Abnormal' <?php if ($am39=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am40" value="<?php echo $am40;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-
-										<script>
-											document.querySelector('[name="am40"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am39"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am39"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-
-
-										<br>	
-										<label for="" class="col-3">Tonsil : </label>
-										<input type='radio' name='am41' value='Normal' <?php if ($am41=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am41' value='Abnormal' <?php if ($am41=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am42" value="<?php echo $am42;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am42"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am41"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am41"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Dada : </label>
-										<input type='radio' name='am43' value='Normal' <?php if ($am43=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am43' value='Abnormal' <?php if ($am43=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am44" value="<?php echo $am44;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am44"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am43"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am43"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Payudara : </label>
-										<input type='radio' name='am45' value='Normal' <?php if ($am45=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am45' value='Abnormal' <?php if ($am45=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am46" value="<?php echo $am46;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am46"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am45"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am45"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Punggung : </label>
-										<input type='radio' name='am47' value='Normal' <?php if ($am47=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am47' value='Abnormal' <?php if ($am47=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am48" value="<?php echo $am48;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am48"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am47"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am47"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Perut : </label>
-										<input type='radio' name='am49' value='Normal' <?php if ($am49=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am49' value='Abnormal' <?php if ($am49=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am50" value="<?php echo $am50;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am50"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am49"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am49"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Genital : </label>
-										<input type='radio' name='am51' value='Normal' <?php if ($am51=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am51' value='Abnormal' <?php if ($am51=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am52" value="<?php echo $am52;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am52"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am51"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am51"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Anus/Dubur : </label>
-										<input type='radio' name='am53' value='Normal' <?php if ($am53=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am53' value='Abnormal' <?php if ($am53=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am54" value="<?php echo $am54;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am54"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am53"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am53"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Lengan Atas : </label>
-										<input type='radio' name='am55' value='Normal' <?php if ($am55=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am55' value='Abnormal' <?php if ($am55=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am56" value="<?php echo $am56;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am56"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am55"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am55"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Lengan Bawah : </label>
-										<input type='radio' name='am57' value='Normal' <?php if ($am57=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am57' value='Abnormal' <?php if ($am57=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am58" value="<?php echo $am58;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am58"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am57"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am57"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Jari Tangan : </label>
-										<input type='radio' name='am59' value='Normal' <?php if ($am59=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am59' value='Abnormal' <?php if ($am59=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am60" value="<?php echo $am60;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am60"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am59"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am59"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Kuku Tangan : </label>
-										<input type='radio' name='am61' value='Normal' <?php if ($am61=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am61' value='Abnormal' <?php if ($am61=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am62" value="<?php echo $am62;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am62"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am61"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am61"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Persendian Tangan : </label>
-										<input type='radio' name='am63' value='Normal' <?php if ($am63=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am63' value='Abnormal' <?php if ($am63=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am64" value="<?php echo $am64;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am64"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am63"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am63"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Tungkai Atas : </label>
-										<input type='radio' name='am65' value='Normal' <?php if ($am65=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am65' value='Abnormal' <?php if ($am65=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am66" value="<?php echo $am66;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am66"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am65"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am65"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Tungkai Bawah : </label>
-										<input type='radio' name='am67' value='Normal' <?php if ($am67=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am67' value='Abnormal' <?php if ($am67=="fisik49"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am68" value="<?php echo $am68;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am68"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am67"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am67"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Jari Kaki : </label>
-										<input type='radio' name='am69' value='Normal' <?php if ($am69=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am69' value='Abnormal' <?php if ($am69=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am70" value="<?php echo $am70;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am70"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am69"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am69"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Kuku Kaki : </label>
-										<input type='radio' name='am71' value='Normal' <?php if ($am71=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am71' value='Abnormal' <?php if ($am71=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am72" value="<?php echo $am72;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am72"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am71"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am71"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>	
-										<label for="" class="col-3">Persendian Kaki : </label>
-										<input type='radio' name='am73' value='Normal' <?php if ($am73=="Normal"){echo "checked";}?>>Normal
-										<input type='radio' name='am73' value='Abnormal' <?php if ($am73=="Abnormal"){echo "checked";}?>>Abnormal
-										<input class="form-control-sm" name="am74" value="<?php echo $am74;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
-										<script>
-											document.querySelector('[name="am74"]').addEventListener('input', function() {
-												if (this.value.trim() !== '') {
-													document.querySelector('[name="am73"][value="Abnormal"]').checked = true;
-												}else { 
-													document.querySelector('[name="am73"][value="Abnormal"]').checked = false;
-												}
-											});
-										</script>
-										<br>									
-									</div>
-
-								</div>
-								<br>
-								<div class="card">
-									<div class="card-body">
-										<label for="" class="col-3">Penunjang</label>							
-										<!-- <input class="form-control-sm" name="am76" value="<?php echo $am76;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Pemeriksaan Peunjang"> -->
-										<textarea class="form-control" name="am76" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $am76;?></textarea>
-										<br>
-										<label for="" class="col-3">Diagnosa Planning</label>							
-										<!-- <input class="form-control-sm" name="am76" value="<?php echo $am76;?>" id="dokter" type="text" size='50' onfocus="nextfield ='';" placeholder="Isikan Pemeriksaan Peunjang"> -->
-										<textarea class="form-control" name="diagnosa_planning" cols="100%" onfocus="nextfield ='';" style="min-height:100px;"><?php echo $diagnosa_planning;?></textarea>
-										<br>
-										<label for="" class="col-3">Rencana Terapi</label>							
-										<textarea class="form-control" name="am77" cols="100%" onfocus="nextfield ='';" style="min-height:320px;"><?php echo $am77;?></textarea>
-										<br>
-
-									</div>
-								</div>
-
-
-							</div>
-
+						<div class="form-group">
+							<?php 
+							if (empty($am5)) {
+								$am5 = 'Kesadaran : ' . $kesadaran;
+							}
+							?>
+							<textarea class="form-control" name="am5" id="am5" rows="2" onfocus="nextfield ='';"><?php echo $am5; ?></textarea>
 						</div>
-					</div>				
-				</div>
+					</div>
 
-				<?php 
-				$tglsekarang2		= gmdate("Y-m-d", time()+60*60*7);
-				$waktusekarang2		= gmdate("H:i:s", time()+60*60*7);
-				if(empty($jamselesai)){
-					$jamselesai=$waktusekarang2;
-					$tglselesai=$tglsekarang2;
-				}
-				?>
+					<div class="card shadow-sm mb-4">
+						<div class="card-header bg-primary text-white">
+							<b>🩺 Vital Sign</b>
+						</div>
+						<div class="card-body">
+							<!-- GCS -->
+							<div class="card mb-4">
+								<div class="card-header bg-light">
+									<b>🧠 Glasgow Coma Scale (GCS)</b>
+									<?php 
+									if(empty($am6)){
+										$am6=$e;$am7=$v;$am8=$m;
+										$am9=$tensi;$am10=$nadi;
+										$am11=$ket_nadi;
+										$am12=$suhu;$am13=$nafas;
+										$am14=$skala_nyeri;$am15=$berat_badan;
+									}
+									?>
+								</div>
+								<div class="card-body">
+									<div class="row g-3">
+										<div class="col-md-4">
+											<label class="form-label">Eye</label>
+											<input class="form-control" name="am6" value="<?php echo $am6;?>" type="text">
+										</div>
+										<div class="col-md-4">
+											<label class="form-label">Verbal</label>
+											<input class="form-control" name="am7" value="<?php echo $am7;?>" type="text">
+										</div>
+										<div class="col-md-4">
+											<label class="form-label">Movement</label>
+											<input class="form-control" name="am8" value="<?php echo $am8;?>" type="text">
+										</div>
+									</div>
+								</div>
+							</div>
 
-				<div class="card">
-					<div class="card-body">
-						<div class="row align-items-center g-2">
-							<label for="tglrawat" class="col-auto">Tanggal dan Jam Selesai Asesmen:</label>
-							<div class="col-auto">
-								<input type="date" id="tglselesai" name="tglselesai" class="form-control" value="<?php echo $tglselesai; ?>">
-							</div>
-							<label for="jamrawat" class="col-auto mb-0">Jam:</label>
-							<div class="col-auto">
-								<input type="text" id="jamselesai" name="jamselesai" class="form-control" value="<?php echo $jamselesai; ?>">
-							</div>
-							<div class="col-auto hide-on-print">
-								<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> Simpan</button> 
+							<!-- Vital Sign -->
+							<div class="row g-3">
+								<div class="col-md-4">
+									<label class="form-label">Tekanan Darah (mmHg)</label>
+									<input class="form-control" name="am9" value="<?php echo $am9;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label">Nadi (x/menit)</label>
+									<input class="form-control" name="am10" value="<?php echo $am10;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label d-block">Irama Nadi</label>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="am11" value="Teratur" <?php if ($am11=="Teratur") echo "checked"; ?>>
+										<label class="form-check-label">Teratur</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="radio" name="am11" value="Tidak Teratur" <?php if ($am11=="Abnormal") echo "checked"; ?>>
+										<label class="form-check-label">Tidak Teratur</label>
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<label class="form-label">Suhu (°C)</label>
+									<input class="form-control" name="am12" value="<?php echo $am12;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label">Frekuensi Pernafasan (x/menit)</label>
+									<input class="form-control" name="am13" value="<?php echo $am13;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label">Saturasi O2 (SpO2)</label>
+									<input class="form-control" name="spo2" value="<?php echo $spo2;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label">Skala Nyeri</label>
+									<input class="form-control" name="am14" value="<?php echo $am14;?>" type="text">
+								</div>
+								<div class="col-md-4">
+									<label class="form-label">Berat Badan (Kg)</label>
+									<input class="form-control" name="am15" value="<?php echo $am15;?>" type="text">
+								</div>
 							</div>
 						</div>
 					</div>
+
+					<div class="card shadow-sm mb-4">
+						<div class="card-header bg-info text-white">
+							<b>🧠 Anamnesa Psikologi / Sosial / Ekonomi</b>
+						</div>
+						<div class="card-body">
+							<!-- Kondisi Kejiwaan -->
+							<div class="form-group mb-3">
+								<label class="form-label"><b>Kondisi Kejiwaan:</b></label><br>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="am16" value="Tenang" <?php if ($am16=="Tenang") echo "checked"; ?>>
+									<label class="form-check-label">Tenang</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="am16" value="Gelisah/Takut" <?php if ($am16=="Gelisah/Takut") echo "checked"; ?>>
+									<label class="form-check-label">Gelisah/Takut</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="am16" value="Bingung" <?php if ($am16=="Bingung") echo "checked"; ?>>
+									<label class="form-check-label">Bingung</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="am16" value="Stres" <?php if ($am16=="Stres") echo "checked"; ?>>
+									<label class="form-check-label">Stres</label>
+								</div>
+							</div>
+
+							<!-- Sosial Ekonomi -->
+							<div class="form-group mb-3">
+								<label class="form-label"><b>Sosial Ekonomi:</b></label>
+								<input class="form-control" name="am17" value="<?php echo $am17; ?>" type="text" placeholder="Contoh: Cukup / Kurang / Tidak Bekerja">
+							</div>
+
+							<!-- Spiritual -->
+							<div class="form-group">
+								<label class="form-label"><b>Spiritual:</b></label>
+								<input class="form-control" name="am18" value="<?php echo $am18; ?>" type="text" placeholder="Contoh: Agamis / Tidak Agamis / Rutin Beribadah">
+							</div>
+						</div>
+					</div>
+
+
+					<div class="card shadow-sm mb-4">
+						<div class="card-header bg-success text-white">
+							<b>✅ Verifikasi Dokter Pemeriksa</b>
+						</div>
+						<div class="card-body">
+							<div class="form-group mb-3">
+								<label for="dokter" class="form-label"><b>Nama / Kode Dokter:</b></label>
+								<input type="text" class="form-control" name="am75" id="dokter" value="<?php echo $am75;?>" placeholder="Isikan Nama Dokter atau Kode Dokter">
+							</div>
+
+							<?php 
+							if($am75){
+								$verif_dokter = "Form Anamnesis Medis ini telah diVerifikasi Oleh: ".$am75." Pada Tanggal: ".$tgl; 
+								QRcode::png($verif_dokter, "image.png", "L", 2, 2);   
+								echo "<div class='text-center'>";
+								echo "<img src='image.png' class='img-thumbnail mt-3' alt='QR Verifikasi Dokter'>";
+								echo "<p class='mt-2 verifikasi-text'><small><i>".$verif_dokter."</i></small></p>";
+								echo "</div>";
+							}
+							?>
+						</div>
+					</div>
+
+
 				</div>
+				<div class="col-6">	
 
-				<hr>
+					<div class="card shadow-sm mb-4">
+						<div class="card-header bg-success text-white">
+							<b>🩻 Pemeriksaan Fisik</b><br>
+							<small><i>Isikan pada bagian-bagian yang diperiksa</i></small>
+						</div>
+						<div class="card-body">
 
-				<br><br><br>
-			</form>
-		</font>
-	</body>
+							<div class="card">
+								<div class="card-body">
+									<label for="" class="col-3">Kepala : </label>
+									<input type='radio' name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am20"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am19"][value="Abnormal"]').checked = true;
+											}
+											else { 
+												document.querySelector('[name="am19"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>
+									<label for="" class="col-3">Mata : </label>
+									<input type='radio' name='am21' value='Normal' <?php if ($am21=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am21' value='Abnormal' <?php if ($am21=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am22" value="<?php echo $am22;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am22"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am21"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am21"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Telinga : </label>
+									<input type='radio' name='am23' value='Normal' <?php if ($am23=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am23' value='Abnormal' <?php if ($am23=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am24" value="<?php echo $am24;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am24"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am23"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am23"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>								
+									<label for="" class="col-3">Hidung : </label>
+									<input type='radio' name='am25' value='Normal' <?php if ($am25=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am25' value='Abnormal' <?php if ($am25=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am26" value="<?php echo $am26;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am26"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am25"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am25"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>							
+									<label for="" class="col-3">Rambut : </label>
+									<input type='radio' name='am27' value='Normal' <?php if ($am27=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am27' value='Abnormal' <?php if ($am27=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am28" value="<?php echo $am28;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am28"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am27"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am27"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Bibir : </label>
+									<input type='radio' name='am29' value='Normal' <?php if ($am29=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am29' value='Abnormal' <?php if ($am29=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am30" value="<?php echo $am30;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am30"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am29"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am29"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Gigi Geligi : </label>
+									<input type='radio' name='am31' value='Normal' <?php if ($am31=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am31' value='Abnormal' <?php if ($am31=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am32" value="<?php echo $am32;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am32"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am31"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am31"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Lidah : </label>
+									<input type='radio' name='am33' value='Normal' <?php if ($am33=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am33' value='Abnormal' <?php if ($am33=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am34" value="<?php echo $am34;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am34"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am33"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am33"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Langit-langit : </label>
+									<input type='radio' name='am35' value='Normal' <?php if ($am35=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am35' value='Abnormal' <?php if ($am35=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am36" value="<?php echo $am36;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am36"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am35"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am35"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Leher : </label>
+									<input type='radio' name='am37' value='Normal' <?php if ($am37=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am37' value='Abnormal' <?php if ($am37=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am38" value="<?php echo $am38;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am38"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am37"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am37"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+									<br>	
+									<label for="" class="col-3">Tenggorokan : </label>
+									<input type='radio' name='am39' value='Normal' <?php if ($am39=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am39' value='Abnormal' <?php if ($am39=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am40" value="<?php echo $am40;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+
+									<script>
+										document.querySelector('[name="am40"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am39"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am39"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+
+
+									<br>	
+									<label for="" class="col-3">Tonsil : </label>
+									<input type='radio' name='am41' value='Normal' <?php if ($am41=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am41' value='Abnormal' <?php if ($am41=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am42" value="<?php echo $am42;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am42"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am41"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am41"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Dada : </label>
+									<input type='radio' name='am43' value='Normal' <?php if ($am43=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am43' value='Abnormal' <?php if ($am43=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am44" value="<?php echo $am44;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am44"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am43"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am43"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Payudara : </label>
+									<input type='radio' name='am45' value='Normal' <?php if ($am45=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am45' value='Abnormal' <?php if ($am45=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am46" value="<?php echo $am46;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am46"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am45"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am45"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Punggung : </label>
+									<input type='radio' name='am47' value='Normal' <?php if ($am47=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am47' value='Abnormal' <?php if ($am47=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am48" value="<?php echo $am48;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am48"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am47"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am47"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Perut : </label>
+									<input type='radio' name='am49' value='Normal' <?php if ($am49=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am49' value='Abnormal' <?php if ($am49=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am50" value="<?php echo $am50;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am50"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am49"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am49"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Genital : </label>
+									<input type='radio' name='am51' value='Normal' <?php if ($am51=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am51' value='Abnormal' <?php if ($am51=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am52" value="<?php echo $am52;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am52"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am51"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am51"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Anus/Dubur : </label>
+									<input type='radio' name='am53' value='Normal' <?php if ($am53=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am53' value='Abnormal' <?php if ($am53=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am54" value="<?php echo $am54;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am54"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am53"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am53"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Lengan Atas : </label>
+									<input type='radio' name='am55' value='Normal' <?php if ($am55=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am55' value='Abnormal' <?php if ($am55=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am56" value="<?php echo $am56;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am56"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am55"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am55"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Lengan Bawah : </label>
+									<input type='radio' name='am57' value='Normal' <?php if ($am57=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am57' value='Abnormal' <?php if ($am57=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am58" value="<?php echo $am58;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am58"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am57"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am57"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Jari Tangan : </label>
+									<input type='radio' name='am59' value='Normal' <?php if ($am59=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am59' value='Abnormal' <?php if ($am59=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am60" value="<?php echo $am60;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am60"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am59"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am59"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Kuku Tangan : </label>
+									<input type='radio' name='am61' value='Normal' <?php if ($am61=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am61' value='Abnormal' <?php if ($am61=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am62" value="<?php echo $am62;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am62"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am61"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am61"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Persendian Tangan : </label>
+									<input type='radio' name='am63' value='Normal' <?php if ($am63=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am63' value='Abnormal' <?php if ($am63=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am64" value="<?php echo $am64;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am64"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am63"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am63"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Tungkai Atas : </label>
+									<input type='radio' name='am65' value='Normal' <?php if ($am65=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am65' value='Abnormal' <?php if ($am65=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am66" value="<?php echo $am66;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am66"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am65"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am65"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Tungkai Bawah : </label>
+									<input type='radio' name='am67' value='Normal' <?php if ($am67=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am67' value='Abnormal' <?php if ($am67=="fisik49"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am68" value="<?php echo $am68;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am68"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am67"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am67"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Jari Kaki : </label>
+									<input type='radio' name='am69' value='Normal' <?php if ($am69=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am69' value='Abnormal' <?php if ($am69=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am70" value="<?php echo $am70;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am70"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am69"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am69"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Kuku Kaki : </label>
+									<input type='radio' name='am71' value='Normal' <?php if ($am71=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am71' value='Abnormal' <?php if ($am71=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am72" value="<?php echo $am72;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am72"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am71"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am71"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>	
+									<label for="" class="col-3">Persendian Kaki : </label>
+									<input type='radio' name='am73' value='Normal' <?php if ($am73=="Normal"){echo "checked";}?>>Normal
+									<input type='radio' name='am73' value='Abnormal' <?php if ($am73=="Abnormal"){echo "checked";}?>>Abnormal
+									<input class="form-control-sm" name="am74" value="<?php echo $am74;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<script>
+										document.querySelector('[name="am74"]').addEventListener('input', function() {
+											if (this.value.trim() !== '') {
+												document.querySelector('[name="am73"][value="Abnormal"]').checked = true;
+											}else { 
+												document.querySelector('[name="am73"][value="Abnormal"]').checked = false;
+											}
+										});
+									</script>
+									<br>									
+								</div>
+
+							</div>
+							<br>
+							<div class="card shadow-sm mb-4">
+								<div class="card-header bg-primary text-white">
+									<b>📝 Assesmen Lanjutan & Terapi</b>
+								</div>
+								<div class="card-body">
+
+									<!-- Penunjang -->
+									<div class="mb-3">
+										<label for="am76" class="form-label"><b>🔬 Pemeriksaan Penunjang</b></label>
+										<textarea class="form-control" name="am76" id="am76" style="min-height:100px;"><?php echo $am76;?></textarea>
+									</div>
+
+									<!-- Assesment -->
+									<div class="mb-3">
+										<label for="assesment" class="form-label"><b>📋 Assessment</b></label>
+										<textarea class="form-control" name="assesment" id="assesment" style="min-height:100px;"><?php echo $assesment;?></textarea>
+									</div>
+
+									<!-- Diagnosa & Planning -->
+									<div class="mb-3">
+										<label for="diagnosa_planning" class="form-label"><b>🧠 Diagnosa Planning</b></label>
+										<textarea class="form-control" name="diagnosa_planning" id="diagnosa_planning" style="min-height:100px;"><?php echo $diagnosa_planning;?></textarea>
+									</div>
+
+									<!-- Rencana Terapi -->
+									<div class="mb-3">
+										<label for="am77" class="form-label"><b>💊 Rencana Terapi</b></label>
+										<textarea class="form-control" name="am77" id="am77" style="min-height:250px;"><?php echo $am77;?></textarea>
+									</div>
+
+								</div>
+							</div>
+
+
+						</div>
+
+					</div>
+				</div>				
+			</div>
+
+			<?php 
+			$tglsekarang2		= gmdate("Y-m-d", time()+60*60*7);
+			$waktusekarang2		= gmdate("H:i:s", time()+60*60*7);
+			if(empty($jamselesai)){
+				$jamselesai=$waktusekarang2;
+				$tglselesai=$tglsekarang2;
+			}
+			?>
+
+			<div class="card">
+				<div class="card-body">
+					<div class="row align-items-center g-2">
+						<label for="tglrawat" class="col-auto">Tanggal dan Jam Selesai Asesmen:</label>
+						<div class="col-auto">
+							<input type="date" id="tglselesai" name="tglselesai" class="form-control" value="<?php echo $tglselesai; ?>">
+						</div>
+						<label for="jamrawat" class="col-auto mb-0">Jam:</label>
+						<div class="col-auto">
+							<input type="text" id="jamselesai" name="jamselesai" class="form-control" value="<?php echo $jamselesai; ?>">
+						</div>
+						<div class="col-auto hide-on-print">
+							<button type="submit" name="simpan" class="btn btn-success" onfocus="nextfield ='done';"><i class="bi bi-save"></i> Simpan</button> 
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr>
+
+			<br><br><br>
+		</form>
+	</font>
+</body>
 </div>
 
 <?php
@@ -1337,6 +1492,9 @@ if (isset($_POST["simpan"])) {
 	
 	$diagnosa_planning = $_POST['diagnosa_planning'];
 	$diagnosa_planning = str_replace("'","`",$diagnosa_planning);	
+
+	$assesment = $_POST['assesment'];
+	$assesment = str_replace("'","`",$assesment);
 
 	$spo2 = $_POST['spo2'];
 
@@ -1515,6 +1673,7 @@ if (isset($_POST["simpan"])) {
 		al_rpenyakit = '$al_rpenyakit',
 		ob_rpenyakit = '$ob_rpenyakit',
 		diagnosa_planning = '$diagnosa_planning',
+		assesment = '$assesment',
 		spo2 = '$spo2'
 		where noreg='$noreg'
 		";

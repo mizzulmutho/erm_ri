@@ -5,6 +5,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
 
@@ -129,7 +131,7 @@ if (isset($_POST["ambil_rad"])) {
 if (isset($_POST["ambil_eresep"])) {
 
 	$subjektif	= trim($_POST["subjektif"]);
-	$objektif	= trim($_POST["objektif"]);
+	// $objektif	= trim($_POST["objektif"]);
 	$assesment	= trim($_POST["assesment"]);
 	$planning	= trim($_POST["planning"]);
 	$penunjang	= trim($_POST["penunjang"]);
@@ -341,7 +343,7 @@ $ht  = sqlsrv_query($conn, $qt);
 
 $dht    = sqlsrv_fetch_array($ht, SQLSRV_FETCH_ASSOC);                      
 $subjektif = $dht[subjektif];
-$objektif = $dht[objektif];
+// $objektif = $dht[objektif];
 $assesment = $dht[assesment];
 $planning = $planning.$dht[planning];
 $penunjang = $dht[penunjang];
@@ -420,7 +422,7 @@ if(empty($jreg)){
 	}
 
 	$berat_badan = $d1u['bb'];
-
+	$spo2 = $d1u['spo'];
 
 	if(empty($subjektif)){
 		$subjektif=$keluhan_utama;
@@ -578,6 +580,7 @@ $nadi = $dho['nadi'];
 $suhu = $dho['suhu'];
 $frekuansi_pernafasan = $dho['pernafasan'];
 $berat_badan = $dho['bb'];
+$spo2 = $dho['spo2'];
 $skala_nyeri = 0;
 $tgl_observasi = $dho['tgl_observasi'];
 $jam_observasi = $dho['jam_observasi'];
@@ -622,7 +625,7 @@ while   ($datahis = sqlsrv_fetch_array($hasilhis,SQLSRV_FETCH_ASSOC)){
 
 //ambil cppt terakhir dokter
 $qhiscppt="
-SELECT        TOP (1) subjektif, objektif, assesment, planning
+SELECT        TOP (1) subjektif, objektif, assesment, planning, instruksi
 FROM            ERM_SOAP INNER JOIN
 Afarm_DOKTER ON ERM_SOAP.kodedokter = Afarm_DOKTER.KODEDOKTER
 WHERE        (ERM_SOAP.noreg LIKE '%$noreg%') AND (ERM_SOAP.kodedokter = '$kodedokter') order by id desc
@@ -634,6 +637,7 @@ while   ($datahiscppt = sqlsrv_fetch_array($hasilhiscppt,SQLSRV_FETCH_ASSOC)){
 	$objektif3 = trim($datahiscppt[objektif]);
 	$assesment3 = trim($datahiscppt[assesment]);
 	$planning3 = trim($datahiscppt[planning]);
+	$instruksi3 = trim($datahiscppt[instruksi]);
 }
 
 
@@ -648,24 +652,71 @@ if($his_cppt){
 	$planning = $his_cppt;
 }
 
-
 if($planning3){
 	$planning = $planning3;
 }
 if($subjektif3){
 	$subjektif = $subjektif3;
 }
-if($subjektif3){
+if($objektif3){
 	$objektif = $objektif3;
+
+	$laboratSeen = false;
+	$radiologiSeen = false;
+
+	$objektif = preg_replace_callback('/(Laborat\s*:|Radiologi\s*:)/i', function($match) use (&$laboratSeen, &$radiologiSeen) {
+		$label = strtolower(trim($match[0]));
+		if ($label === 'laborat :') {
+        if ($laboratSeen) return ''; // Hapus jika sudah pernah muncul
+        $laboratSeen = true;
+    } elseif ($label === 'radiologi :') {
+        if ($radiologiSeen) return ''; // Hapus jika sudah pernah muncul
+        $radiologiSeen = true;
+    }
+    return $match[0]; // Pertahankan satu label pertama
+}, $objektif);
+
+	// Hapus label "Radiologi :" atau "Laborat :" jika tidak diikuti data
+	$objektif = preg_replace('/Laborat\s*:\s*(,*)\s*(?=(Radiologi\s*:|$))/', '', $objektif);
+	$objektif = preg_replace('/Radiologi\s*:\s*(,*)\s*(?=,|$)/', '', $objektif);
+
+// Hapus koma dobel atau koma di ujung
+	$objektif = preg_replace('/(\s*,\s*)+/', ', ', $objektif);
+	$objektif = rtrim(trim($objektif), ',');
+
+	$objektif = str_replace('GCS', "\nGCS ", $objektif);
+	$objektif = str_replace('Tensi ', "\nTensi ", $objektif);
+	$objektif = str_replace('Berat Badan ', "\nBerat Badan ", $objektif);
+	$objektif = str_replace('Penunjang ', "\nPenunjang ", $objektif);
+
+
 }
 if($assesment3){
 	$assesment = $assesment3;
 }
 
+if($instruksi3){
+	$instruksi = $instruksi3;
+}
+
+
 
 if(empty($objektif)){
 	$objektif = $am76;	
 }
+
+
+//pemeriksaan penunjang
+// $qpe="SELECT TOP(1) pemeriksaan_penunjang
+// FROM  ERM_RI_SOAP where noreg='$noreg' and pemeriksaan_penunjang <> '' order by id desc";
+// $hqpe  = sqlsrv_query($conn, $qpe);        
+// $dhqpe  = sqlsrv_fetch_array($hqpe, SQLSRV_FETCH_ASSOC); 
+// $plab = trim($dhqpe['pemeriksaan_penunjang']);
+
+// if($plab=='Laborat : , Radiologi :'){
+// 	$plab='';
+// }
+
 
 ?>
 
@@ -769,6 +820,23 @@ if(empty($objektif)){
 		});
 	</script>
 
+	<style>
+		body.dark-mode .card {
+			background-color: #212529; /* Warna gelap */
+			color: #ffffff;            /* Teks putih */
+		}
+		body.dark-mode .diagnosa-text {
+			color: #ffffff;
+		}
+
+		body:not(.dark-mode) .diagnosa-text {
+			color: #000000;
+		}
+		body.dark-mode .verifikasi-text {
+			color: #cccccc;
+		}
+	</style>
+	
 </head> 
 
 <div class="container-fluid">
@@ -866,7 +934,7 @@ if(empty($objektif)){
 					<div class="row">
 						<div class="col-6">
 							<div class="col-12">Subjektif<br>
-								<textarea name= "subjektif" id="" style="min-width:650px; min-height:60px;"><?php echo $subjektif;?></textarea>
+								<textarea name= "subjektif" id="" style="min-width:650px; min-height:100px;"><?php echo $subjektif;?></textarea>
 							</div>
 							<div class="col-6">Assesment<br>
 								<textarea name= "assesment" id="" style="min-width:650px; min-height:100px;"><?php echo $assesment;?></textarea>
@@ -877,7 +945,7 @@ if(empty($objektif)){
 								<textarea name= "planning" id="" style="min-width:650px; min-height:380px;"><?php echo $planning;?></textarea>
 							</div>
 							<div class="col-6">Instruksi<br>
-								<textarea name= "instruksi" id="" style="min-width:650px; min-height:80px;"><?php echo $instruksi;?></textarea>
+								<textarea name= "instruksi" id="" style="min-width:650px; min-height:200px;"><?php echo $instruksi;?></textarea>
 							</div>	
 						</div>
 						<div class="col-6">
@@ -885,11 +953,42 @@ if(empty($objektif)){
 								<div class="row">
 									<div class="col-12">
 										Objektif<br>
-										<textarea name= "objektif" id="" style="min-width:650px; min-height:150px;"><?php echo $objektif;?></textarea>
+										<div class="d-flex align-items-start">
+											<!-- Kolom gambar dan tombol -->
+											<div class="text-center me-3">
+												<img src="resume.png" alt="Gambar Objektif" style="width: 100px; height: auto;">
+												<div class="mt-2">
+													<button type="button" class="btn btn-sm btn-primary" onclick="copyToTextarea()">Salin ke Form</button>
+												</div>
+											</div>
+
+											<!-- Kolom teks objektif -->
+											<div>
+												<i>History Sebelumnya / Terakhir Tersimpan :</i>
+												<div id="historyObjektif" style="white-space: pre-wrap;"><?php echo $objektif; ?></div>
+											</div>
+										</div>
+
+										<hr>
+
+										<!-- Textarea -->
+										<textarea name="objektif_form" id="objektifTextarea" style="min-width:650px; min-height:100px;" placeholder="Isikan objektif pasien terbaru"></textarea>
 									</div>
 								</div>
+
+								<script>
+									function copyToTextarea() {
+										var historyText = document.getElementById("historyObjektif").innerText;
+										historyText = historyText.replace(
+											/GCS\s+-[^]+?SPO2\s*:\s*\d+.*?,?\s*/gi,
+											''
+											).trim();
+										document.getElementById("objektifTextarea").value = historyText;
+									}
+								</script>
+
 								<div class="col-12">
-									<table cellpadding="10" bgcolor='white'>
+									<table class="table table-bordered gcs-table" cellpadding="10">
 										<tr>
 											<td>
 												<div class="row">
@@ -935,7 +1034,12 @@ if(empty($objektif)){
 													<br><br>
 													<div class="col-12">
 														Berat : 
-														<input class="form-control-sm" name="berat_badan" value="<?php echo $berat_badan;?>" id="" type="text" size='4' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:20px; min-height:20px;">Kg	
+														<input class="form-control-sm" name="berat_badan" value="<?php echo $berat_badan;?>" id="" type="text" size='4' onfocus="nextfield ='spo2';" placeholder="" style="min-width:20px; min-height:20px;">Kg	
+													</div>
+													<br><br>
+													<div class="col-12">
+														SPO2 : 
+														<input class="form-control-sm" name="spo2" value="<?php echo $spo2;?>" id="" type="text" size='4' onfocus="nextfield ='status_lokalis';" placeholder="" style="min-width:20px; min-height:20px;">%	
 													</div>
 												</div>
 											</td>
@@ -967,8 +1071,15 @@ if(empty($objektif)){
 							<center>
 								<br>
 								<br>
-								<input type='checkbox' name='dobel' value='dobel' style="min-width:20px; min-height:20px;">&nbsp;Tetap Simpan&nbsp;&nbsp;&nbsp;
 								<button type='submit' name='simpan' value='simpan' class="btn btn-success" type="button" style="height: 60px;width: 150px;"><i class="bi bi-save-fill"></i> simpan</button> <br><br><p style="background-color: yellow; color: red;">Mohon tunggu hingga pesan sukses muncul</p>
+							</center>
+						</div>
+
+						<div class="col-12 align-self-center">
+							<center>
+								<input type='checkbox' name='dobel' value='dobel' style="min-width:20px; min-height:20px;">&nbsp;Tetap Simpan&nbsp;&nbsp;&nbsp;
+								<input type='checkbox' name='i_tulbakon' value='i_tulbakon' style="min-width:20px; min-height:20px;">
+								&nbsp;Tetap Simpan & Tambahkan Tulbakon &nbsp;&nbsp;&nbsp;
 							</center>
 							<br><br><br>
 						</div>
@@ -994,7 +1105,8 @@ if (isset($_POST["simpan"])) {
 	// $subjektif','$objektif','$assesment','$planning'
 
 	$subjektif	= trim($_POST["subjektif"]);
-	$objektif	= trim($_POST["objektif"]);
+	$objektif_form	= trim($_POST["objektif_form"]);
+
 	$assesment	= trim($_POST["assesment"]);
 	$planning	= trim($_POST["planning"]);
 
@@ -1002,9 +1114,14 @@ if (isset($_POST["simpan"])) {
 	$plab	= trim($_POST["plab"]);
 	$prad	= trim($_POST["prad"]);
 
-	$penunjang	= 
-	"Laborat : ".$plab.", ".
-	"Radiologi : ".$prad;
+	if($plab or $prad){
+		$penunjang	= 
+		"Laborat : ".$plab.", ".
+		"Radiologi : ".$prad;
+	}
+	else{
+		$penunjang='';
+	}
 
 	$assesmen	= trim($_POST["assesmen"]);
 
@@ -1018,10 +1135,11 @@ if (isset($_POST["simpan"])) {
 	$frekuansi_pernafasan	= trim($_POST["frekuansi_pernafasan"]);
 	$skala_nyeri	= trim($_POST["skala_nyeri"]);
 	$berat_badan	= trim($_POST["berat_badan"]);
+	$spo2	= trim($_POST["spo2"]);
 
-	$objektif=$objektif.
+	$objektif_form=$objektif_form.
 	" GCS - Eye : ".$eye.", Verbal : ".$verbal.", Movement : ".$movement.",".
-	"Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.", Penunjang : ".$penunjang;
+	"Tensi : ".$tekanan_darah.", Nadi : ".$nadi.", Suhu : ".$suhu.", Frekuensi Pernafasan : ".$frekuansi_pernafasan.", Skala Nyeri : ".$skala_nyeri.", Berat Badan : ".$berat_badan.", SPO2 : ".$spo2.", Penunjang : ".$penunjang;
 
 
 
@@ -1057,6 +1175,8 @@ if (isset($_POST["simpan"])) {
 	}
 
 	$dobel	= trim($_POST["dobel"]);
+	$i_tulbakon	= trim($_POST["i_tulbakon"]);
+
 	if($cekinput){
 		if(empty($dobel)){
 			$lanjut='T';
@@ -1069,13 +1189,13 @@ if (isset($_POST["simpan"])) {
 		$q  = "insert into ERM_SOAP
 		(norm, noreg, tanggal, sbu, kodeunit, kodedokter, subjektif, objektif, assesment, planning, userid, tglentry,instruksi,dpjp) 
 		values 
-		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
+		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif_form','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
 		$hs = sqlsrv_query($conn,$q);
 
 		$qr  = "insert into ERM_SOAP_DOKTER
 		(norm, noreg, tanggal, sbu, kodeunit, kodedokter, subjektif, objektif, assesment, planning, userid, tglentry,instruksi,dpjp) 
 		values 
-		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
+		('$norm','$noreg','$tglinput','$sbu2','$kodeunit','$kodedokter','$subjektif','$objektif_form','$assesment','$planning','$user','$tglinput','$instruksi','$dpjp')";
 		$hsr = sqlsrv_query($conn,$qr);
 
 
@@ -1157,7 +1277,17 @@ if (isset($_POST["simpan"])) {
 	}
 
 	if($hs){
+
 		$eror = "Input Data CPPT Berhasil";
+
+		if($i_tulbakon){
+			echo "
+			<script>
+			alert('".$eror."');
+			window.location.replace('tulbakon_dokter.php?id=$id|$user|$idsoap');
+			</script>
+			";
+		}
 
 		echo "<script>
 		Swal.fire({

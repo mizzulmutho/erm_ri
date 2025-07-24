@@ -173,9 +173,11 @@ $tgllahir	= $data2[tgllahir];
 						&nbsp;
 					</div>
 					<div class="col-6 align-self-center">
-						<a href='soap_dokter_list.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning btn-sm'>Close</a>
+						<button type="submit" name="simpan" class="btn btn-primary" onfocus="nextfield ='done';"><i class="bi bi-save"></i> simpan</button> 
 						&nbsp;&nbsp;&nbsp;
-						<button type="submit" name="simpan" class="btn btn-danger btn-sm" onfocus="nextfield ='done';">simpan</button> 
+						<a href='' class='btn btn-success'><i class="bi bi-arrow-clockwise"></i></a>
+						&nbsp;&nbsp;&nbsp;
+						<a href='soap_dokter_list.php?id=<?php echo $id.'|'.$user;?>' class='btn btn-warning'><i class="bi bi-x-circle"></i> Close</a>
 					</div>
 				</div>
 			</div>

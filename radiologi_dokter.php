@@ -4,6 +4,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 $tgl        = gmdate("Y-m-d", time()+60*60*7);
 $tgl2       = gmdate("d/m/Y", time()+60*60*7);
 
@@ -131,7 +133,23 @@ $regcek = $di['noreg'];
         CKEDITOR.config.height="500px"
     </script>
 
+    <style>
+        body.dark-mode .card {
+            background-color: #212529; /* Warna gelap */
+            color: #ffffff;            /* Teks putih */
+        }
+        body.dark-mode .diagnosa-text {
+            color: #ffffff;
+        }
 
+        body:not(.dark-mode) .diagnosa-text {
+            color: #000000;
+        }
+        body.dark-mode .verifikasi-text {
+            color: #cccccc;
+        }
+    </style>
+    
 </head> 
 <div id="content"> 
     <div class="container">

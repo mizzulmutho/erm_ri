@@ -4,6 +4,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include "phpqrcode/qrlib.php";
+
 $tgl		= gmdate("Y-m-d", time()+60*60*7);
 $tgl2		= gmdate("d/m/Y", time()+60*60*7);
 $tglinput		= gmdate("Y-m-d H:i:s", time()+60*60*7);
@@ -541,6 +543,10 @@ if(empty($regcek)){
 			button {
 				display: none; /* Sembunyikan tombol print saat mencetak */
 			}
+
+			.hide-on-print {
+				display: none !important;
+			}
 		}
 	</style>
 
@@ -665,7 +671,7 @@ if(empty($regcek)){
 							2. Pengobatan & Tindakan yang dilakukan
 						</div>
 						<div class="col-8">
-							: <textarea name= "surat13" id="" style="min-width:630px; min-height:90px;"><?php echo $surat13;?></textarea>
+							: <textarea name= "surat13" id="" style="min-width:630px; min-height:150px;"><?php echo $surat13;?></textarea>
 						</div>	
 						<div class="col-4">
 							3. Riwayat Penyakit
@@ -735,11 +741,11 @@ if(empty($regcek)){
 					</div>
 
 
-					<br>
+					<hr>
 
 					<div class="row">					
 						<div class="col-8">
-							<table width="100%" border='1'>
+							<table width="100%">
 								<tr valign="top">
 									<td align="center">
 										Dokter yang merujuk<br>	
@@ -747,9 +753,12 @@ if(empty($regcek)){
 										<?php 
 										if($surat23){
 											$pernyataan = 'Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas: '.$surat23.' pada tanggal: '.$tglinput;
-											$qr = urlencode($pernyataan);
-											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$qr&choe=UTF-8'/></center>";
-											echo $surat23;												
+											ob_start();
+											QRcode::png($pernyataan, null, 'L', 2, 1);
+											$imageString = base64_encode(ob_get_contents());
+											ob_end_clean();
+
+											echo '<img src="data:image/png;base64,' . $imageString . '" />';											
 										}
 										?>
 									</td>
@@ -759,9 +768,13 @@ if(empty($regcek)){
 										<input class="" name="surat24" value="<?php echo $surat24;?>" id="karyawan2" type="text" size='50' placeholder="Isikan nama petugas">				
 										<?php 
 										if($surat24){
-											$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat24.'pada tanggal:'.$tglinput;
-											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
-											echo $surat24;												
+											$pernyataan2='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat24.'pada tanggal:'.$tglinput;
+											ob_start();
+											QRcode::png($pernyataan2, null, 'L', 2, 1);
+											$imageString2 = base64_encode(ob_get_contents());
+											ob_end_clean();
+
+											echo '<img src="data:image/png;base64,' . $imageString2 . '" />';												
 										}
 										?>							
 									</td>
@@ -769,9 +782,13 @@ if(empty($regcek)){
 										<br>	
 										<input class="" name="surat25" value="<?php echo $surat25;?>" id="" type="text" size='50' placeholder="Isikan nama petugas">						<?php 
 										if($surat25){
-											$pernyataan='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat25.'pada tanggal:'.$tglinput;
-											echo "<center><img alt='qr-code' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$pernyataanpasien&choe=UTF-8'/></center>";
-											echo $surat25;												
+											$pernyataan3='Lembar Rujuk Pasien ini telah ditandatangani oleh Petugas:'.$surat25.'pada tanggal:'.$tglinput;
+											ob_start();
+											QRcode::png($pernyataan3, null, 'L', 2, 1);
+											$imageString3 = base64_encode(ob_get_contents());
+											ob_end_clean();
+
+											echo '<img src="data:image/png;base64,' . $imageString3 . '" />';												
 										}
 										?>					
 									</td>
@@ -781,7 +798,7 @@ if(empty($regcek)){
 					</div>
 
 					<div class="row">				
-						<div class="col-8">
+						<div class="col-8 hide-on-print">
 							<br>
 							<input type='submit' name='simpan' value='simpan' style="color: white;background: #66CDAA;border-color: #66CDAA;">
 							<br><br>

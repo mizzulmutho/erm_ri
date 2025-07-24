@@ -314,6 +314,7 @@ $noktp =  $data2[noktp];
 							$am89= $de['am89'];
 							$am90= $de['am90'];
 							$diagnosa_planning= $de['diagnosa_planning'];
+							$assesment= $de['assesment'];
 
 							$qe="
 							SELECT resume20,resume21,resume22
@@ -365,6 +366,7 @@ $noktp =  $data2[noktp];
 							$kondisi_kejiwaan = $am16;
 
 							$diagnosa_planning = $diagnosa_planning;
+							$assesment = $assesment;
 
 							if($am19){
 								if($am19=='Normal'){
@@ -634,6 +636,10 @@ $noktp =  $data2[noktp];
 							<td>$penunjang</td>
 							</tr>
 							<tr>
+							<td>Assesment</td>
+							<td>$assesment</td>
+							</tr>
+							<tr>
 							<td>Diagnosa Planning</td>
 							<td>$diagnosa_planning</td>
 							</tr>
@@ -719,7 +725,8 @@ $noktp =  $data2[noktp];
 							$objektif = nl2br($dl[objektif]).'<br>';
 							$assesment = nl2br($dl[assesment]).'<br>';
 							$planning = nl2br($dl[planning]).'<br>';
-							$instruksi = nl2br($dl[instruksi]).'<br>';
+							// $instruksi = nl2br($dl[instruksi]).'<br>';
+							$instruksi = '<p>' . str_replace("\n", '</p><p>', trim($dl['instruksi'])) . '</p>';
 
 							if($profesi=='APOTEKER'){
 								$subjektif = nl2br($dl[subjektif]);
@@ -738,10 +745,42 @@ $noktp =  $data2[noktp];
 							}else{
 								$subjektif = nl2br($dl[subjektif]);
 								$subjektif 			= str_replace("Keluhan Pasien :","",$subjektif).'<br>';
-								$objektif = nl2br($dl[objektif]).'<br>';
+								// $objektif = nl2br($dl[objektif]).'<br>';
+
+								$parts = explode('Status Lokalis :', $objektif, 2);
+								if (count($parts) == 2) {
+    								// Pisahkan Status Lokalis + sisanya
+									$before = $parts[0];
+									$after = $parts[1];
+
+    								// Pisahkan lagi jika ada 'Pemeriksaan Penunjang :'
+									$subparts = explode('Pemeriksaan Penunjang :', $after, 2);
+									if (count($subparts) == 2) {
+										$statusLokalis = trim($subparts[0]);
+										$pemeriksaan = trim($subparts[1]);
+
+        								// Tambahkan <br> setelah koma di masing-masing
+										$statusLokalis = str_replace(', ', ',<br>', $statusLokalis);
+										$pemeriksaan = str_replace(', ', ',<br>', $pemeriksaan);
+
+        								// Gabung lagi
+										$objektif = $before 
+										. 'Status Lokalis :<br>' . $statusLokalis 
+										. '<br>Pemeriksaan Penunjang :<br>' . $pemeriksaan;
+									} else {
+        								// Kalau tidak ada Pemeriksaan Penunjang, hanya Status Lokalis
+										$statusLokalis = str_replace(', ', ',<br>', $after);
+										$objektif = $before . 'Status Lokalis :<br>' . $statusLokalis;
+									}
+								}
+								// Terakhir: pastikan newline juga diubah jadi <br> jika ada
+								$objektif = nl2br($objektif);
+
 								$assesment = nl2br($dl[assesment]).'<br>';
 								$planning = nl2br($dl[planning]).'<br>';
-								$instruksi = nl2br($dl[instruksi]).'<br>';								
+								// $instruksi = nl2br($dl[instruksi]).'<br>';	
+								$instruksi = '<p>' . str_replace("\n", '</p><p>', trim($dl['instruksi'])) . '</p>';
+								
 							}
 
 							$hasilassesment = "
@@ -840,8 +879,13 @@ $noktp =  $data2[noktp];
 									$userid = $namaUser;
 								}
 
-								$tulbakon = 'Petugas : <b>'.$userid.'</b><br>Tgl:'.$tgl.' Jam: '.$jam_lapor;
-								$tulbakon_dokter = 'Dokter: <b>'.$namadokter2.'</b><br>Tgl:'.$tgl_vtulbakon.' Jam: '.$jam_vtulbakon;
+								if($tgl_vtulbakon){
+									$tulbakon = 'Petugas : <b>'.$userid.'</b><br>Tgl:'.$tgl.' Jam: '.$jam_lapor;
+									$tulbakon_dokter = 'Dokter: <b>'.$namadokter2.'</b><br>Tgl:'.$tgl_vtulbakon.' Jam: '.$jam_vtulbakon;
+								}else{
+									$tulbakon = 'Petugas : <b>'.$userid.'</b><br>Tgl:'.$tgl.' Jam: '.$jam_lapor;
+									$tulbakon_dokter = 'Dokter: <b>'.$namadokter2.'</b><br><i>Belum diverifikasi</i>';
+								}
 							}
 
 							

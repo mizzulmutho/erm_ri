@@ -1,1 +1,1 @@
-{"metadata":{"code":400,"message":"Parameter tidak lengkap, nomor_sep kosong","error_no":"E2030"}}
+{"metadata":{"code":400,"message":"Nomor SEP tidak ditemukan","error_no":"E2004"}}

@@ -5,6 +5,8 @@ $serverName = "192.168.10.1"; //serverName\instanceName
 $connectionInfo = array( "Database"=>"RSPGENTRY", "UID"=>"sa", "PWD"=>"p@ssw0rd");
 $conn = sqlsrv_connect( $serverName, $connectionInfo);
 
+include ("mode.php");
+
 include "phpqrcode/qrlib.php";
 
 include "header_px.php";
@@ -505,9 +507,9 @@ if(empty($regcek)){
                         		}));
                         	//if a single result is returned
                         }           
-                });
+                    });
                 }
-        });
+            });
 		});
 	</script> 
 

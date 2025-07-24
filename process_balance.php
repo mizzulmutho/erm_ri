@@ -57,6 +57,7 @@ while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
 }
 
 $balance = $total_input_sum - $total_output_sum;
+$balance_formatted = number_format($balance, 2, '.', '');  // 2 angka koma, pakai titik desimal
 
 // Buat nomor transaksi
 $prefix = 'TRX';
@@ -99,8 +100,8 @@ $insertLogQuery = "INSERT INTO ERM_RI_OBSERVASI_CAIRAN (
 $paramsLog = [
 	$noreg,
 	$waktu_akhir,
-	$balance,
-	$balance,
+	$balance_formatted,
+	$balance_formatted,
 	$waktu_awal,
 	$waktu_akhir,
 	$user,
@@ -116,9 +117,6 @@ ob_start();
 session_start();
 
 $_SESSION['success'] = "Perhitungan balance cairan berhasil disimpan.";
-
-// header("Location: listobservasi_cairan.php?id=$id|$user&user=$user&filter_tanggal=$tanggal&filter_tanggal_akhir=$tanggal_akhir&filter_jam_awal=$jam_awal&filter_jam_akhir=$jam_akhir&msg=balance_success");
-// exit;
 
 $eror = "Perhitungan balance cairan berhasil disimpan.";
 
