@@ -318,7 +318,7 @@ if($id_header_igd){
 	";
 	$h1u  = sqlsrv_query($conn, $qu);        
 	$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
-	$kesadaran = $d1u['KELUHANHASIL'];
+	//$kesadaran = $d1u['KELUHANHASIL'];
 	$e = $d1u['E'];
 	$v = $d1u['V'];
 	$m = $d1u['M'];
@@ -340,6 +340,16 @@ if($id_header_igd){
 	$d1u2  = sqlsrv_fetch_array($h1u2, SQLSRV_FETCH_ASSOC); 
 	$keluhan_utama = $d1u2['kesadaran'];
 	$riwayat_penyakit = $d1u2['riwayatdahulu'];
+
+
+	$qPeriksaUmum = "SELECT a.KESADARAN, b.ID, b.IDHEADER, b.JAM, b.AIRWAY, b.E, b.V, b.M, b.N, b.SISTOLE, b.T, b.PERNAFASAN, b.SPO, b.RENCANA, b.USERID, b.INDIKASI_PREVENTIF, b.INDIKASI_KURATIF, b.INDIKASI_REHABILITATIF, b.INDIKASI_PALIATIF, b.DIASTOLE, b.RITME FROM ERM_PERIKSA_UMUM AS a LEFT OUTER JOIN
+	ERM_IGD_RENCANA_HDR AS b ON b.IDHEADER = a.IDHEADER WHERE (a.NOREG = '$noreg_igd')";
+	$hPeriksaUmum = sqlsrv_query($conn, $qPeriksaUmum);
+	$dPeriksaUmum = sqlsrv_fetch_array($hPeriksaUmum, SQLSRV_FETCH_ASSOC);
+
+		// $tr13= $dPeriksaUmum['TGLENTRY'];
+	$kesadaran= $dPeriksaUmum['KESADARAN'];
+
 }else{
 	$qu="SELECT * FROM  V_ERM_RI_KEADAAN_UMUM where noreg='$noreg' and tensi is not null";
 	$h1u  = sqlsrv_query($conn, $qu);        

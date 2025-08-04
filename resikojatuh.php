@@ -601,7 +601,7 @@ if(!empty($regcek)){
 									?>
 
 								<?php } ?>
-								<?php if($umur > 17 and $umur <=60) { ?>
+								<?php if($umur >= 17 and $umur <=60) { ?>
 
 									<table>
 										<tr>

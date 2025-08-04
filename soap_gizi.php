@@ -258,28 +258,28 @@ $diet = $d1u3['diet'];
 							<input type='checkbox' name='diagnosa_gizi1' value='NI 2.1 - Kekurangan intake makanan dan minuman oral'>
 							NI 2.1	Kekurangan intake makanan dan minuman oral<br>
 							<input type='text' name='diagnosa_gizi_1ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi2' value='NI 2.1 - Kelebihan makanan dan minuman oral'>
+							<input type='checkbox' name='diagnosa_gizi2' value='NI 2.2 - Kelebihan makanan dan minuman oral'>
 							NI 2.2	Kelebihan makanan dan minuman oral<br>
 							<input type='text' name='diagnosa_gizi_2ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi3' value='NI 2.1 - Kekurangan intake cairan'>
+							<input type='checkbox' name='diagnosa_gizi3' value='NI 3.1 - Kekurangan intake cairan'>
 							NI 3.1	Kekurangan intake cairan<br>
 							<input type='text' name='diagnosa_gizi_3ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi4' value='NI 2.1 - Peningkatan kebutuhan'>
+							<input type='checkbox' name='diagnosa_gizi4' value='NI 5.1 - Peningkatan kebutuhan'>
 							NI 5.1	Peningkatan kebutuhan<br>
 							<input type='text' name='diagnosa_gizi_4ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi5' value='NI 2.1 - Malnutrisi energi dan protein yang nyata'>
+							<input type='checkbox' name='diagnosa_gizi5' value='NI 5.2 - Malnutrisi energi dan protein yang nyata'>
 							NI 5.2	Malnutrisi energi dan protein yang nyata<br>
 							<input type='text' name='diagnosa_gizi_5ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi6' value='NI 2.1 - Penurunan kebutuhan'>
+							<input type='checkbox' name='diagnosa_gizi6' value='NI 5.4 - Penurunan kebutuhan'>
 							NI 5.4	Penurunan kebutuhan<br>
 							<input type='text' name='diagnosa_gizi_6ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi7' value='NI 2.1 - Pengetahuan yang kurang dikaitkan dengan pangan dan gizi'>
+							<input type='checkbox' name='diagnosa_gizi7' value='NI 1.1 - Pengetahuan yang kurang dikaitkan dengan pangan dan gizi'>
 							NI 1.1	Pengetahuan yang kurang dikaitkan dengan pangan dan gizi<br>
 							<input type='text' name='diagnosa_gizi_7ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi8' value='NI 2.1 - Belum siap untuk melakukan diet'>
+							<input type='checkbox' name='diagnosa_gizi8' value='NI 1.3 - Belum siap untuk melakukan diet'>
 							NI 1.3	Belum siap untuk melakukan diet<br>
 							<input type='text' name='diagnosa_gizi_8ket' value='' size='100' placeholder="..."><br>
-							<input type='checkbox' name='diagnosa_gizi9' value='NI 2.1 - Kekeliruan pola makan'>
+							<input type='checkbox' name='diagnosa_gizi9' value='NI 1.5 - Kekeliruan pola makan'>
 							NI 1.5	Kekeliruan pola makan <br>
 							<input type='text' name='diagnosa_gizi_9ket' value='' size='100' placeholder="..."><br>
 							<input type='text' name='diagnosa_gizi_ket' value='' size='100' placeholder="diagnosa lainnya">

@@ -248,7 +248,13 @@ $regcek = $di['noreg'];
                                     $hl = sqlsrv_query($conn, $ql);
                                     $no = 1;
                                     while ($dl = sqlsrv_fetch_array($hl, SQLSRV_FETCH_ASSOC)) {         
-                                        $link = 'http://192.168.5.109/dok_radiologi/' . $dl['doc'];
+                                        if($sbu=='RSPG'){
+                                            $link = 'http://192.168.5.109/dok_radiologi/' . $dl['doc'];
+                                        }       
+                                        if($sbu=='GRAHU'){
+                                            $link = 'http://192.168.30.34/dok_radiologi_gr/' . $dl['doc'];
+                                        }
+
                                         $isImage = preg_match('/\.(jpg|jpeg|png|gif)$/i', $dl['doc']);
 
                                         echo "

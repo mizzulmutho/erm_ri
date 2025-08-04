@@ -443,7 +443,7 @@ $tglkeluar = $data3[tglkeluar];
 					<td>$data[luka9]</td>
 					<td>$data[luka10]</td>
 
-					<td>$data[userid] - $nama</td>
+					<td>$data[userid]</td>
 					<td align='center'><a href='del_luka.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
 					</tr>
 					";

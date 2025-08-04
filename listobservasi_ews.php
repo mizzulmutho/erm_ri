@@ -200,6 +200,12 @@ $umur =  $data2[UMUR];
 								$ket_ews='Tinggi';
 							}
 
+							$userinput = trim($data1['userinput']);
+							$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$userinput'";
+							$h1u  = sqlsrv_query($conn, $qu);        
+							$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+							$nmuserid = trim($d1u['NamaUser']);
+							
 							echo "<tr>
 							<td>$nox</td>
 							<td><a href='e_observasi.php?id=$id|$user|{$data1['id']}' class='text-primary'><i class='bi bi-pencil-square'></i></a></td>
@@ -215,7 +221,7 @@ $umur =  $data2[UMUR];
 							<td>{$data1['spo2']}</td>
 							<td>{$data1['ob7']}</td>
 							<td align='center' style='background-color:{$bgcolor};'><span>{$score}<br><b>{$ket_ews}</b></span></td>
-							<td>{$data1['userinput']}</td>
+							<td>{$nmuserid}</td>
 							</tr>";
 							$nox++;
 						}

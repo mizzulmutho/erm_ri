@@ -173,7 +173,10 @@ $monitoring = $d1g['monitoring'];
 					<div class="col-12">
 						Tgl Input : 
 						<input class="form-control" name="tglinput" value="<?php echo $tglinput;?>" type="text" >
+						<font color='red'>Tanggal Jangan Lupa disesuaikan !!!</font> <i> Format Tahun - Bulan - Tanggal</i>
+						<hr>
 					</div>
+
 
 					<div class="col-12">
 						Kode PPA : <input class="form-control" name="kodedokter" value="<?php echo $kodedokter;?>" id="dokter" type="text" size='50' placeholder="Isikan Nama Dokter atau Perawat">

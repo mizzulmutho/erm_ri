@@ -1704,7 +1704,7 @@ if (isset($_POST["simpan"])) {
     $tr2	= $_POST["tr2"];
 
     $row = explode('-',$tr2);
-    $ctr2  = $row[1];
+    $ctr2  = trim($row[1]);
 
     if(empty($ctr2)){
         $eror='Unit Tujuan Tidak Valid, Gunakan Kode Unit !!!';
@@ -2018,6 +2018,10 @@ if (isset($_POST["simpan"])) {
         where id='$idtransfer'
         ";
 
+        $hs = sqlsrv_query($conn,$q);
+
+
+        $q  = "update ERM_ASSESMEN_HEADER set kodeunit='$ctr2' where noreg='$noreg'";
         $hs = sqlsrv_query($conn,$q);
 
         if($hs){
