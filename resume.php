@@ -2266,20 +2266,9 @@ if($jenis=='add_diagnosa_sekunder'){
 			<input class="" name="resume32" value="<?php echo $resume32;?>" id="icd98" type="text" size='30' onfocus="nextfield ='periode';" placeholder="Isikan ICD9">
 			<br>
 			: 
-			<!-- <input type='text' name='resume33' value='<?php echo $resume33; ?>' size='80' placeholder="ICD Free Text" style="min-width:630px; min-height:150px;"> -->
 			<textarea name= "resume33" id="" style="min-width:630px; min-height:150px;"><?php echo $resume33;?></textarea>
 		</div>
 	</div>
-<!-- 	<div class="row">
-		<div class="col-4">
-			<b>&nbsp;&nbsp;&nbsp;b. Pengobatan</b>
-		</div>
-		<div class="col-8">
-			: 
-			<input type='text' name='resume34' value='<?php echo $resume34; ?>' size='80'>
-			<textarea name= "resume34" id="resume34" style="min-width:630px; min-height:150px;" placeholder="Isikan Pengobatan Saat Rawat Inap"><?php echo $resume34;?></textarea>
-		</div>
-	</div> -->
 
 	<div class="row">
 		<div class="col-4">

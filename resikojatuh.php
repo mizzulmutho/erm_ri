@@ -318,7 +318,7 @@ if(!empty($regcek)){
 									</tr>
 								</table>
 								<?php if($umur > 60) { //Geriatri?>
-									(Sydney Scoring)<br>
+									<b>(Sydney Scoring)</b><br>
 
 									<table>
 										<tr>
@@ -594,15 +594,15 @@ if(!empty($regcek)){
 									echo "<h5>";
 									echo "[".$tjatuh_skor_total."]";
 
-									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 24){echo $tjatuh_skor_total_ket="Risiko rendah";}
-									if($tjatuh_skor_total >= 25 and $tjatuh_skor_total <= 44 ){echo $tjatuh_skor_total_ket="Risiko sedang";}
-									if($tjatuh_skor_total >= 45){echo $tjatuh_skor_total_ket="Risiko tinggi";}
+									if($tjatuh_skor_total >= 0 and $tjatuh_skor_total <= 5){echo $tjatuh_skor_total_ket="Risiko rendah";}
+									if($tjatuh_skor_total >= 6 and $tjatuh_skor_total <= 16 ){echo $tjatuh_skor_total_ket="Risiko sedang";}
+									if($tjatuh_skor_total >= 17){echo $tjatuh_skor_total_ket="Risiko tinggi";}
 									echo "</h5>";
 									?>
 
 								<?php } ?>
 								<?php if($umur >= 17 and $umur <=60) { ?>
-
+									<b>(dewasa dengan skala Morse)</b><br>
 									<table>
 										<tr>
 											<td style="border: 1px solid;">Faktor Risiko</td>
@@ -810,7 +810,7 @@ if(!empty($regcek)){
 								<?php } ?>
 
 								<?php if($umur<17) {?>
-									(dewasa dengan skala humpty dumpty)<br>
+									<b>(dewasa dengan skala humpty dumpty)</b><br>
 
 									<table>
 										<tr>

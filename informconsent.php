@@ -833,7 +833,7 @@ if(empty($regcek)){
 								Alamat
 							</div>
 							<div class="col-8">
-								<input class="form-control form-control-sm" name="ic18" value="<?php echo $alamat;?>" id="" type="text" placeholder=""> 
+								<input class="form-control form-control-sm" name="ic18" value="<?php echo $alamatpasien;?>" id="" type="text" placeholder=""> 
 							</div>
 						</div>
 					</td>
@@ -892,7 +892,7 @@ if(empty($regcek)){
 								Alamat
 							</div>
 							<div class="col-8">
-								<input class="form-control form-control-sm" name="ic22" value="<?php echo $alamat;?>" id="" type="text" placeholder="">
+								<input class="form-control form-control-sm" name="ic22" value="<?php echo $alamatpasien;?>" id="" type="text" placeholder="">
 							</div>
 						</div>
 					</td>

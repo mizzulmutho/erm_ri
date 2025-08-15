@@ -266,10 +266,8 @@ $cppt = $data['cppt'];
 
 				<div class="row mb-3">
 					<div class="col-md-4">
-						<label for="tgl_mrs" class="form-label"><b>Tgl MRS</b></label>
-						<br>
-						<input type="date" name="tgl_mrs" value="<?= $data['tgl_mrs'] ? date('Y-m-d', strtotime($data['tgl_mrs'])) : '' ?>" id="tgl_mrs" class="form-control">
 						<?php
+
 						// $qe="
 						// SELECT resume2 as tgl_mrs, resume4 as tgl_krs FROM ERM_RI_RESUME where noreg='$noreg'";
 						// $he  = sqlsrv_query($conn, $qe);        
@@ -280,7 +278,17 @@ $cppt = $data['cppt'];
 						// }else{
 						// 	echo 'Tgl MRS diresume belum diisi!';
 						// }
+
+						$dt = '';
+						if (!empty($data['tanggal_jam_lanjut'])) {
+							$dt = date('Y-m-d\TH:i', strtotime($data['tanggal_jam_lanjut']));
+						}
 						?>
+
+						<label for="tgl_mrs" class="form-label"><b>Tgl MRS</b></label>
+						<br>
+						<input type="date" name="tgl_mrs" value="<?= $data['tgl_mrs'] ? date('Y-m-d', strtotime($data['tgl_mrs'])) : '' ?>" id="tgl_mrs" class="form-control">
+
 					</div>
 					<div class="col-md-8">
 						<label for="diagnosis" class="form-label"><b>Diagnosis</b></label>
@@ -405,13 +413,7 @@ $cppt = $data['cppt'];
 
 
 				<div class="mb-3">
-					<label for="tanggal_jam_lanjut" class="form-label">Tanggal/Jam</label>
-					<?php
-					$dt = '';
-					if (!empty($data['tanggal_jam_lanjut'])) {
-						$dt = date('Y-m-d\TH:i', strtotime($data['tanggal_jam_lanjut']));
-					}
-					?>
+					<label for="tanggal_jam_lanjut" class="form-label">Tanggal/Jam</label>					
 					<input type="datetime-local" name="tanggal_jam_lanjut" id="tanggal_jam_lanjut" value="<?= $dt ?>" class="form-control">
 
 				</div>
@@ -537,7 +539,7 @@ if (isset($_POST["simpan"])) {
 	if ($cek && sqlsrv_has_rows($cek)) {
         // ✅ UPDATE
 		$sql = "UPDATE ERM_RI_MPP SET
-		userid=?, tglentry=?,
+		userid=?, tglentry=?, tgl_mrs=?,
 		indikator_1=?, indikator_2=?, indikator_3=?, indikator_4=?,
 		indikator_5=?, indikator_6=?, indikator_7=?,
 		tanggal_jam_lanjut=?, ringkasan_asesmen=?,
@@ -545,58 +547,54 @@ if (isset($_POST["simpan"])) {
 		WHERE noreg=?";
 
 		$params = [
-			$userid, $tglentry, 
+			$userid, $tglentry, $tgl_mrs, 
 			$indikator[1], $indikator[2], $indikator[3], $indikator[4],
 			$indikator[5], $indikator[6], $indikator[7],
 			$tanggal_jam_lanjut, $ringkasan, $masalah, $tindak, $cppt, $signature,
 			$noreg
 		];
 	} else {
-        // ✅ INSERT
+        // ✅ INSERT	
 		$sql = "INSERT INTO ERM_RI_MPP (
-			noreg, userid, tglentry, 
-			indikator_1, indikator_2, indikator_3, indikator_4,
-			indikator_5, indikator_6, indikator_7,
-			tanggal_jam_lanjut, ringkasan_asesmen,
-			identifikasi_masalah, rencana_tindak_lanjut, cppt, signature_base64
-			) VALUES (
-			?, ?, ?, 
-			?, ?, ?, ?,
-			?, ?, ?,
-			?, ?, ?, ?, ?, ?
-		)";
+			noreg, userid, tglentry, tgl_mrs, indikator_1, indikator_2, indikator_3, indikator_4, indikator_5,
+			indikator_6, indikator_7, tanggal_jam_lanjut, ringkasan_asesmen, identifikasi_masalah,
+			rencana_tindak_lanjut, cppt, signature_base64
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-			$params = [
-				$noreg, $userid, $tglentry,
-				$indikator[1], $indikator[2], $indikator[3], $indikator[4],
-				$indikator[5], $indikator[6], $indikator[7],
-				$tanggal_jam_lanjut, $ringkasan, $masalah, $tindak, $cppt, $signature
-			];
-		}
-
-		$stmt = sqlsrv_query($conn, $sql, $params);
-
-		if ($stmt) {
-			$alert="Data berhasil disimpan";
-			echo "
-			<script>
-			alert('".$alert."');
-			history.go(-1);
-			</script>
-			";
-
-			exit;
-		} else {
-			die(print_r(sqlsrv_errors(), true));
-		}
+		$params = [
+			$noreg, $userid, $tglentry, $tgl_mrs,
+			$indikator[1], $indikator[2], $indikator[3], $indikator[4],
+			$indikator[5], $indikator[6], $indikator[7],
+			$tanggal_jam_lanjut, $ringkasan, $masalah, $tindak, $cppt, $signature
+		];
 	}
 
-	if (isset($_POST["print"])) {
+	echo $sql;
+	$stmt = sqlsrv_query($conn, $sql, $params);
+
+	if ($stmt) {
+		$eror="Data berhasil disimpan";
+
 		echo "
 		<script>
-		window.print();
+		alert('".$eror."');
+		window.location.replace('mpp.php?id=$id|$user');
 		</script>
 		";
+
+
+			// exit;
+	} else {
+		die(print_r(sqlsrv_errors(), true));
 	}
+}
+
+if (isset($_POST["print"])) {
+	echo "
+	<script>
+	window.print();
+	</script>
+	";
+}
 
 ?>

@@ -200,7 +200,21 @@ $tglkeluar = $data3[tglkeluar];
 
 			<br>
 
-			<table width='100%' border='1'>
+			<div class="row">
+				<div class="col-12 text-center" style="margin-bottom:10px;">
+					<strong>Protokol/keterangan sebagai pengingat cara mengisi asesmen ulang nyeri :</strong><br>
+					<ol style="margin-top:5px; margin-bottom:0; display:inline-block; text-align:left;">
+						<li>Lakukan pengkajian ulang 1 jam setelah pemberian obat injeksi</li>
+						<li>Lakukan pengkajian ulang tiap shift untuk skor nyeri 1-3</li>
+						<li>Lakukan pengkajian ulang setiap 3 jam bila skor nyeri 4-6</li>
+						<li>Lakukan pengkajian ulang setiap 1 jam jika skor nyeri 7-10</li>
+						<li>Hentikan pengkajian ulang jika skor nyeri 0</li>
+					</ol>
+				</div>
+			</div>
+			<hr>
+
+			<table width='100%' border='0'>
 				<tr>
 					<td>
 						<div class="row">
@@ -213,7 +227,7 @@ $tglkeluar = $data3[tglkeluar];
 						</div>
 					</td>
 				</tr>
-				<tr>
+<!-- 				<tr>
 					<td>
 						<div class="row">
 							<div class="col-4">
@@ -221,7 +235,6 @@ $tglkeluar = $data3[tglkeluar];
 							</div>
 							<div class="col-8">
 								: 
-								<!-- <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='jumlah';" placeholder="Isikan Nama Obat"> -->
 								<select name='jenis' style="min-width:330px; min-height:30px;">
 									<option value=''>--pilih--</option>
 									<option value='Tidak Nyeri'>Tidak Nyeri</option>
@@ -235,112 +248,121 @@ $tglkeluar = $data3[tglkeluar];
 						</div>
 					</td>
 				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Skala Nyeri
-							</div>
-							<div class="col-8">
-								: 
-								<!-- <input class="" name="skala" value="<?php echo $skala;?>" id="" type="text" size='50' onfocus="nextfield ='';" > -->
-								<select name='skala' style="min-width:330px; min-height:30px;">
-									<option value=''>--pilih--</option>
-									<option value='0'>0</option>
-									<option value='1'>1</option>
-									<option value='2'>2</option>
-									<option value='3'>3</option>
-									<option value='4'>4</option>
-									<option value='5'>5</option>
-									<option value='6'>6</option>
-									<option value='7'>7</option>
-									<option value='8'>8</option>
-									<option value='9'>9</option>
-									<option value='10'>10</option>
-								</select>
-							</div>
+			-->				
+			<tr>
+				<td>
+					<div class="row">
+						<div class="col-4">
+							&nbsp;&bull; Skala Nyeri
 						</div>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;&bull; Evaluasi Setelah Intervensi
-							</div>
-							<div class="col-8">
-								: 
-								<!-- <input class="" name="nama_obat" value="<?php echo $nama_obat;?>" id="obat" type="text" size='50' onfocus="nextfield ='jumlah';" placeholder="Isikan Nama Obat"> -->
-								<select name='evaluasi' style="min-width:330px; min-height:30px;">
-									<option value=''>--pilih--</option>
-									<option value='Pemberian perenteral'>Pemberian perenteral</option>
-									<option value='Pemberian per oral'>Pemberian per oral</option>
-									<option value='Non Farmakologis'>Non Farmakologis</option>
-								</select>
-							</div>
+						<div class="col-8">
+							: 
+							<!-- <input class="" name="skala" value="<?php echo $skala;?>" id="" type="text" size='50' onfocus="nextfield ='';" > -->
+							<select name='skala' style="min-width:330px; min-height:30px;">
+								<option value=''>--pilih--</option>
+								<option value='0'>0 - tidak ada nyeri</option>
+								<option value='1'>1 - nyeri ringan</option>
+								<option value='2'>2 - nyeri ringan</option>
+								<option value='3'>3 - nyeri ringan</option>
+								<option value='4'>4 - nyeri sedang</option>
+								<option value='5'>5 - nyeri sedang</option>
+								<option value='6'>6 - nyeri sedang</option>
+								<option value='7'>7 - nyeri berat</option>
+								<option value='8'>8 - nyeri berat</option>
+								<option value='9'>9 - nyeri berat</option>
+								<option value='10'>10 - nyeri berat</option>
+							</select>
 						</div>
-					</td>
-				</tr>
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<div class="row">
+						<div class="col-4">
+							&nbsp;&bull; Intervensi Nyeri
+						</div>
+						<div class="col-8">
+							: 
+							<select name="evaluasi" style="min-width:330px; min-height:30px;">
+								<option value="">--pilih--</option>
+								<optgroup label="Farmakologis">
+									<option value="Pemberian obat oral">Pemberian obat oral</option>
+									<option value="Pemberian obat injeksi">Pemberian obat injeksi</option>
+								</optgroup>
+								<optgroup label="Non Farmakologis">
+									<option value="Kompres panas">Kompres panas</option>
+									<option value="Kompres dingin">Kompres dingin</option>
+									<option value="Posisi">Posisi</option>
+									<option value="Pijat">Pijat</option>
+									<option value="Musik">Musik</option>
+									<option value="TENS">TENS</option>
+									<option value="Relaksasi">Relaksasi</option>
+									<option value="Parafrasa">Parafrasa</option>
+								</optgroup>
+							</select>
+						</div>
+					</div>
+				</td>
+			</tr>
 
-				<tr>
-					<td>
-						<div class="row">
-							<div class="col-4">
-								&nbsp;
-							</div>
-							<div class="col-8">
-								&nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' onfocus="nextfield ='done';" style="color: white;background: #66CDAA;border-color: #66CDAA;">
-							</div>
+			<tr>
+				<td>
+					<div class="row">
+						<div class="col-4">
+							&nbsp;
 						</div>
-					</td>
-				</tr>	
-			</table>
-			<br>
-			<table width="100%">
+						<div class="col-8">
+							&nbsp;&nbsp;<input type='submit' name='simpan' value='simpan' onfocus="nextfield ='done';" style="color: white;background: #66CDAA;border-color: #66CDAA;">
+						</div>
+					</div>
+				</td>
+			</tr>	
+		</table>
+		<br>
+		<table width="100%">
+			<tr>
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>tgl & jam</font></td>
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>skala nyeri</font></td>
+				<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>intervensi nyeri</font></td>
+				<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>petugas</font></td>
+				<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>aksi</font></td>
+			</tr>
+			<?php 
+			$q="
+			select TOP(100) userid,jenis,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id,skala
+			from ERM_RI_NYERI
+			where noreg='$noreg' order by id desc
+			";
+			$hasil  = sqlsrv_query($conn, $q);  
+			$no=1;
+			while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
+				echo "
 				<tr>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>no</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>tgl & jam</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>jenis nyeri</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>skala nyeri</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090'><font color='white'>evaluasi</font></td>
-					<td style="border: 1px solid;" bgcolor='#708090' align='center'><font color='white'>petugas</font></td>
-					<td align='center' style="border: 1px solid;" bgcolor='#708090'><font color='white'>aksi</font></td>
+				<td>$no</td>
+				<td>$data[tglentry]</td>
+				<td>$data[skala]</td>
+				<td>$data[evaluasi]</td>
+				<td>$data[userid]</td>
+				<td align='center'><a href='del_nyeri.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
 				</tr>
-				<?php 
-				$q="
-				select TOP(100) userid,jenis,evaluasi,CONVERT(VARCHAR, tglentry, 25) as tglentry,id,skala
-				from ERM_RI_NYERI
-				where noreg='$noreg' order by id desc
 				";
-				$hasil  = sqlsrv_query($conn, $q);  
-				$no=1;
-				while   ($data = sqlsrv_fetch_array($hasil,SQLSRV_FETCH_ASSOC)){ 
-					echo "
-					<tr>
-					<td>$no</td>
-					<td>$data[tglentry]</td>
-					<td>$data[jenis]</td>
-					<td>$data[skala]</td>
-					<td>$data[evaluasi]</td>
-					<td>$data[userid]</td>
-					<td align='center'><a href='del_nyeri.php?id=$id|$user|$data[id]'><font color='red'>[x]</font></a></td>
-					</tr>
-					";
-					$no += 1;
+				$no += 1;
 
-				}
+			}
 
 
-				?>
-			</table>
+			?>
+		</table>
 
-			<br>
-			<br>
-			<br>
-			<br>
-			<br>
-		</form>
-	</font>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+	</form>
+</font>
 </body>
 </div>
 </div>

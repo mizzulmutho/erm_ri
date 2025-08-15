@@ -201,7 +201,7 @@ if (isset($_POST["simpan"])) {
 			if($spo2 <=85){ $s_spo2=3;}
 
 			$oksigen_tambahan = $ob7; 
-			if($oksigen_tambahan=='ya'){
+			if($oksigen_tambahan=='Ya'){
 				$s_oksigen_tambahan=2;
 			}else{
 				$s_oksigen_tambahan=0;
@@ -256,7 +256,7 @@ if (isset($_POST["simpan"])) {
 			if($rr >=25){ $s_rr=3;}
 
 			$oksigen_tambahan = $ob7; 
-			if($oksigen_tambahan=='ya'){
+			if($oksigen_tambahan=='Ya'){
 				$s_oksigen_tambahan=2;
 			}else{
 				$s_oksigen_tambahan=0;
@@ -643,7 +643,7 @@ if (isset($_POST["simpan"])) {
 						<input class="form-check-input" type="radio" name="ob7" value="Tidak" <?php if ($ob7=="Tidak") echo "checked"; ?>>
 						<label class="form-check-label">Tidak</label>
 					</div>
-					<input class="form-control mb-3" name="ob8" value="<?php echo $ob8;?>" placeholder="Isikan jika tidak">
+					<input class="form-control mb-3" name="ob8" value="<?php echo $ob8;?>" placeholder="Isikan jika Iya">
 
 <!-- 					<div class="form-floating mt-3">
 						<input type="text" class="form-control" name="ob9" value="<?php echo $bb;?>">

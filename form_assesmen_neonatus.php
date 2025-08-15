@@ -1830,9 +1830,15 @@ if(empty($regcek)){
 										DPJP										
 									</td>
 								</tr>
+								<?php
+								$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$userid'";
+								$h1u  = sqlsrv_query($conn, $qu);        
+								$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+								$nmuserid = trim($d1u['NamaUser']);
+								?>
 								<tr>
 									<td align="center">
-										<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$userid."<br>Pada Tanggal : ".$tgl_assesment;?>
+										<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$nmuserid."<br>Pada Tanggal : ".$tgl_assesment;?>
 										<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
 
 										<?php 
@@ -1841,7 +1847,7 @@ if(empty($regcek)){
 										?>
 
 										<br>
-										<?php echo $userid;?>
+										<?php echo $nmuserid;?>
 									</td>
 									<td align="center">
 										<?php

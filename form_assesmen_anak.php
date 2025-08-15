@@ -104,6 +104,13 @@ if(empty($regcek)){
 	$userid = $de['userid'];
 	$keluhan_pasien = $de['keluhan_pasien'];
 	$riwayat_penyakit_sekarang = $de['riwayat_penyakit_sekarang'];
+	$riwayat_penyakit_dahulu = $de['riwayat_penyakit_dahulu'];
+	$riwayat_penyakit_keluarga = $de['riwayat_penyakit_keluarga'];
+
+	$obat_sedang_dikonsumsi = $de['obat_sedang_dikonsumsi'];
+	$riwayat_alergi = $de['riwayat_alergi'];
+	$riwayat_alergi_alergi = $de['riwayat_alergi_alergi'];
+	$eleminasilain = $de['eleminasilain'];
 
 	$tglrawat = $de['tglrawat'];
 	$jamrawat = $de['jamrawat'];
@@ -1251,7 +1258,8 @@ if(empty($regcek)){
 							<input type='checkbox' name='asanak95' value='Anuri' <?php if ($asanak95=="Anuri"){echo "checked";}?>>Anuri
 							<input type='checkbox' name='asanak95' value='Oliguri' <?php if ($asanak95=="Oliguri"){echo "checked";}?>>Oliguri
 							<input type='checkbox' name='asanak95' value='Hematuri' <?php if ($asanak95=="Hematuri"){echo "checked";}?>>Hematuri
-							<input type='checkbox' name='asanak95' value='Lain-lain' <?php if ($asanak95=="Lain-lain"){echo "checked";}?>>Lain-lain<br>
+							<input type='checkbox' name='asanak95' value='Lain-lain' <?php if ($asanak95=="Lain-lain"){echo "checked";}?>>Lain-lain 
+							<input type='text' name='eleminasilain' value='<?php echo $eleminasilain;?>'> <br>
 							Penggunaan alat medis : 
 							<input type='checkbox' name='asanak96' value='Tidak' <?php if ($asanak96=="Tidak"){echo "checked";}?>>Tidak   
 							<input type='checkbox' name='asanak96' value='kateter' <?php if ($asanak96=="kateter"){echo "checked";}?>>kateter  
@@ -2525,9 +2533,15 @@ if(empty($regcek)){
 					DPJP										
 				</td>
 			</tr>
+			<?php
+			$qu="SELECT NamaUser FROM ROLERSPGENTRY.dbo.TBLuserERM where user1 = '$userid'";
+			$h1u  = sqlsrv_query($conn, $qu);        
+			$d1u  = sqlsrv_fetch_array($h1u, SQLSRV_FETCH_ASSOC); 
+			$nmuserid = trim($d1u['NamaUser']);
+			?>
 			<tr>
 				<td align="center">
-					<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$userid."Pada Tanggal : ".$tgl_assesment;?>
+					<?php $verif_perawat="Document ini telah diVerifikasi Oleh : ".$nmuserid."Pada Tanggal : ".$tgl_assesment;?>
 					<!-- <center><img alt='Verifikasi' src='https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl=$verif_perawat&choe=UTF-8'/></center> -->
 
 					<?php 
@@ -2536,7 +2550,7 @@ if(empty($regcek)){
 					?>
 
 					<br>
-					<?php echo $userid;?>
+					<?php echo $nmuserid;?>
 				</td>
 				<td align="center">
 					<?php
@@ -3125,6 +3139,12 @@ if (isset($_POST["simpan"])) {
 	if($lanjut=='Y'){
 		$keluhan_pasien	= $_POST["keluhan_pasien"];
 		$riwayat_penyakit_sekarang= $_POST["riwayat_penyakit_sekarang"];
+		$riwayat_penyakit_dahulu= $_POST["riwayat_penyakit_dahulu"];
+		$riwayat_penyakit_keluarga= $_POST["riwayat_penyakit_keluarga"];
+		$obat_sedang_dikonsumsi= $_POST["obat_sedang_dikonsumsi"];
+		$riwayat_alergi= $_POST["riwayat_alergi"];
+		$riwayat_alergi_alergi= $_POST["riwayat_alergi_alergi"];
+		$eleminasilain= $_POST["eleminasilain"];
 		$dpjp	= $_POST["dpjp"];
 		$tglrawat	= $_POST["tglrawat"];
 		$jamrawat	= $_POST["jamrawat"];
@@ -3390,6 +3410,12 @@ if (isset($_POST["simpan"])) {
 		echo	$q  = "update ERM_RI_ASSESMEN_AWAL_ANAK set
 		keluhan_pasien='$keluhan_pasien',
 		riwayat_penyakit_sekarang='$riwayat_penyakit_sekarang',
+		riwayat_penyakit_dahulu='$riwayat_penyakit_dahulu',
+		riwayat_penyakit_keluarga='$riwayat_penyakit_keluarga',
+		obat_sedang_dikonsumsi='$obat_sedang_dikonsumsi',
+		riwayat_alergi='$riwayat_alergi',
+		riwayat_alergi_alergi='$riwayat_alergi_alergi',
+		eleminasilain='$eleminasilain',
 		tglrawat='$tglrawat',jamrawat='$jamrawat',
 		asanak1= '$asanak1',
 		asanak2= '$asanak2',

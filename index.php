@@ -574,9 +574,6 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 								<a href="nyeri.php?id=<?php echo $id.'|'.$user;?>">Asesmen Ulang Nyeri</a> <br>
 								<a href="resikojatuh.php?id=<?php echo $id.'|'.$user;?>">Asesmen Ulang Risiko Jatuh</a> <br>
 								<a href="luka.php?id=<?php echo $id.'|'.$user;?>">Asesmen Luka</a> <br>
-								<a href="informconsent.php?id=<?php echo $id.'|'.$user;?>">Persetujuan / Penolakan Tindakan (Informed Consent)</a> <br>
-								<a href="phlebithis.php?id=<?php echo $id.'|'.$user;?>">Surveilans PPI</a> <br>		
-								<a href="mpp.php?id=<?php echo $id.'|'.$user;?>">Skrining Manajer Pelayanan Pasien (MPP)</a> <br>								
 							</span>
 						</div>
 					</div>
@@ -617,6 +614,10 @@ $link_transfer_igd="http://192.168.10.245/transferpx/indexrspg.php?id=$id_norm&n
 							<span class="info-box-number">
 								<a href="edukasi.php?id=<?php echo $id.'|'.$user;?>">Edukasi Terintegrasi
 								</a> <br>
+								<a href="informconsent.php?id=<?php echo $id.'|'.$user;?>">Persetujuan / Penolakan Tindakan (Informed Consent)</a> <br>
+								<a href="phlebithis.php?id=<?php echo $id.'|'.$user;?>">Surveilans PPI</a> <br>		
+								<a href="mpp.php?id=<?php echo $id.'|'.$user;?>">Skrining Manajer Pelayanan Pasien (MPP)</a> <br>								
+
 							</span>
 						</div>
 					</div>

@@ -836,33 +836,28 @@ if (isset($_POST["Print"])) {
 									</div>
 								</div>
 							</td>
-						</tr>	
-
-						<tr>
-							<td colspan="2" align='center'>
-								<div class="row">
-									<div class="col-12">
-										<?php 
-										$q		= "select doc as doc from ERM_RI_LAPORAN_OK where noreg = '$noreg'";
-										$h  = sqlsrv_query($conn, $q);			  
-										$d  = sqlsrv_fetch_array($h, SQLSRV_FETCH_ASSOC); 
-										$doc = trim($d['doc']);
-
-										// if(!empty($doc)){
-										// 	echo "
-										// 	Gambar Upload<br>
-										// 	<img src=$doc width='300px' height='200px'>
-										// 	";
-										// }
-
-										?>						
-
-										<br>			
-									</div>
-								</div>
-
-							</td>
 						</tr>
+						
+						<?php 
+						$q = "SELECT doc FROM ERM_RI_LAPORAN_OK WHERE noreg = '$noreg'";
+						$h = sqlsrv_query($conn, $q);			  
+						$d = sqlsrv_fetch_array($h, SQLSRV_FETCH_ASSOC); 
+						$doc = trim($d['doc'] ?? '');
+
+						if (!empty($doc) && $doc !== 'upload/' && preg_match('/\.(jpg|jpeg|png|gif)$/i', $doc)) {
+							echo "
+							<tr>
+							<td colspan='2' align='center'>
+							<div class='row'>
+							<div class='col-12' style='text-align:center;'>
+							<img src='$doc' width='300px' height='200px' alt='Gambar laporan'><br>
+							</div>
+							</div>
+							</td>
+							</tr>
+							";
+						}
+						?>
 
 						<tr>
 							<td colspan="2">

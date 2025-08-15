@@ -884,7 +884,7 @@ if(empty($am77)){
 									<label for="" class="col-3">Kepala : </label>
 									<input type='radio' name='am19' value='Normal' <?php if ($am19=="Normal"){echo "checked";}?>>Normal
 									<input type='radio' name='am19' value='Abnormal' <?php if ($am19=="Abnormal"){echo "checked";}?>>Abnormal
-									<input class="form-control-sm" name="am20" value="<?php $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
+									<input class="form-control-sm" name="am20" value="<?php echo $am20;?>" id="" type="text" size='' onfocus="nextfield ='';" placeholder="Keterangan" style="min-width:300px; min-height:50px;">
 
 									<script>
 										document.querySelector('[name="am20"]').addEventListener('input', function() {
